@@ -6,6 +6,7 @@
 julia>]
 pkg> add https://github.com/lethal8723/Joe.jl.git
 ```
+## Example
 
 ```julia
 using Joe
