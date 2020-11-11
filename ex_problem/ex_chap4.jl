@@ -1,4 +1,7 @@
-# ## ex 45
+# # 第4章
+# 情報量基準の問題。殆ど証明でコーディングの問題は少ないです。
+# 変数の組み合わせを探すのに、Combinatrocs.jlパッケージが役立ちます。
+# ## 例題45
 # ボストン不動産データセットでの線形回帰分析でのAIC・BICの例。
 # 次のような関数をchap4.jl内で定義しています。
 # ```julia
@@ -38,7 +41,32 @@ scatter!(p,bicmin,label="BIC")
 
 # ## 問46
 # ボストン不動産データでのAIC値を最小にする組み合わせを記述したもの。
-findmin(aicmin)
-
+min_aic_boston,aicmin_index  = findmin(aicmin2)
+println("Minimum AIC value:", min_aic_boston, ", set: ", aicindex2[aicmin_index])
 # ## 問47
+# BIC関数とAR2関数を定義して利用します。変数の数毎の最小値を計算する関数は
+# AIC_minと同じ方法で定義しています。ただしAR2の場合は最大化しなければならないので注意が必要です。
+# ```julia
+# function BIC(x,y)
+#     N,k = size(x)
+#     @assert N == length(y)
+#     return N*log(RSS(x,y)/N) + k*log(N)    
+# end
+# 
+# function AR2(x,y)
+#     N,k = size(x)
+#     @assert N == length(y)
+#     return 1 - RSS(x,y)/(N-k-1)/TSS(y)*(N-1)    
+# end
+# ```
+# どの基準で計算しても、今回の場合同じ変数の組み合わせが最適という結論になります。
 
+#BIC
+min_bic_boston,bicmin_index  = findmin(bicmin2)
+println("Minimum BIC value: ", min_bic_boston, ", set: ", bicindex2[aicmin_index])
+#AR2
+ar2max2, ar2index2 = Joe.AR2_max(X2,y)
+max_ar2_boston,ar2max_index  = findmax(ar2max2)
+println("Maximum AR2 value: ", min_ar2_boston, ", set: ", ar2index2[aicmin_index])
+# ## 問48
+# 例題45
