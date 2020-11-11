@@ -1,8 +1,8 @@
 # # 第4章
 # 情報量基準の問題。殆ど証明でコーディングの問題は少ないです。
-# 変数の組み合わせを探すのに、Combinatrocs.jlパッケージが役立ちます。
+# 変数の組み合わせを探すのに、Combinatrics.jlパッケージが役立ちます。
 # ## 例題45
-# ボストン不動産データセットでの線形回帰分析でのAIC・BICの例。
+# ボストン不動産データセットを用いた線形回帰分析でのAIC・BICの例。
 # 次のような関数をchap4.jl内で定義しています。
 # ```julia
 # function AIC(x,y)
@@ -69,4 +69,4 @@ ar2max2, ar2index2 = Joe.AR2_max(X2,y)
 max_ar2_boston,ar2max_index  = findmax(ar2max2)
 println("Maximum AR2 value: ", min_ar2_boston, ", set: ", ar2index2[aicmin_index])
 # ## 問48
-# 例題45
+# 例題45でやったので、割愛します。
