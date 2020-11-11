@@ -80,11 +80,15 @@ function VIF(x)
     end
     return v
 end
+
 """
-線形回帰における信頼区間
+confident_interval(xp,x,y;α=0.01)
+
+線形回帰における信頼区間(予測したい場所での標準偏差)を返す。
 ｘｐ:説明変数の予測データ
 x:説明変数の学習データ
 y:目的変数の学習データ
+α:0.01 は99%信頼区間
 """
 function confident_interval(xp,x,y;α=0.01)
     N,p = size(x)
