@@ -1,12 +1,12 @@
 # Joe.jl
-[統計的機械学習の数理100問](https://www.kyoritsu-pub.co.jp/series/214/)をjuliaでやってみる。 
+鈴木譲先生の[統計的機械学習の数理100問](https://www.kyoritsu-pub.co.jp/series/214/)をjuliaでやってみる。関数内ではグローバル変数を参照しないように翻訳しています。 
+例題、問題はコーディングが必要な部分だけ記載しています。
 
 ## Installation
 ```julia
 julia>]
 pkg> add https://github.com/lethal8723/Joe.jl.git
 ```
-## Example
 
 ```julia
 using Joe
