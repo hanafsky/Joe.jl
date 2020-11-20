@@ -65,23 +65,36 @@ end
 
 function TSS(y)
     Y = y .- mean(y)
-    return Y'*Y
+    return Y'*Y 
 end
 
 ESS(x,y) = TSS(y) - RSS(x,y)
 
 R2(x,y) = ESS(x,y)/TSS(y)
 
+function RSE(x::Matrix,y)
+    n,p = size(x)
+    RSS(x,y) / (n-p-1) 
+end
+
+function RSE(x::Vector,y)
+    RSS(x,y) / (length(x)-2) 
+end
+
+function Bdiag(x)
+    X = expand_matrix(x)
+    return X'X |> inv |> diag
+end
 
 """
 VIF(variance inflation factor)
 """
 function VIF(x)
-    nrow,ncol= size(x)
-    v = []
+    _,ncol= size(x)
+    v = Vector(undef,ncol)
     for j in 1:ncol
         index = delete!(Set(1:ncol),j) |> collect
-        append!(v,1/(1-R2(x[:,index],x[:,j])))
+        v[j] = 1/(1-R2(x[:,index],x[:,j]))
     end
     return v
 end
@@ -101,4 +114,12 @@ function confident_interval(xp,x,y;α=0.01)
     XP = expand_matrix(xp)
     typeof(xp) <:Number && (xp =Array(xp))
     yerror = quantile(TDist(N-p-1),α/2) * sqrt.(XP * (X'X) \ XP')
+end
+
+function prediction_interval(xp,x,y;α=0.01)
+    N,p = size(x)
+    X = expand_matrix(x)
+    XP = expand_matrix(xp)
+    typeof(xp) <:Number && (xp =Array(xp))
+    yerror = quantile(TDist(N-p-1),α/2) * sqrt.( 1 .+ XP * (X'X) \ XP')
 end
