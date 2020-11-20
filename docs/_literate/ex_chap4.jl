@@ -39,7 +39,7 @@ bicmin2, bicindex2 = Joe.BIC_min(X2,y)
 p=plot(xlabel="number of variables",ylabel="AIC or BIC values")
 scatter!(p,aicmin,label="AIC")
 scatter!(p,bicmin,label="BIC")
-savefig(p,joinpath(@OUTPUT,"p45.svg"))
+savefig(p,joinpath(@OUTPUT,"p45.svg")) # hide
 # \fig{p45}
 # ## 問46
 # ボストン不動産データでのAIC値を最小にする組み合わせを記述したもの。

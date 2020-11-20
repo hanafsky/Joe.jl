@@ -53,7 +53,12 @@ end
 """
 線形回帰分析でのRSS値
 """
-function RSS(x,y)
+function RSS(x::Vector,y)
+    β̂ = min_sq(x,y)
+    ŷ = β̂[1]*x .+ β̂[2]
+    return (y-ŷ)'*(y-ŷ)
+end
+function RSS(x::Matrix,y)
     ŷ = expand_matrix(x)*MultipleRegression(x,y)
     return (y-ŷ)'*(y-ŷ)
 end
@@ -85,7 +90,7 @@ end
 confident_interval(xp,x,y;α=0.01)
 
 線形回帰における信頼区間(予測したい場所での標準偏差)を返す。
-ｘｐ:説明変数の予測データ
+xp:説明変数の予測データ
 x:説明変数の学習データ
 y:目的変数の学習データ
 α:0.01 は99%信頼区間
