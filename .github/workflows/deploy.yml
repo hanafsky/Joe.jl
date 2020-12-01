@@ -38,7 +38,7 @@ jobs:
             using Franklin;
             cd("docs");
             Pkg.activate("."); Pkg.instantiate();
-            optimize(prepath="Joe.jl")'
+            optimize(prepath="Joe.jl",clear=true)'
     - name: Build and Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
