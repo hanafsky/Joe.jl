@@ -1,1 +1,2 @@
-UndefVarError: p not defined
+γ = [-0.8771716229486168, -0.2526647989249558, 0.03370522564888635]
+UndefVarError: γ not defined

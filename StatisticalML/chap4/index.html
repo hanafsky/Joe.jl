@@ -29,8 +29,8 @@ bicmin2, bicindex2 = Joe.BIC_min(X2,y)
 
 p=plot(xlabel=<span class=hljs-string >&quot;number of variables&quot;</span>,ylabel=<span class=hljs-string >&quot;AIC or BIC values&quot;</span>)
 scatter!(p,aicmin,label=<span class=hljs-string >&quot;AIC&quot;</span>)
-scatter!(p,bicmin,label=<span class=hljs-string >&quot;BIC&quot;</span>)</code></pre><pre><code class="plaintext hljs">ArgumentError: Package Joe not found in current path:
-- Run `import Pkg; Pkg.add(&quot;Joe&quot;)` to install the Joe package.
+scatter!(p,bicmin,label=<span class=hljs-string >&quot;BIC&quot;</span>)</code></pre><pre><code class="plaintext hljs">ArgumentError: Package RDatasets not found in current path:
+- Run `import Pkg; Pkg.add(&quot;RDatasets&quot;)` to install the RDatasets package.
 
 </code></pre> <p><span style="color:red;">// Image matching '/assets/StatisticalML/chap4/code/p45' not found. //</span></p> <h2 id="問46"><a href="#問46">問46</a></h2> <p>ボストン不動産データでのAIC値を最小にする組み合わせを記述したもの。</p> <pre><code class="julia hljs">min_aic_boston,aicmin_index  = findmin(aicmin2)
 println(<span class=hljs-string >&quot;Minimum AIC value:&quot;</span>, min_aic_boston, <span class=hljs-string >&quot;, set: &quot;</span>, aicindex2[aicmin_index])</code></pre><pre><code class="plaintext hljs">UndefVarError: aicmin2 not defined

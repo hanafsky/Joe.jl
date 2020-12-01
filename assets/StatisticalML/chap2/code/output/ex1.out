@@ -1,3 +1,0 @@
-ArgumentError: Package Joe not found in current path:
-- Run `import Pkg; Pkg.add("Joe")` to install the Joe package.
-

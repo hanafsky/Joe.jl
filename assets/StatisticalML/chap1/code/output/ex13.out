@@ -1,1 +1,2 @@
-UndefVarError: Joe not defined
+Joe.R2(x26_1, y26) = 0.022465082479654636
+cor(x26_1, y26) ^ 2 = 0.022465082479654657
