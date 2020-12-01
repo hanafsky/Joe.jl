@@ -1,3 +1,3 @@
-ArgumentError: Package RDatasets not found in current path:
-- Run `import Pkg; Pkg.add("RDatasets")` to install the RDatasets package.
+ArgumentError: Package Pipe not found in current path:
+- Run `import Pkg; Pkg.add("Pipe")` to install the Pipe package.
 

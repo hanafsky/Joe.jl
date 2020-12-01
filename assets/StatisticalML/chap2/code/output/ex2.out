@@ -1,3 +1,10 @@
-ArgumentError: Package Zygote not found in current path:
-- Run `import Pkg; Pkg.add("Zygote")` to install the Zygote package.
-
+2.125
+1.2977941176470589
+1.0341661806365605
+1.0005643811996305
+1.0000001591732348
+1.0000000000000127
+1.0
+1.0
+1.0
+1.0

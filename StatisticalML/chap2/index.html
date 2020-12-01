@@ -16,9 +16,16 @@ x=<span class=hljs-number >4</span>
 <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
     x -= f(x)/f&#x27;(x)
     println(x)
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">ArgumentError: Package Zygote not found in current path:
-- Run `import Pkg; Pkg.add(&quot;Zygote&quot;)` to install the Zygote package.
-
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">2.125
+1.2977941176470589
+1.0341661806365605
+1.0005643811996305
+1.0000001591732348
+1.0000000000000127
+1.0
+1.0
+1.0
+1.0
 </code></pre>
 <h3 id="例31__2"><a href="#例31__2">例31</a></h3>
 <p>2変数関数が2つある場合。 Zygote.jlにjacobianがなかったので、ForwardDiff.jlを使ってみます。</p>
@@ -29,9 +36,16 @@ z = [<span class=hljs-number >3</span>,<span class=hljs-number >4</span>]
 <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
     z -= ForwardDiff.jacobian(x-&gt;f(x[<span class=hljs-number >1</span>], x[<span class=hljs-number >2</span>]),z) \ f(z[<span class=hljs-number >1</span>],z[<span class=hljs-number >2</span>])
     println(z)
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">ArgumentError: Package ForwardDiff not found in current path:
-- Run `import Pkg; Pkg.add(&quot;ForwardDiff&quot;)` to install the ForwardDiff package.
-
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">[-13.000000000000004, 13.000000000000002]
+[-6.519230769230771, 6.519230769230771]
+[-3.297963467211255, 3.297963467211255]
+[-1.7247860905930625, 1.7247860905930625]
+[-1.0073385555621193, 1.0073385555621193]
+[-0.7518480044063836, 0.7518480044063836]
+[-0.7084380190454468, 0.7084380190454468]
+[-0.7071080319623313, 0.7071080319623313]
+[-0.7071067811876538, 0.7071067811876538]
+[-0.7071067811865475, 0.7071067811865475]
 </code></pre>
 <h3 id="例33"><a href="#例33">例33</a></h3>
 <p>最尤推定によりロジスティック回帰を行う問題。 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant=normal >∇</mi><mi>l</mi><mo stretchy=false >(</mo><msub><mi>β</mi><mn>0</mn></msub><mo separator=true >,</mo><mi>β</mi><mo stretchy=false >)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\nabla l(\beta_0, \beta) = 0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1em;vertical-align:-0.25em;"></span><span class=mord >∇</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05278em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.15em;"><span></span></span></span></span></span></span><span class=mpunct >,</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class=mclose >)</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>を求める問題を解いてみる。 素直に<code>1 ./ &#40;1 .&#43; exp.&#40;X*β&#41;&#41;</code>と書いたりfor文を回しても良いと思いますが。）</p>
@@ -77,9 +91,8 @@ l(γ,X=X,y=y) = sum(@. log( <span class=hljs-number >1</span> /(<span class=hljs
     <span class=hljs-meta >@show</span> norm(δ)^<span class=hljs-number >2</span>
     γ<span class=hljs-number >2</span> -= δ
     <span class=hljs-meta >@show</span> γ<span class=hljs-number >2</span>
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">ArgumentError: Package Zygote not found in current path:
-- Run `import Pkg; Pkg.add(&quot;Zygote&quot;)` to install the Zygote package.
-
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">norm(δ) ^ 2 = 1.0533535123523883
+UndefVarError: γ2 not defined
 </code></pre>
 <h2 id="23_線形判別と二次判別"><a href="#23_線形判別と二次判別">2.3 線形判別と二次判別</a></h2>
 <h3 id="例35"><a href="#例35">例35</a></h3>
@@ -92,10 +105,7 @@ N = <span class=hljs-number >100</span>;Random.seed!(<span class=hljs-number >12
 data1 = rand(MvNormal(μ₁,Σ₁),<span class=hljs-number >100</span>) |&gt; transpose
 data2 = rand(MvNormal(μ₂,Σ₂),<span class=hljs-number >100</span>) |&gt; transpose
 scatter(data1[:,<span class=hljs-number >1</span>],data1[:,<span class=hljs-number >2</span>])
-scatter(data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>])</code></pre><pre><code class="plaintext hljs">ArgumentError: Package Distributions not found in current path:
-- Run `import Pkg; Pkg.add(&quot;Distributions&quot;)` to install the Distributions package.
-
-</code></pre>
+scatter(data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>])</code></pre><pre><code class="plaintext hljs">Plot{Plots.GRBackend() n=1}</code></pre>
 
 <div class=page-foot >
   <div class=copyright >

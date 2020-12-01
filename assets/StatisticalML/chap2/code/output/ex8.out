@@ -1,3 +1,0 @@
-ArgumentError: Package Distributions not found in current path:
-- Run `import Pkg; Pkg.add("Distributions")` to install the Distributions package.
-

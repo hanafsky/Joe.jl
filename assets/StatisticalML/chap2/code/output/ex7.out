@@ -1,3 +1,2 @@
-ArgumentError: Package Zygote not found in current path:
-- Run `import Pkg; Pkg.add("Zygote")` to install the Zygote package.
-
+norm(δ) ^ 2 = 1.0533535123523883
+UndefVarError: γ2 not defined
