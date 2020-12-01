@@ -1,0 +1,112 @@
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/libs/katex/katex.min.css"> <link rel=stylesheet  href="/libs/highlight/github.min.css"> <link href="/css/franklin.css" rel=stylesheet > <link href="/css/vela.css" rel=stylesheet > <script src="/libs/vela/jquery.min.js"></script> <link rel=icon  href="/assets/favicon.png"> <title>なんでもjuliaでやってみる。</title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/StatisticalML/chap1/">第一章</a> <li><a href="/StatisticalML/chap2/">第二章</a> <li><a href="/StatisticalML/chap4/">第四章</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">分類</h1> <hr> <div class=franklin-content ><h2 id="ロジスティック回帰"><a href="#ロジスティック回帰">ロジスティック回帰</a></h2> <h3 id="例29"><a href="#例29">例29</a></h3> <p>シグモイド関数を定義しておきます。</p> <pre><code class="julia hljs">sigmoid(x::<span class=hljs-built_in >Matrix</span>, β::<span class=hljs-built_in >Vector</span>) = <span class=hljs-number >1</span> / (<span class=hljs-number >1</span> + exp(-x*β))</code></pre>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Plots
+p29 = plot(xlims=(-<span class=hljs-number >10</span>,<span class=hljs-number >10</span>), xlabel=<span class=hljs-string >&quot;x&quot;</span>,ylabel=<span class=hljs-string >&quot;P(Y=1|x)&quot;</span>,
+            legend=:topleft, title=<span class=hljs-string >&quot;ロジスティック曲線&quot;</span>)
+x29 = expand_matrix(-<span class=hljs-number >10</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >10</span>)
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> [<span class=hljs-number >0</span>, <span class=hljs-number >0.2</span>, <span class=hljs-number >0.5</span>, <span class=hljs-number >1</span>, <span class=hljs-number >2</span>, <span class=hljs-number >10</span>]
+    plot!(p29, x29[:,<span class=hljs-number >2</span>], Joe.sigmoid(x29,[<span class=hljs-number >0</span>,i]),label=<span class=hljs-string >&quot;<span class=hljs-variable >$i</span>&quot;</span>)
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">ArgumentError: Package Joe not found in current path:
+- Run `import Pkg; Pkg.add(&quot;Joe&quot;)` to install the Joe package.
+
+</code></pre>
+<p><span style="color:red;">// Image matching '/assets/StatisticalML/chap2/code/fig2-1' not found. //</span></p>
+<h2 id="ニュートンラフソン法"><a href="#ニュートンラフソン法">ニュートン・ラフソン法</a></h2>
+<h3 id="例31"><a href="#例31">例31</a></h3>
+<p><span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^2-1=0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.897438em;vertical-align:-0.08333em;"></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2222222222222222em;"></span><span class=mbin >−</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >1</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>を4を初期値として数値計算で解く問題。10回でどの程度近づくか。 せっかくなので、 微分をあらわに書き下すのではなくて、自動微分パッケージを使ってみることにします。 見た目が<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>←</mo><mi>x</mi><mo>−</mo><mstyle displaystyle=true  scriptlevel=0 ><mfrac><mrow><mi>f</mi><mo stretchy=false >(</mo><mi>x</mi><mo stretchy=false >)</mo></mrow><mrow><msup><mi>f</mi><mo mathvariant=normal  lspace=0em  rspace=0em >′</mo></msup><mo stretchy=false >(</mo><mi>x</mi><mo stretchy=false >)</mo></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">x \leftarrow x - \dfrac{f(x)}{f&#x27;(x)}</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">x</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >←</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span><span class=mbin >−</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span></span><span class=base ><span class=strut  style="height:2.363em;vertical-align:-0.936em;"></span><span class=mord ><span class="mopen nulldelimiter"></span><span class=mfrac ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:1.427em;"><span style="top:-2.314em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class=mord ><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.6778919999999999em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class=mopen >(</span><span class="mord mathnormal">x</span><span class=mclose >)</span></span></span><span style="top:-3.23em;"><span class=pstrut  style="height:3em;"></span><span class=frac-line  style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class=mopen >(</span><span class="mord mathnormal">x</span><span class=mclose >)</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>という公式のまんまですね。</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Zygote
+f(x) = x^<span class=hljs-number >2</span> -<span class=hljs-number >1</span>
+x=<span class=hljs-number >4</span>
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
+    x -= f(x)/f&#x27;(x)
+    println(x)
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">ArgumentError: Package Zygote not found in current path:
+- Run `import Pkg; Pkg.add(&quot;Zygote&quot;)` to install the Zygote package.
+
+</code></pre>
+<h3 id="例31__2"><a href="#例31__2">例31</a></h3>
+<p>2変数関数が2つある場合。 Zygote.jlにjacobianがなかったので、ForwardDiff.jlを使ってみます。</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> ForwardDiff
+
+f(x,y) = [x^<span class=hljs-number >2</span>+y^<span class=hljs-number >2</span>-<span class=hljs-number >1</span>, x+y]
+z = [<span class=hljs-number >3</span>,<span class=hljs-number >4</span>]
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
+    z -= ForwardDiff.jacobian(x-&gt;f(x[<span class=hljs-number >1</span>], x[<span class=hljs-number >2</span>]),z) \ f(z[<span class=hljs-number >1</span>],z[<span class=hljs-number >2</span>])
+    println(z)
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">ArgumentError: Package ForwardDiff not found in current path:
+- Run `import Pkg; Pkg.add(&quot;ForwardDiff&quot;)` to install the ForwardDiff package.
+
+</code></pre>
+<h3 id="例33"><a href="#例33">例33</a></h3>
+<p>最尤推定によりロジスティック回帰を行う問題。 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant=normal >∇</mi><mi>l</mi><mo stretchy=false >(</mo><msub><mi>β</mi><mn>0</mn></msub><mo separator=true >,</mo><mi>β</mi><mo stretchy=false >)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\nabla l(\beta_0, \beta) = 0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1em;vertical-align:-0.25em;"></span><span class=mord >∇</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05278em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.15em;"><span></span></span></span></span></span></span><span class=mpunct >,</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class=mclose >)</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>を求める問題を解いてみる。 素直に<code>1 ./ &#40;1 .&#43; exp.&#40;X*β&#41;&#41;</code>と書いたりfor文を回しても良いと思いますが。）</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Random, LinearAlgebra
+N=<span class=hljs-number >1000</span>; p=<span class=hljs-number >2</span>; Random.seed!(<span class=hljs-number >12</span>)
+X = expand_matrix(randn(N,p))
+β = randn(p+<span class=hljs-number >1</span>)
+prob = @. <span class=hljs-number >1</span>/(<span class=hljs-number >1</span> + exp($*(X,β)))
+threshold=<span class=hljs-number >0.5</span>
+y = ifelse.(rand(N) .&gt; prob,<span class=hljs-number >1</span>,-<span class=hljs-number >1</span>) <span class=hljs-comment ># ここまでデータ生成</span>
+<span class=hljs-meta >@show</span> y β</code></pre><pre><code class="plaintext hljs">ArgumentError: Package Joe not found in current path:
+- Run `import Pkg; Pkg.add(&quot;Joe&quot;)` to install the Joe package.
+
+</code></pre>
+<p>せっかくなのでデータを可視化してみます。</p>
+<pre><code class="julia hljs">data1 = X[y .== <span class=hljs-number >1</span>, <span class=hljs-number >2</span>:<span class=hljs-number >3</span>]
+data2 = X[y .== -<span class=hljs-number >1</span>, <span class=hljs-number >2</span>:<span class=hljs-number >3</span>]
+p33=scatter(data1[:,<span class=hljs-number >1</span>],data1[:,<span class=hljs-number >2</span>],ylims=(-<span class=hljs-number >5</span>,<span class=hljs-number >5</span>),marker=:auto, label=<span class=hljs-string >&quot;y=1&quot;</span>)
+scatter!(data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>],marker=:auto,label=<span class=hljs-string >&quot;y=-1&quot;</span>)
+plot!(x-&gt; -β[<span class=hljs-number >1</span>]/β[<span class=hljs-number >3</span>] - β[<span class=hljs-number >2</span>]/β[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;β&quot;</span>)</code></pre><pre><code class="plaintext hljs">UndefVarError: y not defined
+</code></pre>
+<p><span style="color:red;">// Image matching '/assets/StatisticalML/chap2/code/fig2-2' not found. //</span></p>
+<pre><code class="julia hljs">γ = randn(p+<span class=hljs-number >1</span>)
+γ<span class=hljs-number >2</span>=copy(γ)
+<span class=hljs-meta >@show</span> γ
+
+W(v::<span class=hljs-built_in >Vector</span>) = @.(v/(<span class=hljs-number >1</span>+ v)^<span class=hljs-number >2</span>) |&gt; diagm
+t = <span class=hljs-literal >true</span>
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
+    s=X*γ
+    v = @. exp(-y*s)
+    u = @. y*v/(<span class=hljs-number >1</span>+v)
+    γ += ((X&#x27;*W(v)*X) \ X&#x27;) * u
+    <span class=hljs-comment >#δ&#x27;*δ &lt; 0.001 &amp;&amp; (t = false)</span>
+    <span class=hljs-meta >@show</span> γ
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">UndefVarError: p not defined
+</code></pre>
+<p>横着をして、自動微分を使って計算してみます。</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Zygote, LinearAlgebra
+l(γ,X=X,y=y) = sum(@. log( <span class=hljs-number >1</span> /(<span class=hljs-number >1</span>+exp(*($*(X,γ),-y))))) <span class=hljs-comment >#対数尤度関数</span>
+
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
+    δ =  Zygote.hessian(l,γ) \ l&#x27;(γ)
+    <span class=hljs-meta >@show</span> norm(δ)^<span class=hljs-number >2</span>
+    γ<span class=hljs-number >2</span> -= δ
+    <span class=hljs-meta >@show</span> γ<span class=hljs-number >2</span>
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">ArgumentError: Package Zygote not found in current path:
+- Run `import Pkg; Pkg.add(&quot;Zygote&quot;)` to install the Zygote package.
+
+</code></pre>
+<h2 id="23_線形判別と二次判別"><a href="#23_線形判別と二次判別">2.3 線形判別と二次判別</a></h2>
+<h3 id="例35"><a href="#例35">例35</a></h3>
+<p>データの生成</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Distributions
+μ₁=[<span class=hljs-number >2</span>,<span class=hljs-number >2</span>];  Σ₁ = [<span class=hljs-number >2</span> <span class=hljs-number >0</span>; <span class=hljs-number >0</span> <span class=hljs-number >2</span>]
+μ₂=[-<span class=hljs-number >3</span>,-<span class=hljs-number >3</span>]; Σ₂ = [<span class=hljs-number >1</span> -<span class=hljs-number >0.8</span>; -<span class=hljs-number >0.8</span> <span class=hljs-number >1</span>]
+
+N = <span class=hljs-number >100</span>;Random.seed!(<span class=hljs-number >123</span>)
+data1 = rand(MvNormal(μ₁,Σ₁),<span class=hljs-number >100</span>) |&gt; transpose
+data2 = rand(MvNormal(μ₂,Σ₂),<span class=hljs-number >100</span>) |&gt; transpose
+scatter(data1[:,<span class=hljs-number >1</span>],data1[:,<span class=hljs-number >2</span>])
+scatter(data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>])</code></pre><pre><code class="plaintext hljs">ArgumentError: Package Distributions not found in current path:
+- Run `import Pkg; Pkg.add(&quot;Distributions&quot;)` to install the Distributions package.
+
+</code></pre>
+
+<div class=page-foot >
+  <div class=copyright >
+    &copy; 花房　慶. Last modified: December 01, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+  </main> 
+  <script src="/libs/vela/metisMenu.min.js"></script>
+  <script src="/libs/vela/slideout.min.js"></script>
