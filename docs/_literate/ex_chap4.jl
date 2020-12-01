@@ -25,10 +25,11 @@
 # ```
 using Joe
 using RDatasets, Plots
+using Pipe: @pipe
 df = dataset("MASS","BOSTON")
 
-X = df[Not(:MedV)] |> Array #残りの全ての説明変数を利用
-X2 = df[Not([:MedV, :Zn, :Chas])] |> Array #ZnとChasを除いた場合 教科書ではこうなっている。
+X = @pipe df |> select(_, Not(:MedV)) |> Array #残りの全ての説明変数を利用
+X2 =@pipe df |> select(_, Not([:MedV, :Zn, :Chas])) |> Array #ZnとChasを除いた場合 教科書ではこうなっている。
 y = df[:MedV] #目的変数
 
 aicmin, aicindex = Joe.AIC_min(X,y)

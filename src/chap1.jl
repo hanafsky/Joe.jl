@@ -112,14 +112,14 @@ function confident_interval(xp,x,y;α=0.01)
     N,p = size(x)
     X = expand_matrix(x)
     XP = expand_matrix(xp)
-    typeof(xp) <:Number && (xp =Array(xp))
-    yerror = quantile(TDist(N-p-1),α/2) * sqrt.(XP * (X'X) \ XP')
+    typeof(xp) <:Number && (xp =[xp])
+    yerror = quantile(TDist(N-p-1),1-α/2) * sqrt.(diag(XP * ((X'X) \ XP')))
 end
 
 function prediction_interval(xp,x,y;α=0.01)
     N,p = size(x)
     X = expand_matrix(x)
     XP = expand_matrix(xp)
-    typeof(xp) <:Number && (xp =Array(xp))
-    yerror = quantile(TDist(N-p-1),α/2) * sqrt.( 1 .+ XP * (X'X) \ XP')
+    typeof(xp) <:Number && (xp =[xp])
+    yerror = quantile(TDist(N-p-1),1-α/2) * sqrt.( 1 .+ diag(XP * ((X'X) \ XP')))
 end
