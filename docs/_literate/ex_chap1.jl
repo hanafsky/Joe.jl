@@ -178,7 +178,8 @@ plot!(p25_2,x->pdf(TDist(98),x))
 p25 = plot(p25_1,p25_2)
 savefig(p25,joinpath(@OUTPUT,"fig1-6.svg")) # hide
 # \fig{fig1-6}
-# ##　1.6 決定係数と共線形性の検出
+
+# ## 1.6 決定係数と共線形性の検出
 # $R^2 = 1 - \dfrac{RSS}{TSS} = \dfrac{ESS}{TSS}$にしたがって、次の関数を定義しておきます。
 # ```julia
 # function TSS(y)
@@ -242,7 +243,7 @@ displaytable(Joe.VIF(x27);index=true,indexsep=" -> ",formatter=foo)
 # end
 # ```
 # ### 例28
-using Random
+using Plots, Random, Joe
 N = 100; Random.seed!(123)
 x28 = randn(N,1)
 y28 = x28 .+1 + randn(N)  |> vec # 真の切片と傾きはともに1 
@@ -255,3 +256,7 @@ yerror1 = Joe.confident_interval(x_seq,x28,y28)
 yerror2 = Joe.prediction_interval(x_seq,x28,y28)
 plot!(p28,x_seq,ŷ,ribbon=yerror2, label="予測区間")
 plot!(p28,x_seq,ŷ,ribbon=yerror1, label="信頼区間")
+
+savefig(p28,joinpath(@OUTPUT,"fig1-7.svg")) # hide
+# \fig{fig1-7}
+

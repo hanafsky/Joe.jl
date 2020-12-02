@@ -28,6 +28,13 @@ For instance:
 \newcommand{\scal}[1]{\langle #1 \rangle}
 \newcommand{\blurb}[1]{ ~~~ !#1 ~~~ } 
 \newcommand{\refblank}[2]{ ~~~ #1 ~~~ } 
+
 \newcommand{\lineskip}{@@blank@@} 
 \newcommand{\skipline}{\lineskip} 
-\newcommand{\note}[1]{@@note @@title :smile: Note@@ @@content #1 @@ @@}
+\newcommand{\note}[1]{@@note @@title 😲 Note@@ @@content #1 @@ @@}
+\newcommand{\success}[1]{@@success @@title 😄 Excellent! @@ @@content #1 @@ @@}
+\newcommand{\warning}[1]{@@warning @@title 😕 Warning! @@ @@content #1 @@ @@}
+\newcommand{\danger}[1]{@@danger @@title 😱 Danger! @@ @@content #1 @@ @@}
+\newcommand{\compat}[1]{@@compat @@title 😐 Compatible @@ @@content #1 @@ @@}
+\newcommand{\right}[1]{~~~ <p style="text-align:right"> #1 </p>~~~}
+\newcommand{\center}[1]{~~~ <div style="text-align:center"> #1 </p>~~~}
