@@ -13,7 +13,7 @@ x = randn(N)
 y = a .* x .+ b  + randn(N);</code></pre> <p>普通に単回帰する場合。</p> <pre><code class="julia hljs">a1, b1 = min_sq(x,y)</code></pre><pre><code class="plaintext hljs">(2.36898664420743, 0.34890217814737906)</code></pre>
 <p>データを中心化したあとに回帰分析すると切片が０になる（あたりまえ）。</p>
 <pre><code class="julia hljs">xx = x .- mean(x); yy = y .- mean(y)
-a2,b2 = min_sq(xx,yy)</code></pre><pre><code class="plaintext hljs">(2.36898664420743, 1.478230124037964e-16)</code></pre>
+a2,b2 = min_sq(xx,yy)</code></pre><pre><code class="plaintext hljs">(2.36898664420743, 2.8132563058077054e-17)</code></pre>
 <p>図1.2を可視化してみる。matplotlibに比べてコードが短いのがいいですね。 日本語扱うための設定は<a href="https://gist.github.com/genkuroki/6c2b71f62504432bdf8a27d24106cad8">GenKurokiさんのコード</a>を参考にしました。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Plots; gr()
 Plots.reset_defaults()
@@ -106,9 +106,9 @@ p₀ = <span class=hljs-number >2</span>*(ccdf(TDist(N-<span class=hljs-number >
 p₁ = <span class=hljs-number >2</span>*(ccdf(TDist(N-<span class=hljs-number >2</span>),abs(t₁)))
 <span class=hljs-meta >@show</span> β₀, β₁;
 <span class=hljs-meta >@show</span> t₀, t₁;
-<span class=hljs-meta >@show</span> p₀, p₁;</code></pre><pre><code class="plaintext hljs">(β₀, β₁) = (0.10898230758144681, -0.05761023247512565)
-(t₀, t₁) = (1.0893138251707204, -0.6469066946933423)
-(p₀, p₁) = (0.27868694362737306, 0.5192046691957628)
+<span class=hljs-meta >@show</span> p₀, p₁;</code></pre><pre><code class="plaintext hljs">(β₀, β₁) = (0.10898230758144681, -0.05761023247512567)
+(t₀, t₁) = (1.0893138251707204, -0.6469066946933425)
+(p₀, p₁) = (0.27868694362737306, 0.5192046691957626)
 </code></pre>
 <p>GLM.jlを使った場合でも同じ値が得られることが確認できます。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLM, DataFrames
@@ -160,13 +160,13 @@ R2(x,y) = ESS(x,y)/TSS(y)</code></pre>
 <pre><code class="julia hljs">N = <span class=hljs-number >100</span>; Random.seed!(<span class=hljs-number >123</span>)
 x26_2 = randn(N,<span class=hljs-number >2</span>); x26_1 = randn(N)
 y26 = randn(N)
-<span class=hljs-meta >@show</span> Joe.R2(x26_2,y26);</code></pre><pre><code class="plaintext hljs">Joe.R2(x26_2, y26) = 0.0021037427008462053
+<span class=hljs-meta >@show</span> Joe.R2(x26_2,y26);</code></pre><pre><code class="plaintext hljs">Joe.R2(x26_2, y26) = 0.0021037427008463584
 </code></pre>
 <p>また、1変量なら相関係数の二乗になることを確認します。</p>
 <pre><code class="julia hljs"><span class=hljs-meta >@show</span> Joe.R2(x26_1,y26);
-<span class=hljs-meta >@show</span> cor(x26_1,y26)^<span class=hljs-number >2</span> ; <span class=hljs-comment ># Statistics.jl</span></code></pre><pre><code class="plaintext hljs">Joe.R2(x26_1, y26) = 0.022465082479654636
-cor(x26_1, y26) ^ 2 = 0.022465082479654657
-0.022465082479654657</code></pre>
+<span class=hljs-meta >@show</span> cor(x26_1,y26)^<span class=hljs-number >2</span> ; <span class=hljs-comment ># Statistics.jl</span></code></pre><pre><code class="plaintext hljs">Joe.R2(x26_1, y26) = 0.02246508247965494
+cor(x26_1, y26) ^ 2 = 0.02246508247965464
+0.02246508247965464</code></pre>
 <h3 id="例27"><a href="#例27">例27</a></h3>
 <p>VIFの計算は既存のパッケージになさそうです。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >function</span> VIF(x)
@@ -224,7 +224,7 @@ plot!(p28,x_seq,ŷ,ribbon=yerror1, label=<span class=hljs-string >&quot;信頼�
 
 <div class=page-foot >
   <div class=copyright >
-    &copy; 花房　慶. Last modified: December 02, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+    &copy; 花房　慶. Last modified: December 08, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
   </div>
 </div>
 </div>

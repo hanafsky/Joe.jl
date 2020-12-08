@@ -123,21 +123,58 @@ end
 
 ## 2.3 線形判別と二次判別
 ### 例35
-データの生成
+まずは与えられた平均と分散共分散行列から二次元のデータを2種類生成
 
 ```julia:ex8
-let # hide
-using Distributions
+using Distributions, Random,Plots, LinearAlgebra, Parameters
 μ₁=[2,2];  Σ₁ = [2 0; 0 2]
 μ₂=[-3,-3]; Σ₂ = [1 -0.8; -0.8 1]
 
 N = 100;Random.seed!(123)
 data1 = rand(MvNormal(μ₁,Σ₁),100) |> transpose
 data2 = rand(MvNormal(μ₂,Σ₂),100) |> transpose
-scatter(data1[:,1],data1[:,2])
-scatter(data2[:,1],data2[:,2])
+p35 = scatter(data1[:,1],data1[:,2])
+scatter!(p35, data2[:,1],data2[:,2])
 
+savefig(p35,joinpath(@OUTPUT,"fig2-3.svg")) # hide
+```
 
-end # hide
+\fig{fig2-3}
+
+ここまでデータの生成。
+生成したデータから平均と分散共分散行列を計算する。
+
+```julia:ex9
+μ̂₁ = mean(data1,dims=1)'; Σ̂₁ = cov(data1,dims=1);
+μ̂₂ = mean(data2,dims=1)' ; Σ̂₂ = cov(data2,dims=1);
+```
+
+それぞれの分布の情報をまとめておく。
+
+```julia:ex10
+@with_kw struct mvnormal
+    μ::Array
+    Σ::Matrix
+    invΣ::Array = inv(Σ)
+    detΣ = det(Σ)
+end
+
+param1=mvnormal(μ= μ̂₁,Σ = Σ̂₁);param2=mvnormal(μ = μ̂₂,Σ = Σ̂₂)
+```
+
+\warning{mean関数で行列の列方向の平均をとる時、得られるデータは二次元の横ベクトルになっている。
+縦ベクトルとして扱いたいので、転置している。}
+
+```julia:ex11
+function logMvNormal(parameter::mvnormal,x...)
+    data = collect(x)
+    @unpack μ,invΣ,detΣ = parameter
+    a = 0.5*(data-μ)' * invΣ * (data-μ)
+    a[1] - log(detΣ)
+end
+
+x35=-5:0.1:5;
+y35=-5:0.1:5;
+contour(x35,y35, hanbetsu.([x35,y35']))
 ```
 
