@@ -6,6 +6,7 @@
 W(v::Vector) = @.(v/(1+ v)^2) |> diagm
 t = true
 for i in 1:10
+    global γ
     s=X*γ
     v = @. exp(-y*s)
     u = @. y*v/(1+v)

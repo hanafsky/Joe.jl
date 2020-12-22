@@ -98,6 +98,7 @@ savefig(p33,joinpath(@OUTPUT,"fig2-2.svg")) # hide
 W(v::Vector) = @.(v/(1+ v)^2) |> diagm
 t = true
 for i in 1:10
+    global γ
     s=X*γ
     v = @. exp(-y*s)
     u = @. y*v/(1+v)
@@ -114,6 +115,7 @@ using Zygote, LinearAlgebra
 l(γ,X=X,y=y) = sum(@. log( 1 /(1+exp(*($*(X,γ),-y))))) #対数尤度関数
 
 for i in 1:10
+    global γ,γ2
     δ =  Zygote.hessian(l,γ) \ l'(γ)
     @show norm(δ)^2
     γ2 -= δ
@@ -123,7 +125,7 @@ end
 
 ## 2.3 線形判別と二次判別
 ### 例35
-まずは与えられた平均と分散共分散行列から二次元のデータを2種類生成
+まずは与えられた平均と分散共分散行列から二次元正規分布のデータを2種類生成します。
 
 ```julia:ex8
 using Distributions, Random,Plots, LinearAlgebra, Parameters
@@ -149,32 +151,82 @@ savefig(p35,joinpath(@OUTPUT,"fig2-3.svg")) # hide
 μ̂₂ = mean(data2,dims=1)' ; Σ̂₂ = cov(data2,dims=1);
 ```
 
-それぞれの分布の情報をまとめておく。
-
-```julia:ex10
-@with_kw struct mvnormal
-    μ::Array
-    Σ::Matrix
-    invΣ::Array = inv(Σ)
-    detΣ = det(Σ)
-end
-
-param1=mvnormal(μ= μ̂₁,Σ = Σ̂₁);param2=mvnormal(μ = μ̂₂,Σ = Σ̂₂)
-```
-
-\warning{mean関数で行列の列方向の平均をとる時、得られるデータは二次元の横ベクトルになっている。
+\warning{mean関数で行列の列方向の平均をとる時、得られるデータは二次元の横ベクトルになっている。\
 縦ベクトルとして扱いたいので、転置している。}
-
-```julia:ex11
+それぞれの分布の情報を複合型にまとめておく。
+```julia
+@with_kw struct mvnormal
+    μ::Array # 平均
+    Σ::Matrix # 分散共分散行列
+    invΣ::Array = inv(Σ) # 分散共分散行列の逆行列
+    detΣ = det(Σ) # 分散共分散行列の行列式
+end
+```
+また、多変量正規分布の対数尤度を取得する関数を以下のように定義する。
+可変長引数を使うことで、データが3次元以上の場合にも拡張している。
+```julia
 function logMvNormal(parameter::mvnormal,x...)
     data = collect(x)
     @unpack μ,invΣ,detΣ = parameter
     a = 0.5*(data-μ)' * invΣ * (data-μ)
     a[1] - log(detΣ)
 end
+```
 
+```julia:ex10
+using Joe: mvnormal, logMvNormal
+param1=mvnormal(μ= μ̂₁,Σ = Σ̂₁);param2=mvnormal(μ = μ̂₂,Σ = Σ̂₂)
+```
+
+それぞれの正規分布の平均と分散共分散行列のを与えたときの
+対数尤度の差をとって、コンター図にする。(二次判別)
+
+```julia:ex11
+hanbetsu(x,y) = logMvNormal(param1,x,y) - logMvNormal(param2,x,y)
 x35=-5:0.1:5;
 y35=-5:0.1:5;
-contour(x35,y35, hanbetsu.([x35,y35']))
+scatter(data1[:,1],data1[:,2])
+scatter!( data2[:,1],data2[:,2])
+p35_2=contour!(x35,y35, hanbetsu.(x35,y35'), title="QDA")
+savefig(p35_2,joinpath(@OUTPUT,"fig2-4.svg")) # hide
 ```
+
+\fig{fig2-4}
+線形判別を行う場合は、分散共分散行列が等しいことを仮定する。
+data1とdata2を、それぞれ中心化後に統合したデータセットについて、
+新たな分散共分散行列を求めることにする。 後は
+
+```julia:ex12
+Σ_L =  vcat(data1 .- μ̂₁' , data2 .- μ̂₂') |> cov
+param1_L=mvnormal(μ= μ̂₁,Σ =Σ_L );param2_L=mvnormal(μ = μ̂₂,Σ = Σ_L)
+hanbetsu_L(x,y) = logMvNormal(param1_L,x,y) - logMvNormal(param2_L,x,y)
+p35_3=contour!(p35,x35,y35, hanbetsu_L.(x35,y35'), title="LDA")
+savefig(p35_3,joinpath(@OUTPUT,"fig2-5.svg")) # hide
+```
+
+\fig{fig2-5}
+### 例36 (Fisherのあやめ)
+まずRDatasetsからirisのデータセットを読み込む。
+
+```julia:ex13
+using RDatasets, StatsBase
+using Joe:mvnormal, logMvNormal
+iris = dataset("datasets","iris")
+x = iris[!,1:4]
+y = iris.Species
+n = length(y)
+index = sample(1:n,n,replace=false); #ランダムなインデックスを作り
+train=index[begin:Int(n/2)];# 学習用とテスト用にインデックスを分ける。
+text = index[Int(n/2)+1:end];
+X = x[train,:] |> Matrix
+Y = y[train];
+```
+
+params = mvnormal[]
+あやめの種類ごとに平均と分散共分散行列
+for species in unique(y)
+    xx = X[y==species,:]
+    push!(μ, mean(xx,dims=1))
+    push!(Σ, cov(xx,dims=1))
+end
 

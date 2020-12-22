@@ -1,11 +1,8 @@
 # This file was generated, do not modify it. # hide
-function logMvNormal(parameter::mvnormal,x...)
-    data = collect(x)
-    @unpack μ,invΣ,detΣ = parameter
-    a = 0.5*(data-μ)' * invΣ * (data-μ)
-    a[1] - log(detΣ)
-end
-
+hanbetsu(x,y) = logMvNormal(param1,x,y) - logMvNormal(param2,x,y)
 x35=-5:0.1:5;
 y35=-5:0.1:5;
-contour(x35,y35, hanbetsu.([x35,y35']))
+scatter(data1[:,1],data1[:,2])
+scatter!( data2[:,1],data2[:,2])
+p35_2=contour!(x35,y35, hanbetsu.(x35,y35'), title="QDA")
+savefig(p35_2,joinpath(@OUTPUT,"fig2-4.svg")) # hide
