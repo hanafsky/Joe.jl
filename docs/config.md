@@ -7,7 +7,7 @@ The website_* must be defined for the RSS to work
 @def website_descr = "Example website using Franklin"
 @def website_url   = "https://tlienart.github.io/FranklinTemplates.jl/"
 
-@def author = "花房　慶"
+@def author = "Kei Hanafusa"
 
 @def mintoclevel = 2
 @def hasplotly=false
