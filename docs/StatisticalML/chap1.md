@@ -2,6 +2,9 @@
 @def hascode = true 
 @def showall = true
 
+\toc
 \literate{/_literate/ex_chap1.jl}
+\right{おしまい}
+\backtotop
 
 
