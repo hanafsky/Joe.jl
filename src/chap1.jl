@@ -49,6 +49,9 @@ function MultipleRegression(x::Matrix{T}, y::Vector{T}) where {T<:Number}
     X = expand_matrix(x)
     return (X'X)\X'y
 end
+function MultipleRegression(x::Vector{T}, y::Vector{T}) where {T<:Number}
+    return MultipleRegression(x[:,:],y)
+end
 
 """
 線形回帰分析でのRSS値

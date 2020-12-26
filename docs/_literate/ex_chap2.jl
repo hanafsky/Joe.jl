@@ -191,6 +191,7 @@ scatter!(p35, data2[:,1],data2[:,2])
 
 savefig(p35,joinpath(@OUTPUT,"fig2-3.svg")) # hide
 # \fig{fig2-3}
+# \lineskip
 # ここまでデータの生成。
 # 生成したデータから平均と分散共分散行列を計算する。
 μ̂₁ = mean(data1,dims=1)'; Σ̂₁ = cov(data1,dims=1);
@@ -218,7 +219,7 @@ savefig(p35,joinpath(@OUTPUT,"fig2-3.svg")) # hide
 # function (qda::QDA)(x...,prior=1.0)
 #     data = collect(x)
 #     @unpack μ,invΣ,detΣ = qda
-#     a = 0.5*(data-μ)' * invΣ * (data-μ) 
+#     a = -0.5*(data-μ)' * invΣ * (data-μ) 
 #     a[1] - log(detΣ) - log(prior)
 # end
 # ```

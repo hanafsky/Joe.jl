@@ -3,3 +3,5 @@
 @def showall = true
 
 \literate{/_literate/ex_chap4.jl}
+\right{おしまい}
+\backtotop
