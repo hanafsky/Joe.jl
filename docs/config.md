@@ -39,3 +39,4 @@ For instance:
 \newcommand{\compat}[1]{@@compat @@title 😐 Compatible @@ @@content #1 @@ @@}
 \newcommand{\right}[1]{~~~ <p style="text-align:right"> #1 </p>~~~}
 \newcommand{\center}[1]{~~~ <div style="text-align:center"> #1 </p>~~~}
+\newcommand{\backtotop}{~~~ <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button> ~~~}
