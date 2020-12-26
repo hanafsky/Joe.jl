@@ -82,16 +82,16 @@ t = <span class=hljs-literal >true</span>
     <span class=hljs-meta >@show</span> γ
 <span class=hljs-keyword >end</span>
 plot!(x-&gt; -γ[<span class=hljs-number >1</span>]/γ[<span class=hljs-number >3</span>] - γ[<span class=hljs-number >2</span>]/γ[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ = [-0.9588319286678549, -2.142965143840243, 0.49000586969362697]
-γ = [-0.6868290426397674, -1.4905574506024164, 1.3181038933475095]
+γ = [-0.6868290426397672, -1.490557450602416, 1.3181038933475095]
 γ = [-0.8389578286870751, -1.813314273328805, 1.4260329338938003]
 γ = [-0.864933524808484, -1.871868634791574, 1.4560345475721006]
-γ = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
-γ = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
+γ = [-0.8656536058114845, -1.8735243209383907, 1.4570217428831782]
+γ = [-0.8656541720759062, -1.8735256324938316, 1.4570225945617943]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
+γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623723]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
-γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
+γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623725]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
-γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
 Plot{Plots.GRBackend() n=4}</code></pre>
 <p>今度は横着をして、ヘシアンを使って計算してみます。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Zygote, LinearAlgebra
@@ -104,10 +104,10 @@ l(γ,X=X,y=y) = sum(@. log( <span class=hljs-number >1</span> /(<span class=hljs
     <span class=hljs-meta >@show</span> γ<span class=hljs-number >2</span>
 <span class=hljs-keyword >end</span>
 
-plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>] - γ<span class=hljs-number >2</span>[<span class=hljs-number >2</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ2&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ2 = [-0.6868290426397674, -1.4905574506024166, 1.3181038933475095]
-γ2 = [-0.8389578286870754, -1.8133142733288061, 1.4260329338938007]
-γ2 = [-0.864933524808484, -1.8718686347915743, 1.4560345475721008]
-γ2 = [-0.8656536058114844, -1.8735243209383907, 1.457021742883178]
+plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>] - γ<span class=hljs-number >2</span>[<span class=hljs-number >2</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ2&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ2 = [-0.6868290426397674, -1.4905574506024166, 1.3181038933475093]
+γ2 = [-0.8389578286870754, -1.8133142733288063, 1.4260329338938007]
+γ2 = [-0.864933524808484, -1.871868634791574, 1.4560345475721008]
+γ2 = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
 γ2 = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
 γ2 = [-0.8656541720762696, -1.8735256324946747, 1.4570225945623723]
 γ2 = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
@@ -157,10 +157,10 @@ test = index[<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2<
     z = @. s + u/w
     γ = (X_train&#x27;*W*X_train)\(X_train&#x27;*W*z)
     <span class=hljs-meta >@show</span> γ;
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">γ = [-0.25068749058454703, 1.2955594588774142]
-γ = [-0.2018146034801543, 1.7007995013607489]
-γ = [-0.2049537016121021, 1.8380963810033202]
-γ = [-0.20628662758607502, 1.8500602521823715]
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">γ = [-0.250687490584547, 1.2955594588774142]
+γ = [-0.20181460348015434, 1.7007995013607493]
+γ = [-0.20495370161210233, 1.8380963810033206]
+γ = [-0.20628662758607505, 1.8500602521823717]
 </code></pre>
 <p>次にこのγを使って、テストデータを予測してみます。 正誤をカウントする関数を次のように定義します。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >function</span> table_count(test,pred)
@@ -191,7 +191,7 @@ data1 = rand(MvNormal(μ₁,Σ₁),<span class=hljs-number >100</span>) |&gt; tr
 data2 = rand(MvNormal(μ₂,Σ₂),<span class=hljs-number >100</span>) |&gt; transpose
 p35 = scatter(data1[:,<span class=hljs-number >1</span>],data1[:,<span class=hljs-number >2</span>])
 scatter!(p35, data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>])</code></pre>
-<p><img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-3.svg" alt=""> ここまでデータの生成。 生成したデータから平均と分散共分散行列を計算する。</p>
+<p><img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-3.svg" alt=""> <div class=blank ></div> ここまでデータの生成。 生成したデータから平均と分散共分散行列を計算する。</p>
 <pre><code class="julia hljs">μ̂₁ = mean(data1,dims=<span class=hljs-number >1</span>)&#x27;; Σ̂₁ = cov(data1,dims=<span class=hljs-number >1</span>);
 μ̂₂ = mean(data2,dims=<span class=hljs-number >1</span>)&#x27; ; Σ̂₂ = cov(data2,dims=<span class=hljs-number >1</span>);</code></pre>
 <p><div class=warning ><div class=title >😕 Warning&#33;</div>
@@ -208,7 +208,7 @@ scatter!(p35, data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hlj
 <pre><code class="julia hljs"><span class=hljs-keyword >function</span> (qda::QDA)(x...,prior=<span class=hljs-number >1.0</span>)
     data = collect(x)
     <span class=hljs-meta >@unpack</span> μ,invΣ,detΣ = qda
-    a = <span class=hljs-number >0.5</span>*(data-μ)&#x27; * invΣ * (data-μ)
+    a = -<span class=hljs-number >0.5</span>*(data-μ)&#x27; * invΣ * (data-μ)
     a[<span class=hljs-number >1</span>] - log(detΣ) - log(prior)
 <span class=hljs-keyword >end</span></code></pre>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe: QDA
@@ -232,14 +232,13 @@ p35_3=contour!(p35,x35,y35, hanbetsu_L.(x35,y35&#x27;), title=<span class=hljs-s
 <span class=hljs-keyword >using</span> Joe:QDA
 iris = dataset(<span class=hljs-string >&quot;datasets&quot;</span>,<span class=hljs-string >&quot;iris&quot;</span>)
 x = iris[!,<span class=hljs-number >1</span>:<span class=hljs-number >4</span>] |&gt; <span class=hljs-built_in >Matrix</span>
-targets=unique(iris.Species)</code></pre><pre><code class="plaintext hljs">ArgumentError: Package StatsBase not found in current path:
-- Run `import Pkg; Pkg.add(&quot;StatsBase&quot;)` to install the StatsBase package.
-
-</code></pre>
+targets=unique(iris.Species)</code></pre><pre><code class="plaintext hljs">3-element Array{String,1}:
+ &quot;setosa&quot;
+ &quot;versicolor&quot;
+ &quot;virginica&quot;</code></pre>
 <p>あやめの種類をIntに変換します。</p>
 <pre><code class="julia hljs">label = <span class=hljs-built_in >Dict</span>(target=&gt;i <span class=hljs-keyword >for</span> (i,target) <span class=hljs-keyword >in</span> enumerate(targets))
-y = [label[i] <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> iris.Species];</code></pre><pre><code class="plaintext hljs">UndefVarError: targets not defined
-</code></pre>
+y = [label[i] <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> iris.Species];</code></pre>
 <p>訓練データとテストデータを分けます。</p>
 <pre><code class="julia hljs">Random.seed!(<span class=hljs-number >123</span>)
 n = length(y)
@@ -247,15 +246,13 @@ index = sample(<span class=hljs-number >1</span>:n,n,replace=<span class=hljs-li
 train = index[<span class=hljs-keyword >begin</span>:<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2</span>)];<span class=hljs-comment ># 学習用とテスト用にインデックスを分ける。</span>
 test = index[<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2</span>)+<span class=hljs-number >1</span>:<span class=hljs-keyword >end</span>];
 X_train= x[train,:]; X_test = x[test,:];
-y_train = y[train]; y_test = y[test];</code></pre><pre><code class="plaintext hljs">UndefVarError: x not defined
-</code></pre>
+y_train = y[train]; y_test = y[test];</code></pre>
 <p>それぞれのあやめの訓練データの平均と分散共分散行列を求めて保存する。</p>
 <pre><code class="julia hljs">Params = QDA[]
 <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>
     μ,Σ =  mean_and_cov(X_train[y_train .==i,:])
     push!(Params, QDA(μ=μ&#x27;, Σ=Σ)) <span class=hljs-comment >#μは行ベクトルであることに注意</span>
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">UndefVarError: mean_and_cov not defined
-</code></pre>
+<span class=hljs-keyword >end</span></code></pre>
 <p>テストデータで検証する。対数尤度を最大化するラベルを選択します。</p>
 <pre><code class="julia hljs">y_pred = similar(y_test)
 <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:length(y_test)
@@ -263,8 +260,10 @@ y_train = y[train]; y_test = y[test];</code></pre><pre><code class="plaintext hl
 <span class=hljs-keyword >end</span>
 
 <span class=hljs-keyword >using</span> Joe:table_count
-table_count(y_test,y_pred)</code></pre><pre><code class="plaintext hljs">ArgumentError: collection must be non-empty
-</code></pre>
+table_count(y_test,y_pred)</code></pre><pre><code class="plaintext hljs">3×3 Array{Int64,2}:
+ 29   0   0
+  0  23   2
+  0   2  19</code></pre>
 <h3 id="問29_事前確率が分かっている場合"><a href="#問29_事前確率が分かっている場合">問29 事前確率が分かっている場合</a></h3>
 <p>あやめの事前確率が&#91;0.5,0.25,0.25&#93;だったときは、対数をとって足せば良いでしょう。 キーワード付き引数で事前確率を指定できるようにしたので、 少し書き換えるだけで対応可能です。今回の場合、予測結果に対して影響は少ないようです。</p>
 <pre><code class="julia hljs">priors = [<span class=hljs-number >0.5</span>,<span class=hljs-number >0.25</span>,<span class=hljs-number >0.25</span>]
@@ -272,8 +271,10 @@ y_pred2 = similar(y_test)
 <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:length(y_test)
     y_pred2[i] = argmax([Params[j](X_test[i,:]...;prior=priors[j]) <span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>])
 <span class=hljs-keyword >end</span>
-table_count(y_test,y_pred2)</code></pre><pre><code class="plaintext hljs">BoundsError: attempt to access 0-element Array{Joe.QDA,1} at index [1]
-</code></pre>
+table_count(y_test,y_pred2)</code></pre><pre><code class="plaintext hljs">3×3 Array{Int64,2}:
+ 29   0   0
+  0  23   2
+  0   2  19</code></pre>
 <h2 id="k近傍法"><a href="#k近傍法">K近傍法</a></h2>
 <p>まず、K近傍法による関数を定義します。原著の記法をほぼ踏襲しています。 タイブレーキングが少し重複した書き方になっているのが残念。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> LinearAlgebra, StatsBase
@@ -306,13 +307,10 @@ table_count(y_test,y_pred2)</code></pre><pre><code class="plaintext hljs">Bounds
 <p>例36と同じデータを使ってK近傍法でやってみます。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe:knn,table_count
 y_pred_knn = knn(X_train,y_train,X_test,<span class=hljs-number >3</span>)
-table_count(y_test,y_pred_knn)</code></pre><pre><code class="plaintext hljs">MethodError: no method matching counts(::Array{Float64,1}, ::UnitRange{Int64})
-Closest candidates are:
-  counts(!Matched::AbstractArray{T,N} where N where T&lt;:Integer, ::UnitRange{T} where T&lt;:Integer) at /home/runner/.julia/packages/StatsBase/EA8Mh/src/counts.jl:79
-  counts(!Matched::AbstractArray{T,N} where N where T&lt;:Integer, ::UnitRange{T} where T&lt;:Integer, !Matched::StatsBase.AbstractWeights) at /home/runner/.julia/packages/StatsBase/EA8Mh/src/counts.jl:81
-  counts(!Matched::AbstractArray{T,N} where N where T&lt;:Integer, ::AbstractArray{T,N} where N where T&lt;:Integer) at /home/runner/.julia/packages/StatsBase/EA8Mh/src/counts.jl:195
-  ...
-</code></pre>
+table_count(y_test,y_pred_knn)</code></pre><pre><code class="plaintext hljs">3×3 Array{Int64,2}:
+ 29   0   0
+  0  22   3
+  0   1  20</code></pre>
 <p>この乱数の種の場合だと、二次判別とそれほど精度は変わりません。</p>
 <h2 id="roc曲線"><a href="#roc曲線">ROC曲線</a></h2>
 <h3 id="例38"><a href="#例38">例38</a></h3>

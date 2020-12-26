@@ -1,6 +1,0 @@
-MethodError: no method matching counts(::Array{Float64,1}, ::UnitRange{Int64})
-Closest candidates are:
-  counts(!Matched::AbstractArray{T,N} where N where T<:Integer, ::UnitRange{T} where T<:Integer) at /home/runner/.julia/packages/StatsBase/EA8Mh/src/counts.jl:79
-  counts(!Matched::AbstractArray{T,N} where N where T<:Integer, ::UnitRange{T} where T<:Integer, !Matched::StatsBase.AbstractWeights) at /home/runner/.julia/packages/StatsBase/EA8Mh/src/counts.jl:81
-  counts(!Matched::AbstractArray{T,N} where N where T<:Integer, ::AbstractArray{T,N} where N where T<:Integer) at /home/runner/.julia/packages/StatsBase/EA8Mh/src/counts.jl:195
-  ...
