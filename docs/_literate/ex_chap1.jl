@@ -59,7 +59,7 @@ savefig(p12,joinpath(@OUTPUT,"fig1-2.svg")) # hide
 # わざわざnumpyをimportしてnp.insert(x,0,1,axis=1)を呼び出すのが嫌なので、
 # 以下のような関数を定義しました。(この行列、何かいい名前があるといいのですが。)
 # ```julia
-# function expand_matrix(X)
+# function insert_ones(X)
 #     N = typeof(X) <: Matrix  ?  size(X)[1] :  length(X)
 #     T = eltype(X)
 #     return hcat(ones(T,N),X)
@@ -67,10 +67,10 @@ savefig(p12,joinpath(@OUTPUT,"fig1-2.svg")) # hide
 # ```
 # また、重回帰係数を最小二乗法で求める関数を次のように定義しました。
 # ```julia
-# function MultipleRegression(x::Matrix{T}, y::Vector{T}) where {T<:Number}
+# function multiple_regression(x::Matrix{T}, y::Vector{T}) where {T<:Number}
 #     N,_ = size(x)
 #     @assert N==length(y)
-#     X = expand_matrix(x)
+#     X = insert_ones(x)
 #     return (X'X)\X'y
 # end
 # ```
@@ -117,7 +117,7 @@ savefig(p14,joinpath(@OUTPUT,"fig1-4.svg")) # hide
 #     return (y-ŷ)'*(y-ŷ)
 # end
 # function RSS(x,y)
-#     ŷ = expand_matrix(x)*MultipleRegression(x,y)
+#     ŷ = insert_ones(x)*multiple_regression(x,y)
 #     return (y-ŷ)'*(y-ŷ)
 # end
 # 
@@ -132,7 +132,7 @@ savefig(p14,joinpath(@OUTPUT,"fig1-4.svg")) # hide
 # end
 # 
 # function Bdiag(x)
-#     X = expand_matrix(x)
+#     X = insert_ones(x)
 #     return X'X |> inv |> diag
 # end
 # ```
@@ -229,16 +229,16 @@ displaytable(Joe.VIF(x27);index=true,indexsep=" -> ",formatter=foo)
 # ```julia
 # function confident_interval(xp,x,y;α=0.01)
 #     N,p = size(x)
-#     X = expand_matrix(x)
-#     XP = expand_matrix(xp)
+#     X = insert_ones(x)
+#     XP = insert_ones(xp)
 #     typeof(xp) <:Number && (xp =[xp])
 #     yerror = quantile(TDist(N-p-1),1-α/2) * sqrt.(diag(XP * ((X'X) \ XP')))
 # end
 # 
 # function prediction_interval(xp,x,y;α=0.01)
 #     N,p = size(x)
-#     X = expand_matrix(x)
-#     XP = expand_matrix(xp)
+#     X = insert_ones(x)
+#     XP = insert_ones(xp)
 #     typeof(xp) <:Number && (xp =[xp])
 #     yerror = quantile(TDist(N-p-1),1-α/2) * sqrt.( 1 .+ diag(XP * ((X'X) \ XP')))
 # end
@@ -250,9 +250,9 @@ x28 = randn(N,1)
 y28 = x28 .+1 + randn(N)  |> vec # 真の切片と傾きはともに1 
 p28 = scatter(x28,y28,xlabel="x",ylabel="y",label="data     ",legend=:topleft)
 
-β28 = MultipleRegression(x28,y28)
+β28 = multiple_regression(x28,y28)
 x_seq = -10:0.1:10
-ŷ = expand_matrix(x_seq) * β28
+ŷ = insert_ones(x_seq) * β28
 yerror1 = Joe.confident_interval(x_seq,x28,y28)
 yerror2 = Joe.prediction_interval(x_seq,x28,y28)
 plot!(p28,x_seq,ŷ,ribbon=yerror2, label="予測区間")

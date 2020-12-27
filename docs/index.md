@@ -32,7 +32,7 @@ n = 100; p =2
 β = Float64[1,2,3]
 x = randn(n,2)
 y = @. β[1] + β[2] * x[:,1] + β[3]*x[:,2] + $randn(n)
-MultipleRegression(x,y)
+multiple_regression(x,y)
 
 3-element Array{Float64,1}:
  0.8957078029816884
