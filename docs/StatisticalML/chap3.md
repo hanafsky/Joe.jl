@@ -1,4 +1,3 @@
-
 @def title = "リサンプリング"
 @def hascode = true 
 @def showall = true

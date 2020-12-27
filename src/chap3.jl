@@ -1,12 +1,14 @@
-function cv_linear(X,y::Vector,k::Int)
-    n = length(y);m = round(n/K)
-    return S
+using LinearAlgebra
+
+function cv_linear(X,y::Vector,K::Int)
+    n = length(y); m = round(Int,n/K)
+    S = 0
     for j in 1:K
         test = j*m-m+1:j*m
         train = setdiff(1:n,test)
-        β = MultipleRegression(X[train,:],y[train])
-        err = y[test] - X[test,:]
+        β̂ = MultipleRegression(X[train,:],y[train])
+        ŷ = expand_matrix(X[test,:])*β̂
+        S += (y[test]-ŷ)'*(y[test]-ŷ)
     end
     return S/n
-
 end

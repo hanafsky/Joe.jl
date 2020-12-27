@@ -44,7 +44,7 @@ MultipleRegression(x,y)
 
 1. [第一章 線形回帰](/StatisticalML/chap1/)
 2. [第二章 分類](/StatisticalML/chap2/)
-3. [第三章 クロスバリデーション](/StatisticalML/chap3/)
+3. [第三章 リサンプリング](/StatisticalML/chap3/)
 4. [第四章 情報量基準](/StatisticalML/chap4/)
 5. [第五章 正則化]()
 6. [第六章 非線形回帰]()
