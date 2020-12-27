@@ -1,106 +1,21 @@
-<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">リサンプリング</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#例39">例39</a></ol></div> <p>##クロスバリデーション</p> <h3 id="例39"><a href="#例39">例39</a></h3> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Random, Plots
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">リサンプリング</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#クロスバリデーション">クロスバリデーション</a><ol><li><a href="#例39">例39</a></ol></ol></div> <h2 id="クロスバリデーション"><a href="#クロスバリデーション">クロスバリデーション</a></h2> <h3 id="例39"><a href="#例39">例39</a></h3> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Random, Plots
+<span class=hljs-keyword >using</span> Joe: cv_linear
 n = <span class=hljs-number >100</span>; p = <span class=hljs-number >5</span>
-Random.seed!(<span class=hljs-number >123</span>)
+Random.seed!(<span class=hljs-number >1</span>)
 X = randn(n, p)
 β = randn(p+<span class=hljs-number >1</span>); β[<span class=hljs-number >2</span>:<span class=hljs-number >3</span>] .= <span class=hljs-number >0</span>
-y = expand_matrix(X)*β + randn(n)</code></pre><pre><code class="plaintext hljs">100-element Array{Float64,1}:
- -1.4984462642881053
- -1.9711180702220112
- -0.5660730900407859
- -2.902070436385808
- -1.4679939798282535
- -3.5568572664323757
- -3.9768013174435315
- -3.616513728491841
- -2.147116956000227
- -5.209354291858284
- -2.899742324334777
- -4.840131053358012
- -1.0985764793168742
-  0.3788876286036862
- -4.287726524884584
- -5.245208974752901
- -4.227057411442959
- -4.183083842282353
- -1.078055324117895
- -0.31159783730642604
- -2.2496837492705115
- -2.6921364491572297
- -4.444595183574282
- -0.683760924960884
- -1.4417343660054283
- -3.811717487875404
- -1.9669882315364862
- -1.9941566390306074
- -1.1676808201180207
-  0.0282164231607874
- -3.3508090875779555
- -4.052423207260563
- -1.8893519358607251
- -1.812113677763757
- -1.2702937887030714
- -1.1994324216860641
- -5.317646166960095
- -1.5624819646973294
- -2.1562290687647554
- -3.3602052521860726
- -5.546094342665644
- -3.087602953196202
- -2.958915354062166
- -2.3807010531082407
- -3.9175273421868813
- -0.13729535547153127
- -2.8900487735941036
- -1.9327041058954983
- -2.2866646902259107
- -3.00275154485821
- -4.179433590484061
- -2.865649544828683
- -4.9023873193976355
- -4.600896500553816
- -1.490855072540776
- -2.8761841403419677
- -1.3136729512559748
- -2.4633780635236215
-  0.4029272877426473
- -1.2447535024950644
- -5.407451688683617
- -2.698801043341046
- -0.46452783605594217
- -4.771020536924922
- -0.75698839494009
- -1.141912946094589
- -2.910065443969938
- -3.066835114371171
- -4.364450316312039
- -3.215483320184674
- -4.066885483771738
- -3.9431838740262704
- -1.7382315818931897
- -0.12375368454763337
- -1.6565561731141554
- -3.493558112455037
- -5.9900014815119995
-  0.12184910347267053
- -2.8100898506101513
- -2.220752533374319
- -0.6001837129471457
- -2.9435650615203732
- -3.9365161396855988
- -0.7097561225163115
- -3.857992086795414
- -4.914401194934441
- -0.6930503793835054
- -1.6175091287347214
- -3.339086131528502
- -1.5256905751888121
- -2.2367881812187616
- -1.9680021241830394
-  0.10582868252529787
- -4.793676016882934
- -4.933487947158563
- -4.501556872338371
- -3.1579607170250954
- -3.7621748904547427
- -5.042988972797168
- -4.545160742525301</code></pre> <p style="text-align:right"> おしまい </p> <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p> <div class=page-foot > <div class=copyright > &copy; Kei Hanafusa. Last modified: December 26, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </main> <script src="/Joe.jl/libs/vela/metisMenu.min.js"></script> <script src="/Joe.jl/libs/vela/slideout.min.js"></script> <script src="/Joe.jl/libs/myBtn/myBtn.js"></script>
+y = expand_matrix(X)*β + randn(n)
+<span class=hljs-meta >@show</span> cv_linear(X[:,[<span class=hljs-number >3</span>,<span class=hljs-number >4</span>,<span class=hljs-number >5</span>]],y,<span class=hljs-number >10</span>);
+<span class=hljs-meta >@show</span> cv_linear(X,y,<span class=hljs-number >10</span>);</code></pre><pre><code class="plaintext hljs">cv_linear(X[:, [3, 4, 5]], y, 10) = 0.7113670647592754
+cv_linear(X, y, 10) = 0.6995149878356592
+</code></pre> <p>あれ？変数選択した方が誤差でかいぞ？回数を増やしてグラフにしてみよ。</p> <pre><code class="julia hljs">U=<span class=hljs-built_in >Float64</span>[]; V = <span class=hljs-built_in >Float64</span>[]
+<span class=hljs-keyword >for</span> _ <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >100</span>
+    <span class=hljs-keyword >global</span> U, V, X, β, n
+    <span class=hljs-keyword >local</span> y
+    y = expand_matrix(X)*β + randn(n)
+    push!(U,cv_linear(X[:,[<span class=hljs-number >3</span>,<span class=hljs-number >4</span>,<span class=hljs-number >5</span>]],y,<span class=hljs-number >10</span>))
+    push!(V,cv_linear(X,y,<span class=hljs-number >10</span>))
+<span class=hljs-keyword >end</span>
+
+p39 = scatter(U,V,xlabel=<span class=hljs-string >&quot;with variable 3,4,5&quot;</span>,ylabel=<span class=hljs-string >&quot;all variable&quot;</span>,title=<span class=hljs-string >&quot;overlearning&quot;</span>)
+plot!(p39, x-&gt;x,xlims=(<span class=hljs-number >0.7</span>,<span class=hljs-number >1.5</span>),legend=<span class=hljs-literal >false</span>)</code></pre> <p><img src="/Joe.jl/assets/StatisticalML/chap3/code/output/fig3-1.svg" alt=""> <div class=blank ></div> <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">y=x</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">x</span></span></span></span> の直線の上側に大多数の点がプロットされているので、 変数選択をした方が誤差が少ないことが分かりました。</p> <p style="text-align:right"> おしまい </p> <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p> <div class=page-foot > <div class=copyright > &copy; Kei Hanafusa. Last modified: December 27, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </main> <script src="/Joe.jl/libs/vela/metisMenu.min.js"></script> <script src="/Joe.jl/libs/vela/slideout.min.js"></script> <script src="/Joe.jl/libs/myBtn/myBtn.js"></script>
