@@ -6,8 +6,8 @@ function cv_linear(X,y::Vector,K::Int)
     for j in 1:K
         test = j*m-m+1:j*m
         train = setdiff(1:n,test)
-        β̂ = MultipleRegression(X[train,:],y[train])
-        ŷ = expand_matrix(X[test,:])*β̂
+        β̂ = multiple_regression(X[train,:],y[train])
+        ŷ = insert_ones(X[test,:])*β̂
         S += (y[test]-ŷ)'*(y[test]-ŷ)
     end
     return S/n

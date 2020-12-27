@@ -21,8 +21,12 @@ function min_sq(x::Vector{T},y::Vector{T}) where {T<:Number}
     return  β₁,β₀
 end
 
-
 function expand_matrix(X)
+    N = typeof(X) <: Matrix  ?  size(X)[1] :  length(X)
+    T = eltype(X)
+    return hcat(ones(T,N),X)
+end
+function insert_ones(X)
     N = typeof(X) <: Matrix  ?  size(X)[1] :  length(X)
     T = eltype(X)
     return hcat(ones(T,N),X)
@@ -43,14 +47,14 @@ MultipleRegression(x,y)
  3.1212560196461494
 ```
 """
-function MultipleRegression(x::Matrix{T}, y::Vector{T}) where {T<:Number}
+function multiple_regression(x::Matrix{T}, y::Vector{T}) where {T<:Number}
     N,_ = size(x)
     @assert N==length(y)
-    X = expand_matrix(x)
+    X = insert_ones(x)
     return (X'X)\X'y
 end
-function MultipleRegression(x::Vector{T}, y::Vector{T}) where {T<:Number}
-    return MultipleRegression(x[:,:],y)
+function multiple_regression(x::Vector{T}, y::Vector{T}) where {T<:Number}
+    return multiple_regression(x[:,:],y)
 end
 
 """
@@ -62,7 +66,7 @@ function RSS(x::Vector,y)
     return (y-ŷ)'*(y-ŷ)
 end
 function RSS(x::Matrix,y)
-    ŷ = expand_matrix(x)*MultipleRegression(x,y)
+    ŷ = insert_ones(x)*multiple_regression(x,y)
     return (y-ŷ)'*(y-ŷ)
 end
 
@@ -85,7 +89,7 @@ function RSE(x::Vector,y)
 end
 
 function Bdiag(x)
-    X = expand_matrix(x)
+    X = insert_ones(x)
     return X'X |> inv |> diag
 end
 
@@ -113,16 +117,16 @@ y:目的変数の学習データ
 """
 function confident_interval(xp,x,y;α=0.01)
     N,p = size(x)
-    X = expand_matrix(x)
-    XP = expand_matrix(xp)
+    X = insert_ones(x)
+    XP = insert_ones(xp)
     typeof(xp) <:Number && (xp =[xp])
     yerror = quantile(TDist(N-p-1),1-α/2) * sqrt.(diag(XP * ((X'X) \ XP')))
 end
 
 function prediction_interval(xp,x,y;α=0.01)
     N,p = size(x)
-    X = expand_matrix(x)
-    XP = expand_matrix(xp)
+    X = insert_ones(x)
+    XP = insert_ones(xp)
     typeof(xp) <:Number && (xp =[xp])
     yerror = quantile(TDist(N-p-1),1-α/2) * sqrt.( 1 .+ diag(XP * ((X'X) \ XP')))
 end
