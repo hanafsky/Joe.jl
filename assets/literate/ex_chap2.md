@@ -17,7 +17,7 @@ default( # hide
 ) # hide
 p29 = plot(xlims=(-10,10), xlabel="x",ylabel="P(Y=1|x)",
             legend=:topleft, title="ロジスティック曲線")
-x29 = expand_matrix(-10:0.1:10)
+x29 = insert_ones(-10:0.1:10)
 for i in [0, 0.2, 0.5, 1, 2, 10]
     plot!(p29, x29[:,2], Joe.sigmoid(x29,[0,i]),label="$i")
 end
@@ -69,7 +69,7 @@ $\nabla l(\beta_0, \beta) = 0$を求める問題を解いてみる。
 using Joe, Random, LinearAlgebra
 using Plots
 N=1000; p=2; Random.seed!(1)
-X = expand_matrix(randn(N,p))
+X = insert_ones(randn(N,p))
 β = randn(p+1)
 prob = @. 1/(1 + exp($*(X,β)))
 threshold=0.5
@@ -136,7 +136,7 @@ savefig(p33,joinpath(@OUTPUT,"fig2-2-2.svg")) # hide
 using Joe, Random, Distributions, Plots, LinearAlgebra
 Random.seed!(123)
 n=100
-x34 = vcat(randn(n).+1,randn(n).-1) |> expand_matrix
+x34 = vcat(randn(n).+1,randn(n).-1) |> insert_ones
 y34 = vcat(ones(n),-ones(n));
 ```
 
@@ -184,12 +184,13 @@ train = sample(1:2n,n,replace=false); test = setdiff(1:2n,train)
 γ = randn(2)
 while sum(β-γ)^2 > 0.001
     global β, γ
+    local W
     β = γ
     s = X_train*β
     v = @. exp(-s*y_train)
     u = @. y_train*v/(1+v)
     w = @. v/(1+v)^2
-    local W = diagm(w)
+    W = diagm(w)
     z = @. s + u/w
     γ = (X_train'*W*X_train)\(X_train'*W*z)
     @show γ;
@@ -428,14 +429,14 @@ negative = rand(Normal(μₙ,σₙ),Nₙ)
 U = Vector{Float64}(undef,length(θ))
 V = Vector{Float64}(undef,length(θ))
 for i in 1:length(θ)
-    global U,V
+    global U,V # hide
     U[i] = sum(@. pdf(Normal(μₚ,σₚ),negative) / pdf(Normal(μₙ,σₙ),negative) > θ[i]) / Nₙ
     V[i] = sum(@. pdf(Normal(μₚ,σₚ),positive) / pdf(Normal(μₙ,σₙ),positive) > θ[i]) / Nₚ
 end
 
 AUC = 0
 for i in 1:length(θ)-1
-    global AUC
+    global AUC # hide
     AUC += abs(U[i+1]-U[i])*V[i]
 end
 p38 = plot(U,V,xlabel="False Positive",ylabel="False Negative",

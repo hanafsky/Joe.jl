@@ -1,0 +1,4 @@
+Joe.bt{Float64}
+  original: Float64 0.15166414929676278
+  bias: Float64 -0.0032877554675548593
+  stderr: Float64 0.1834211386694929

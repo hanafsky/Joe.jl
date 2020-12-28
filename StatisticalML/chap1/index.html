@@ -30,16 +30,16 @@ plot!(c-&gt;a2*c+b2 , label=<span class=hljs-string >&quot;after centering&quot;
 <h2 id="12_重回帰"><a href="#12_重回帰">1.2 重回帰</a></h2>
 <h3 id="例20"><a href="#例20">例20</a></h3>
 <p><span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent=true ><mi>β</mi><mo>^</mo></mover><mo>=</mo><mo stretchy=false >(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><msup><mo stretchy=false >)</mo><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>X</mi><mi>T</mi></msup><mi>y</mi></mrow><annotation encoding="application/x-tex">\hat{\beta} = (X^T X)^{-1} X^Ty</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.1523199999999998em;vertical-align:-0.19444em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.9578799999999998em;"><span style="top:-3em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span><span style="top:-3.26344em;"><span class=pstrut  style="height:3em;"></span><span class=accent-body  style="left:-0.16666em;"><span class=mord >^</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.19444em;"><span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:1.0913309999999998em;vertical-align:-0.25em;"></span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=mclose ><span class=mclose >)</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> を解くだけなので、もはや関数化する程でもないが、 後々のことを考えて、関数化します。 また、係数行列に定数項のために全ての要素が1の列を1列目に挿入しますが、 わざわざnumpyをimportしてnp.insert&#40;x,0,1,axis&#61;1&#41;を呼び出すのが嫌なので、 以下のような関数を定義しました。&#40;この行列、何かいい名前があるといいのですが。&#41;</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> expand_matrix(X)
+<pre><code class="julia hljs"><span class=hljs-keyword >function</span> insert_ones(X)
     N = typeof(X) &lt;: <span class=hljs-built_in >Matrix</span>  ?  size(X)[<span class=hljs-number >1</span>] :  length(X)
     T = eltype(X)
     <span class=hljs-keyword >return</span> hcat(ones(T,N),X)
 <span class=hljs-keyword >end</span></code></pre>
 <p>また、重回帰係数を最小二乗法で求める関数を次のように定義しました。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> MultipleRegression(x::<span class=hljs-built_in >Matrix</span>{T}, y::<span class=hljs-built_in >Vector</span>{T}) <span class=hljs-keyword >where</span> {T&lt;:<span class=hljs-built_in >Number</span>}
+<pre><code class="julia hljs"><span class=hljs-keyword >function</span> multiple_regression(x::<span class=hljs-built_in >Matrix</span>{T}, y::<span class=hljs-built_in >Vector</span>{T}) <span class=hljs-keyword >where</span> {T&lt;:<span class=hljs-built_in >Number</span>}
     N,_ = size(x)
     <span class=hljs-meta >@assert</span> N==length(y)
-    X = expand_matrix(x)
+    X = insert_ones(x)
     <span class=hljs-keyword >return</span> (X&#x27;X)\X&#x27;y
 <span class=hljs-keyword >end</span></code></pre>
 <h2 id="14_rssの分布"><a href="#14_rssの分布">1.4 RSSの分布</a></h2>
@@ -76,7 +76,7 @@ p14 = scatter(data23[:,<span class=hljs-number >2</span>],data23[:,<span class=h
     <span class=hljs-keyword >return</span> (y-ŷ)&#x27;*(y-ŷ)
 <span class=hljs-keyword >end</span>
 <span class=hljs-keyword >function</span> RSS(x,y)
-    ŷ = expand_matrix(x)*MultipleRegression(x,y)
+    ŷ = insert_ones(x)*multiple_regression(x,y)
     <span class=hljs-keyword >return</span> (y-ŷ)&#x27;*(y-ŷ)
 <span class=hljs-keyword >end</span>
 
@@ -91,7 +91,7 @@ p14 = scatter(data23[:,<span class=hljs-number >2</span>],data23[:,<span class=h
 <span class=hljs-keyword >end</span>
 
 <span class=hljs-keyword >function</span> Bdiag(x)
-    X = expand_matrix(x)
+    X = insert_ones(x)
     <span class=hljs-keyword >return</span> X&#x27;X |&gt; inv |&gt; diag
 <span class=hljs-keyword >end</span></code></pre>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Statistics
@@ -193,16 +193,16 @@ displaytable(Joe.VIF(x27);index=<span class=hljs-literal >true</span>,indexsep=<
 <p>定義にしたがって、信頼区間と予測区間の定義をします。危険率はデフォルトでは0.01としています。 &#40;<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mo lspace=0em  rspace=0em >⋆</mo></msub><mo stretchy=false >(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><msup><mo stretchy=false >)</mo><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>x</mi><mo lspace=0em  rspace=0em >⋆</mo><mi>T</mi></msubsup></mrow><annotation encoding="application/x-tex">x_{\star}(X^TX)^{-1}x_{\star}^T</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.0913309999999998em;vertical-align:-0.25em;"></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.175696em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">⋆</span></span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.15em;"><span></span></span></span></span></span></span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=mclose ><span class=mclose >)</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">⋆</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span> の計算に横着してdiagを使っているので、ちょっと勿体ないリソースの使い方をしている。&#41;</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >function</span> confident_interval(xp,x,y;α=<span class=hljs-number >0.01</span>)
     N,p = size(x)
-    X = expand_matrix(x)
-    XP = expand_matrix(xp)
+    X = insert_ones(x)
+    XP = insert_ones(xp)
     typeof(xp) &lt;:<span class=hljs-built_in >Number</span> &amp;&amp; (xp =[xp])
     yerror = quantile(TDist(N-p-<span class=hljs-number >1</span>),<span class=hljs-number >1</span>-α/<span class=hljs-number >2</span>) * sqrt.(diag(XP * ((X&#x27;X) \ XP&#x27;)))
 <span class=hljs-keyword >end</span>
 
 <span class=hljs-keyword >function</span> prediction_interval(xp,x,y;α=<span class=hljs-number >0.01</span>)
     N,p = size(x)
-    X = expand_matrix(x)
-    XP = expand_matrix(xp)
+    X = insert_ones(x)
+    XP = insert_ones(xp)
     typeof(xp) &lt;:<span class=hljs-built_in >Number</span> &amp;&amp; (xp =[xp])
     yerror = quantile(TDist(N-p-<span class=hljs-number >1</span>),<span class=hljs-number >1</span>-α/<span class=hljs-number >2</span>) * sqrt.( <span class=hljs-number >1</span> .+ diag(XP * ((X&#x27;X) \ XP&#x27;)))
 <span class=hljs-keyword >end</span></code></pre>
@@ -211,20 +211,20 @@ displaytable(Joe.VIF(x27);index=<span class=hljs-literal >true</span>,indexsep=<
 N = <span class=hljs-number >100</span>; Random.seed!(<span class=hljs-number >123</span>)
 x28 = randn(N,<span class=hljs-number >1</span>)
 y28 = x28 .+<span class=hljs-number >1</span> + randn(N)  |&gt; vec <span class=hljs-comment ># 真の切片と傾きはともに1</span>
-p28 = scatter(x28,y28,xlabel=<span class=hljs-string >&quot;x&quot;</span>,ylabel=<span class=hljs-string >&quot;y&quot;</span>,label=<span class=hljs-string >&quot;data     &quot;</span>,legend=:topleft)
-
-β<span class=hljs-number >28</span> = MultipleRegression(x28,y28)
+p28 = scatter(x28,y28,xlabel=<span class=hljs-string >&quot;x&quot;</span>,ylabel=<span class=hljs-string >&quot;y&quot;</span>,
+                label=<span class=hljs-string >&quot;data     &quot;</span>,legend=:topleft)
+β<span class=hljs-number >28</span> = multiple_regression(x28,y28)
 x_seq = -<span class=hljs-number >10</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >10</span>
-ŷ = expand_matrix(x_seq) * β<span class=hljs-number >28</span>
+ŷ = insert_ones(x_seq) * β<span class=hljs-number >28</span>
 yerror1 = Joe.confident_interval(x_seq,x28,y28)
 yerror2 = Joe.prediction_interval(x_seq,x28,y28)
 plot!(p28,x_seq,ŷ,ribbon=yerror2, label=<span class=hljs-string >&quot;予測区間&quot;</span>)
 plot!(p28,x_seq,ŷ,ribbon=yerror1, label=<span class=hljs-string >&quot;信頼区間&quot;</span>)</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap1/code/output/fig1-7.svg" alt="">
-  <p style="text-align:right">  おしまい </p>  <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p>
+  <p style="text-align:right">  めでたしめでたし </p>  <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p>
 <div class=page-foot >
   <div class=copyright >
-    &copy; Kei Hanafusa. Last modified: December 27, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+    &copy; Kei Hanafusa. Last modified: December 28, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
   </div>
 </div>
 </div>
