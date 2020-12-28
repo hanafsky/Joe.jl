@@ -96,7 +96,7 @@ end
 """
 VIF(variance inflation factor)
 """
-function VIF(x)
+function VIF(x::Matrix)
     _,ncol= size(x)
     v = Vector(undef,ncol)
     for j in 1:ncol
