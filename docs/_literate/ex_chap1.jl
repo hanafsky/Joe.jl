@@ -248,8 +248,8 @@ using Plots, Random, Joe
 N = 100; Random.seed!(123)
 x28 = randn(N,1)
 y28 = x28 .+1 + randn(N)  |> vec # 真の切片と傾きはともに1 
-p28 = scatter(x28,y28,xlabel="x",ylabel="y",label="data     ",legend=:topleft)
-
+p28 = scatter(x28,y28,xlabel="x",ylabel="y",
+                label="data     ",legend=:topleft)
 β28 = multiple_regression(x28,y28)
 x_seq = -10:0.1:10
 ŷ = insert_ones(x_seq) * β28

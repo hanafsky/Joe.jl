@@ -4,7 +4,7 @@
 
 \toc
 \literate{/_literate/ex_chap1.jl}
-\right{おしまい}
+\right{めでたしめでたし}
 \backtotop
 
 

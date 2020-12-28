@@ -3,5 +3,5 @@
 @def showall = true
 \toc
 \literate{/_literate/ex_chap2.jl}
-\right{おしまい}
+\right{めでたしめでたし}
 \backtotop
