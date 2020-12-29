@@ -3,37 +3,43 @@
 
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/StatisticalML/chap1/index.html</loc>
-    <lastmod>2020-12-28</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/StatisticalML/chap3/index.html</loc>
-    <lastmod>2020-12-28</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/StatisticalML/chap4/index.html</loc>
-    <lastmod>2020-12-28</lastmod>
+    <lastmod>2020-12-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/StatisticalML/chap5/index.html</loc>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/StatisticalML/chap2/index.html</loc>
-    <lastmod>2020-12-28</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2020-12-28</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/404/index.html</loc>
-    <lastmod>2020-12-28</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
