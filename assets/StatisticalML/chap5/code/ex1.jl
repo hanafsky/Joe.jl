@@ -1,5 +1,4 @@
-# This file was generated, do not modify it.
-
+# This file was generated, do not modify it. # hide
 using DelimitedFiles, Plots
 using Joe:ridge
 Plots.reset_defaults() # hide
@@ -25,4 +24,3 @@ for j in 1:p
     plot!(p48, λ,β[j,:],label=labels[j])
 end
 savefig(p48,joinpath(@OUTPUT,"fig5-1.svg"))
-
