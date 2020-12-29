@@ -1,11 +1,8 @@
 name: Build and Deploy
-on:
+on: [ workflow_dispatch ]
   # push:
     # branches:
       # - master
-  workflow_dispatch:
-    branches:
-      - master
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
