@@ -17,7 +17,7 @@ X = randn(n, p)
 β = randn(p+<span class=hljs-number >1</span>); β[<span class=hljs-number >2</span>:<span class=hljs-number >3</span>] .= <span class=hljs-number >0</span>
 y = insert_ones(X)*β + randn(n)
 <span class=hljs-meta >@show</span> cv_linear(X[:,[<span class=hljs-number >3</span>,<span class=hljs-number >4</span>,<span class=hljs-number >5</span>]],y,<span class=hljs-number >10</span>);
-<span class=hljs-meta >@show</span> cv_linear(X,y,<span class=hljs-number >10</span>);</code></pre><pre><code class="plaintext hljs">cv_linear(X[:, [3, 4, 5]], y, 10) = 0.7113670647592754
+<span class=hljs-meta >@show</span> cv_linear(X,y,<span class=hljs-number >10</span>);</code></pre><pre><code class="plaintext hljs">cv_linear(X[:, [3, 4, 5]], y, 10) = 0.7113670647592756
 cv_linear(X, y, 10) = 0.6995149878356592
 </code></pre> <p>あれ？変数選択した方が誤差でかいぞ？試行回数を増やして全変数を用いた場合のCV値と 変数選択を行った場合のCV値を可視化します。</p> <pre><code class="julia hljs">U=<span class=hljs-built_in >Float64</span>[]; V = <span class=hljs-built_in >Float64</span>[]
 <span class=hljs-keyword >for</span> _ <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >100</span>
@@ -89,7 +89,7 @@ X = randn(n, p)
 y = insert_ones(X)*β + randn(n);</code></pre> <p>ループのネストを浅くしたいので、K-foldのkのリストを作って、ループすることにします。</p> <pre><code class="julia hljs">K = [i <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >2</span>:<span class=hljs-number >1000</span> <span class=hljs-keyword >if</span> <span class=hljs-number >1000</span>%i ==<span class=hljs-number >0</span>]
 t_linear = <span class=hljs-built_in >Vector</span>{<span class=hljs-built_in >Float64</span>}(<span class=hljs-literal >undef</span>,length(K));
 t_fast = similar(t_linear);</code></pre> <p>まずは関数の慣らし運転を</p> <pre><code class="julia hljs"><span class=hljs-meta >@show</span> cv_linear(X,y,<span class=hljs-number >10</span>)
-<span class=hljs-meta >@show</span> cv_fast(X,y,<span class=hljs-number >10</span>)</code></pre><pre><code class="plaintext hljs">cv_linear(X, y, 10) = 0.998850226625682
+<span class=hljs-meta >@show</span> cv_fast(X,y,<span class=hljs-number >10</span>)</code></pre><pre><code class="plaintext hljs">cv_linear(X, y, 10) = 0.9988502266256818
 cv_fast(X, y, 10) = 0.9988502266256818
 </code></pre> <p>値が一致することは確認できました。それでは、いざ本番&#33;</p> <pre><code class="julia hljs"><span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> eachindex(K)
     start = time_ns();cv_fast(X,y,K[i]);stop = time_ns()
@@ -126,16 +126,16 @@ plot!(p42,K, t_fast, label=<span class=hljs-string >&quot;cv_fast&quot;</span>)<
 <span class=hljs-keyword >end</span>
 Portfolio = readdlm(joinpath(<span class=hljs-string >&quot;_assets&quot;</span>,<span class=hljs-string >&quot;data&quot;</span>,<span class=hljs-string >&quot;Portfolio.csv&quot;</span>),<span class=hljs-string >&#x27;,&#x27;</span>, skipstart=<span class=hljs-number >1</span>)
 bootstrap(Portfolio,func_1,<span class=hljs-number >1000</span>)</code></pre><pre><code class="plaintext hljs">Joe.bt{Float64}
-  original: Float64 0.15166414929676278
-  bias: Float64 -0.0032877554675548593
-  stderr: Float64 0.1834211386694929
+  original: Float64 0.15166414929676297
+  bias: Float64 -0.0032877554675550535
+  stderr: Float64 0.18342113866949286
 </code></pre> <h3 id="例44"><a href="#例44">例44</a></h3> <p>データの読み込み</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe,DelimitedFiles
 df = readdlm(joinpath(<span class=hljs-string >&quot;_assets&quot;</span>,<span class=hljs-string >&quot;data&quot;</span>,<span class=hljs-string >&quot;crime.txt&quot;</span>))
 X = df[:,<span class=hljs-number >3</span>:<span class=hljs-number >4</span>]; y =df[:,<span class=hljs-number >1</span>]
 β = multiple_regression(X,y)</code></pre><pre><code class="plaintext hljs">3-element Array{Float64,1}:
- 621.4260363802932
-  11.858330796711074
-  -5.973411688165022</code></pre> <p>回帰係数のそれぞれについて、ブートストラップ法を適用します。ここでは標準偏差だけを出力します。</p> <pre><code class="julia hljs">std_bt = ones(<span class=hljs-number >3</span>)
+ 621.426036380296
+  11.858330796711058
+  -5.973411688165056</code></pre> <p>回帰係数のそれぞれについて、ブートストラップ法を適用します。ここでは標準偏差だけを出力します。</p> <pre><code class="julia hljs">std_bt = ones(<span class=hljs-number >3</span>)
 <span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>
     <span class=hljs-keyword >function</span> func_2(data,index)
         X = data[index,<span class=hljs-number >3</span>:<span class=hljs-number >4</span>];y = data[index,<span class=hljs-number >1</span>]
@@ -145,9 +145,9 @@ X = df[:,<span class=hljs-number >3</span>:<span class=hljs-number >4</span>]; y
     std_bt[j] = bootstrap(df,func_2,<span class=hljs-number >1000</span>).<span class=hljs-literal >stderr</span>
 <span class=hljs-keyword >end</span>
 std_bt</code></pre><pre><code class="plaintext hljs">3-element Array{Float64,1}:
- 215.15343849735987
-   3.46830278356897
-   3.3856685822145383</code></pre> <p>GLM.jlで回帰係数を推定したときの標準偏差と比較してみます。</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLM, DataFrames
+ 215.15343849735999
+   3.4683027835689684
+   3.385668582214539</code></pre> <p>GLM.jlで回帰係数を推定したときの標準偏差と比較してみます。</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLM, DataFrames
 data = DataFrame(df)
 ols = lm(<span class=hljs-meta >@formula</span>(x1 ~ x3 + x4), data)</code></pre><pre><code class="plaintext hljs">StatsModels.TableRegressionModel{GLM.LinearModel{GLM.LmResp{Array{Float64,1}},GLM.DensePredChol{Float64,LinearAlgebra.Cholesky{Float64,Array{Float64,2}}}},Array{Float64,2}}
 

@@ -82,16 +82,16 @@ t = <span class=hljs-literal >true</span>
     <span class=hljs-meta >@show</span> γ
 <span class=hljs-keyword >end</span>
 plot!(x-&gt; -γ[<span class=hljs-number >1</span>]/γ[<span class=hljs-number >3</span>] - γ[<span class=hljs-number >2</span>]/γ[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ = [-0.9588319286678549, -2.142965143840243, 0.49000586969362697]
-γ = [-0.6868290426397672, -1.490557450602416, 1.3181038933475095]
+γ = [-0.6868290426397674, -1.4905574506024164, 1.3181038933475095]
 γ = [-0.8389578286870751, -1.813314273328805, 1.4260329338938003]
 γ = [-0.864933524808484, -1.871868634791574, 1.4560345475721006]
-γ = [-0.8656536058114845, -1.8735243209383907, 1.4570217428831782]
-γ = [-0.8656541720759062, -1.8735256324938316, 1.4570225945617943]
+γ = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
+γ = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
-γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623723]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
-γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623725]
+γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
+γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
 Plot{Plots.GRBackend() n=4}</code></pre>
 <p>今度は横着をして、ヘシアンを使って計算してみます。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Zygote, LinearAlgebra
@@ -104,10 +104,10 @@ l(γ,X=X,y=y) = sum(@. log( <span class=hljs-number >1</span> /(<span class=hljs
     <span class=hljs-meta >@show</span> γ<span class=hljs-number >2</span>
 <span class=hljs-keyword >end</span>
 
-plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>] - γ<span class=hljs-number >2</span>[<span class=hljs-number >2</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ2&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ2 = [-0.6868290426397674, -1.4905574506024166, 1.3181038933475093]
-γ2 = [-0.8389578286870754, -1.8133142733288063, 1.4260329338938007]
-γ2 = [-0.864933524808484, -1.871868634791574, 1.4560345475721008]
-γ2 = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
+plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>] - γ<span class=hljs-number >2</span>[<span class=hljs-number >2</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ2&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ2 = [-0.6868290426397674, -1.4905574506024166, 1.3181038933475095]
+γ2 = [-0.8389578286870754, -1.8133142733288061, 1.4260329338938007]
+γ2 = [-0.864933524808484, -1.8718686347915743, 1.4560345475721008]
+γ2 = [-0.8656536058114844, -1.8735243209383907, 1.457021742883178]
 γ2 = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
 γ2 = [-0.8656541720762696, -1.8735256324946747, 1.4570225945623723]
 γ2 = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
@@ -158,10 +158,10 @@ test = index[<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2<
     z = @. s + u/w
     γ = (X_train&#x27;*W*X_train)\(X_train&#x27;*W*z)
     <span class=hljs-meta >@show</span> γ;
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">γ = [-0.250687490584547, 1.2955594588774142]
-γ = [-0.20181460348015434, 1.7007995013607493]
-γ = [-0.20495370161210233, 1.8380963810033206]
-γ = [-0.20628662758607505, 1.8500602521823717]
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">γ = [-0.25068749058454703, 1.2955594588774142]
+γ = [-0.2018146034801543, 1.7007995013607489]
+γ = [-0.2049537016121021, 1.8380963810033202]
+γ = [-0.20628662758607502, 1.8500602521823715]
 </code></pre>
 <p>次にこのγを使って、テストデータを予測してみます。 正誤をカウントする関数を次のように定義します。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >function</span> table_count(test,pred)
