@@ -8,8 +8,8 @@ default( # hide
     guidefont  = font("JuliaMono",  default(:guidefontsize),  ), # hide
     tickfont   = font("JuliaMono", default(:tickfontsize),   ), # hide
     legendfont = font("JuliaMono",  default(:legendfontsize), ), # hide
-    left_margin = 10px, # hide
-    bottom_margin = 10px # hide
+    left_margin = 30px, # hide
+    bottom_margin = 30px # hide
 ) # hide
 Random.seed!(12)
 n = 100; x = randn(n); y = sin.(x) + randn(n);

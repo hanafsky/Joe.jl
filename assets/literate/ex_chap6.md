@@ -14,8 +14,8 @@ default( # hide
     guidefont  = font("JuliaMono",  default(:guidefontsize),  ), # hide
     tickfont   = font("JuliaMono", default(:tickfontsize),   ), # hide
     legendfont = font("JuliaMono",  default(:legendfontsize), ), # hide
-    left_margin = 10px, # hide
-    bottom_margin = 10px # hide
+    left_margin = 30px, # hide
+    bottom_margin = 30px # hide
 ) # hide
 Random.seed!(12)
 n = 100; x = randn(n); y = sin.(x) + randn(n);
@@ -44,4 +44,17 @@ savefig(p52,joinpath(@OUTPUT,"fig6-1.svg")) # hide
 ```
 
 \fig{fig6-1}
+### 例53
+矩形波に雑音をノイズをのせたデータを作って、フィッティングします。
+まずはデータを生成します。
+
+```julia:ex3
+using Plots, Random
+Random.seed!(123)
+n = 100; x = randn(n) * π
+y = abs.(round.(x) .%2) * 2  .- 1+ randn(n)*0.2
+p53 = scatter(x,y,label= false)
+```
+
+基底関数が、$f_1(x) = 1$、 $f_2(x) = \cos(x) $、 $f_3(x) = \cos(x)$
 

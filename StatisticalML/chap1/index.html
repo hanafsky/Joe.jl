@@ -14,7 +14,7 @@ y = a .* x .+ b  + randn(N);</code></pre> <p>普通に単回帰する場合。</
 <p>データを中心化したあとに回帰分析すると切片が０になる（あたりまえ）。</p>
 <pre><code class="julia hljs">xx = x .- mean(x); yy = y .- mean(y)
 a2,b2 = min_sq(xx,yy)</code></pre><pre><code class="plaintext hljs">(2.36898664420743, 2.8132563058077054e-17)</code></pre>
-<p>図1.2を可視化してみる。matplotlibに比べてコードが短いのがいいですね。 juliaを扱う本はこれからどんどん増えてくると思いますが、pythonで書いた本よりもかなり紙面 を節約できるのではないでしょうか。 日本語扱うための設定は<a href="https://gist.github.com/genkuroki/6c2b71f62504432bdf8a27d24106cad8">GenKurokiさんのコード</a>を参考にしました。</p>
+<p>図1.2を可視化してみる。matplotlibに比べてコードが短いのがいいですね。 juliaを扱う本はこれからどんどん増えてくると思いますが、pythonで書いた本よりもかなり紙面 を節約できるのではないでしょうか。 日本語フォントを扱うための設定は<a href="https://gist.github.com/genkuroki/6c2b71f62504432bdf8a27d24106cad8">GenKurokiさんのコード</a>を参考にしました。 デプロイするとなぜかxlabelとylabelが切れてしまうので、余白の調整もしています。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Plots; gr()
 <span class=hljs-keyword >using</span> Plots.PlotMeasures
 Plots.reset_defaults()
@@ -23,8 +23,8 @@ default(
     guidefont  = font(<span class=hljs-string >&quot;JuliaMono&quot;</span>,  default(:guidefontsize),  ),
     tickfont   = font(<span class=hljs-string >&quot;JuliaMono&quot;</span>, default(:tickfontsize),   ),
     legendfont = font(<span class=hljs-string >&quot;JuliaMono&quot;</span>,  default(:legendfontsize), ),
-    left_margin = <span class=hljs-number >10</span>px,
-    bottom_margin = <span class=hljs-number >10</span>px,
+    left_margin = <span class=hljs-number >30</span>px,
+    bottom_margin = <span class=hljs-number >30</span>px,
 )
 p12 = scatter(x,y,label=<span class=hljs-string >&quot;original&quot;</span>,legend=:topleft,xlabel=<span class=hljs-string >&quot;x&quot;</span>, ylabel=<span class=hljs-string >&quot;y&quot;</span>)
 plot!(c-&gt;a1*c+b1 ,label=<span class=hljs-string >&quot;before centering&quot;</span>)
