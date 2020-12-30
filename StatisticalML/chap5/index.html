@@ -1,4 +1,4 @@
-<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">正則化</h1> <hr> <div class=franklin-content ><p><h2 id=ridge ><a href="#ridge">Ridge</a></h2> <p>Ridge回帰の関数は少し煩雑ですが、標準化処理&#40;データの平均値をひいて、標準偏差で割る&#41; を行った後に、回帰分析を行っています。 全てが1の値を持つ列を説明変数に入れてしまうと 標準偏差&#40;&#61;0&#41;で割るとエラーを吐くので、こういうことをしているのだと思います。 そう思って読むと原著のコードよりは分かりやすいでしょう。</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> StatsBase
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">正則化</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#ridge">Ridge</a><ol><li><a href="#例48">例48</a><li><a href="#例49">例49</a></ol><li><a href="#lasso">Lasso</a><ol><li><a href="#例50">例50</a><li><a href="#例51">例51</a><li><a href="#問55">問55</a></ol></ol></div> <h2 id=ridge ><a href="#ridge">Ridge</a></h2> <p>Ridge回帰の関数は少し煩雑ですが、標準化処理&#40;データの平均値をひいて、標準偏差で割る&#41; を行った後に、回帰分析を行っています。 全てが1の値を持つ列を説明変数に入れてしまうと 標準偏差&#40;&#61;0&#41;で割るとエラーを吐くので、こういうことをしているのだと思います。</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> StatsBase
 <span class=hljs-keyword >function</span> ridge(X::<span class=hljs-built_in >Matrix</span>,y::<span class=hljs-built_in >Vector</span>,λ=<span class=hljs-number >0</span>)
     <span class=hljs-meta >@assert</span> λ ≥ <span class=hljs-number >0</span>
     n,p = size(X)
@@ -15,15 +15,109 @@
 df = readdlm(joinpath(<span class=hljs-string >&quot;_assets&quot;</span>,<span class=hljs-string >&quot;data&quot;</span>,<span class=hljs-string >&quot;crime.txt&quot;</span>))
 X = df[:,<span class=hljs-number >3</span>:<span class=hljs-number >7</span>]; y =df[:,<span class=hljs-number >1</span>]
 λ = <span class=hljs-number >0</span>:<span class=hljs-number >0.5</span>:<span class=hljs-number >50</span>
+
 _,p = size(X)
 β = hcat([ridge(X,y,l)[<span class=hljs-string >&quot;β&quot;</span>] <span class=hljs-keyword >for</span> l <span class=hljs-keyword >in</span> λ]...)
-p48 = plot(size=(<span class=hljs-number >500</span>,<span class=hljs-number >500</span>),xlims=(<span class=hljs-number >0</span>,<span class=hljs-number >50</span>),ylims=(-<span class=hljs-number >7.5</span>,<span class=hljs-number >15</span>),xlabel=<span class=hljs-string >&quot;λ&quot;</span>,ylabel=<span class=hljs-string >&quot;β&quot;</span>)
-labels=[<span class=hljs-string >&quot; 警察への年間資金                                                 &quot;</span>,
+p48 = plot(size=(<span class=hljs-number >500</span>,<span class=hljs-number >500</span>),xlims=(<span class=hljs-number >0</span>,<span class=hljs-number >50</span>),ylims=(-<span class=hljs-number >7.5</span>,<span class=hljs-number >15</span>),
+           xlabel=<span class=hljs-string >&quot;λ&quot;</span>,ylabel=<span class=hljs-string >&quot;β&quot;</span>)
+labels=[<span class=hljs-string >&quot;警察への年間資金                                                 &quot;</span>,
         <span class=hljs-string >&quot;25歳以上で高校を卒業した人の割合&quot;</span>,
         <span class=hljs-string >&quot;16-19歳で高校に通っていない人の割合&quot;</span>,
-        <span class=hljs-string >&quot; 18-24歳で大学生の割合&quot;</span>,
+        <span class=hljs-string >&quot;18-24歳で大学生の割合&quot;</span>,
         <span class=hljs-string >&quot;25歳以上で４年制大学を卒業した人の割合&quot;</span>]
 <span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:p
     plot!(p48, λ,β[j,:],label=labels[j])
-<span class=hljs-keyword >end</span>
-savefig(p48,joinpath(<span class=hljs-meta >@OUTPUT</span>,<span class=hljs-string >&quot;fig5-1.svg&quot;</span>))</code></pre> <img src="/Joe.jl/assets/StatisticalML/chap5/code/output/fig5-1.svg" alt=""> <p style="text-align:right"> めでたしめでたし </p> <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p> <div class=page-foot > <div class=copyright > &copy; Kei Hanafusa. Last modified: December 29, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </main> <script src="/Joe.jl/libs/vela/metisMenu.min.js"></script> <script src="/Joe.jl/libs/vela/slideout.min.js"></script> <script src="/Joe.jl/libs/myBtn/myBtn.js"></script>
+<span class=hljs-keyword >end</span></code></pre> <img src="/Joe.jl/assets/StatisticalML/chap5/code/output/fig5-1.svg" alt=""> <h3 id="例49"><a href="#例49">例49</a></h3> <p>絶対値を含む関数のプロット</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Plots
+x_seq = -<span class=hljs-number >2</span>:<span class=hljs-number >0.05</span>:<span class=hljs-number >2</span>;
+p49_1 = plot(x_seq, x -&gt; x^<span class=hljs-number >2</span>-<span class=hljs-number >3</span>x+abs(x),title = <span class=hljs-string >&quot;y=x^2-3x+|x|&quot;</span>)
+scatter!(p49_1,[<span class=hljs-number >1</span>],[-<span class=hljs-number >1</span>],color=:red,legend=<span class=hljs-literal >false</span>)
+p49_2 = plot(x_seq,x -&gt; x^<span class=hljs-number >2</span> + x +<span class=hljs-number >2</span>abs(x),title=<span class=hljs-string >&quot;y=x^2+x+2|x|&quot;</span>)
+scatter!(p49_2,[<span class=hljs-number >0</span>],[-<span class=hljs-number >0</span>],color=:red, legend=<span class=hljs-literal >false</span>)
+p49 = plot(p49_1,p49_2,layout=(<span class=hljs-number >1</span>,<span class=hljs-number >2</span>),size= (<span class=hljs-number >500</span>,<span class=hljs-number >200</span>))</code></pre> <img src="/Joe.jl/assets/StatisticalML/chap5/code/output/fig5-2.svg" alt=""> <h2 id=lasso ><a href="#lasso">Lasso</a></h2> <p>lassoのプログラムは標準化処理はridgeと共通しています。</p> <h3 id="例50"><a href="#例50">例50</a></h3> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe:lasso
+df = readdlm(joinpath(<span class=hljs-string >&quot;_assets&quot;</span>,<span class=hljs-string >&quot;data&quot;</span>,<span class=hljs-string >&quot;crime.txt&quot;</span>))
+X = df[:,<span class=hljs-number >3</span>:<span class=hljs-number >7</span>]; y =df[:,<span class=hljs-number >1</span>]
+λ = <span class=hljs-number >0</span>:<span class=hljs-number >0.5</span>:<span class=hljs-number >200</span>
+_,p = size(X)
+β = hcat([lasso(X,y,l)[<span class=hljs-string >&quot;β&quot;</span>] <span class=hljs-keyword >for</span> l <span class=hljs-keyword >in</span> λ]...)
+p50 = plot(size=(<span class=hljs-number >500</span>,<span class=hljs-number >500</span>),xlims=(<span class=hljs-number >0</span>,<span class=hljs-number >200</span>),ylims=(-<span class=hljs-number >7.5</span>,<span class=hljs-number >15</span>),
+           xlabel=<span class=hljs-string >&quot;λ&quot;</span>,ylabel=<span class=hljs-string >&quot;β&quot;</span>)
+labels=[<span class=hljs-string >&quot;警察への年間資金                                                 &quot;</span>,
+        <span class=hljs-string >&quot;25歳以上で高校を卒業した人の割合&quot;</span>,
+        <span class=hljs-string >&quot;16-19歳で高校に通っていない人の割合&quot;</span>,
+        <span class=hljs-string >&quot;18-24歳で大学生の割合&quot;</span>,
+        <span class=hljs-string >&quot;25歳以上で４年制大学を卒業した人の割合&quot;</span>]
+<span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:p
+    plot!(p50, λ,β[j,:],label=labels[j])
+<span class=hljs-keyword >end</span></code></pre> <img src="/Joe.jl/assets/StatisticalML/chap5/code/output/fig5-3.svg" alt=""> <h3 id="例51"><a href="#例51">例51</a></h3> <p>CRANパッケージのglmnetはjuliaにも移植されています。 ここでは<a href="https://github.com/JuliaStats/GLMNet.jl">GLMNet.jl</a>を使って、クロスバリデーションによる λの最適化を検討します。</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMNet
+df = readdlm(joinpath(<span class=hljs-string >&quot;_assets&quot;</span>,<span class=hljs-string >&quot;data&quot;</span>,<span class=hljs-string >&quot;crime.txt&quot;</span>))
+X = df[:,<span class=hljs-number >3</span>:<span class=hljs-number >7</span>]; y =df[:,<span class=hljs-number >1</span>]
+cv  = glmnetcv(X,y)</code></pre><pre><code class="plaintext hljs">Least Squares GLMNet Cross Validation
+65 models for 5 predictors in 10 folds
+Best λ 26.490 (mean loss 67614.194, std 16085.008)</code></pre> <p>λは20くらいが最適のようです。その時の係数は以下のコードで求められます。</p> <pre><code class="julia hljs">coef(cv)</code></pre><pre><code class="plaintext hljs">5-element Array{Float64,1}:
+  9.129054389983931
+ -1.8016267825687888
+  3.169713427068152
+  0.0
+  0.0</code></pre> <p>後半の二つは係数が0になって、前半の三つの変数が選択されました。 Python版の初版では係数の値が違うのですが、 R版の原著ではこれらの値であまり問題はなさそうです。 &#40;これはPython版のScikitLearnのLassoCVでは0にされていないですね。 ScikitLearnが悪いのか？&#41; 横軸をlog λ, 縦軸を平均二乗誤差（リボンはσ）にして可視化します。</p> <pre><code class="julia hljs">p51 = plot(xlabel=<span class=hljs-string >&quot;log λ&quot;</span>, ylabel=<span class=hljs-string >&quot;mean squared error&quot;</span>)
+plot!(p51,log.(cv.lambda),cv.meanloss,ribbon=cv.stdloss,legend=<span class=hljs-literal >false</span>)</code></pre> <img src="/Joe.jl/assets/StatisticalML/chap5/code/output/fig5-8.svg" alt=""> <h3 id="問55"><a href="#問55">問55</a></h3> <p>例48のcrime.txtで、今度はScikitLearnのLassoを利用してみることにします。</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> ScikitLearn, DelimitedFiles
+<span class=hljs-meta >@sk_import</span> linear_model: Lasso
+<span class=hljs-meta >@sk_import</span> linear_model: LassoCV
+df = readdlm(joinpath(<span class=hljs-string >&quot;_assets&quot;</span>,<span class=hljs-string >&quot;data&quot;</span>,<span class=hljs-string >&quot;crime.txt&quot;</span>))
+X = df[:,<span class=hljs-number >3</span>:<span class=hljs-number >7</span>]; y =df[:,<span class=hljs-number >1</span>];</code></pre> <p>まずはLassoのインスタンスを作ります。</p> <pre><code class="julia hljs">Las = Lasso(alpha=<span class=hljs-number >20</span>)</code></pre><pre><code class="plaintext hljs">PyObject Lasso(alpha=20)</code></pre>
+<p>キーワード引数のalphaは上の例でいう正則化パラメータλのことです。 Lasにデータを入力して、<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">\lambda=20</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">λ</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >2</span><span class=mord >0</span></span></span></span>の時の係数を求めます。</p>
+<pre><code class="julia hljs">Las.fit(X,y);
+Las.coef_</code></pre><pre><code class="plaintext hljs">5-element Array{Float64,1}:
+ 11.090675937988722
+ -5.28007570301687
+  4.654942819497644
+  0.5501593157275015
+  2.843242953918233</code></pre>
+<p>LassoCVの場合は、複数の<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">λ</span></span></span></span>の値を与えることができます。</p>
+<pre><code class="julia hljs">Lcv = LassoCV(alphas=<span class=hljs-number >0.1</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >30</span>,cv=<span class=hljs-number >10</span>)
+Lcv.fit(X,y)
+Lcv.alpha_</code></pre><pre><code class="plaintext hljs">30.0</code></pre>
+<p>なんと<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\lambda = 30</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">λ</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >3</span><span class=mord >0</span></span></span></span>が最適のようです。 係数はどうでしょうか？</p>
+<pre><code class="julia hljs">Lcv.coef_</code></pre><pre><code class="plaintext hljs">5-element Array{Float64,1}:
+ 11.145711479667481
+ -4.874581374715959
+  4.243678809976327
+  0.637489113602051
+  1.512489019094185</code></pre>
+<p>こちらも係数が0に近づいて変数選択されているようには見えません。 これではめでたしめでたしにはならないので、設定を見直すことにします。 Lassoオブジェクトのインスタンスを生成する際の、キーワード引数はnormalize&#61;falseとなっています。 scikit-learnのドキュメントによれば、normalize&#61;trueにすると、 平均値をひいたあとに、二乗ノルムで割ることになっているので標準化には使えません。 StandardScalerを使えと書いてありますが、大した処理ではないので自前で標準化したデータを投げてみます。</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> StatsBase, DelimitedFiles, ScikitLearn
+<span class=hljs-meta >@sk_import</span> linear_model: LassoCV
+df = readdlm(joinpath(<span class=hljs-string >&quot;_assets&quot;</span>,<span class=hljs-string >&quot;data&quot;</span>,<span class=hljs-string >&quot;crime.txt&quot;</span>))
+X = df[:,<span class=hljs-number >3</span>:<span class=hljs-number >7</span>]; y =df[:,<span class=hljs-number >1</span>];
+X̄,σ = mean_and_std(X,<span class=hljs-number >1</span>)
+XX = zscore(X,X̄,σ)
+ȳ = mean(y)
+yy = y .- ȳ
+Lcv2 = LassoCV(alphas=<span class=hljs-number >0.1</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >30</span>,cv=<span class=hljs-number >10</span>)
+Lcv2.fit(XX,yy)
+<span class=hljs-meta >@show</span> Lcv2.alpha_;
+Lcv2.coef_</code></pre><pre><code class="plaintext hljs">Lcv2.alpha_ = 20.7
+5-element Array{Float64,1}:
+ 132.4742641188837
+ -24.20610880547141
+  19.40656139300653
+   0.0
+   0.0</code></pre>
+<p>正則化パラメータについては、それらしい値が得られました。 係数については、変数選択されていることは確認できましたが、値が大きいので<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span>で割って確かめることにします。</p>
+<pre><code class="julia hljs">Lcv2.coef_ ./ σ&#x27;</code></pre><pre><code class="plaintext hljs">5×1 Array{Float64,2}:
+  9.585439885626686
+ -2.4290528766245667
+  3.2216677686303985
+  0.0
+  0.0</code></pre>
+<p>混乱しましたが、<a href="#例50">例50</a>と大体同じ係数になることを確認できました。</p>
+  <p style="text-align:right">  めでたしめでたし </p>  <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p>
+<div class=page-foot >
+  <div class=copyright >
+    &copy; Kei Hanafusa. Last modified: December 30, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+  </main> 
+  <script src="/Joe.jl/libs/vela/metisMenu.min.js"></script>
+  <script src="/Joe.jl/libs/vela/slideout.min.js"></script>
+  <script src="/Joe.jl/libs/myBtn/myBtn.js"></script>
