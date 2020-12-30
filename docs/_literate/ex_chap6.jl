@@ -3,6 +3,17 @@
 # sin関数に乱数を足した観測データを多項式で回帰します。
 # データの生成
 using Plots, Joe, Random
+using Plots.PlotMeasures # hide
+Plots.reset_defaults() # hide
+gr() # hide
+default( # hide
+    titlefont  = font("JuliaMono", default(:titlefontsize),  ), # hide
+    guidefont  = font("JuliaMono",  default(:guidefontsize),  ), # hide
+    tickfont   = font("JuliaMono", default(:tickfontsize),   ), # hide
+    legendfont = font("JuliaMono",  default(:legendfontsize), ), # hide
+    left_margin = 10px, # hide
+    bottom_margin = 10px # hide
+) # hide
 Random.seed!(12)
 n = 100; x = randn(n); y = sin.(x) + randn(n);
 p52 = scatter(x,y,xlabel="x", ylabel="y", label=false, legend=:topleft);

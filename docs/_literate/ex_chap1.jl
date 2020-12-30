@@ -38,12 +38,15 @@ a2,b2 = min_sq(xx,yy)
 # を節約できるのではないでしょうか。
 # 日本語扱うための設定は[GenKurokiさんのコード](https://gist.github.com/genkuroki/6c2b71f62504432bdf8a27d24106cad8)を参考にしました。
 using Plots; gr()
+using Plots.PlotMeasures
 Plots.reset_defaults()
 default(
     titlefont  = font("JuliaMono", default(:titlefontsize),  ),
     guidefont  = font("JuliaMono",  default(:guidefontsize),  ),
     tickfont   = font("JuliaMono", default(:tickfontsize),   ),
-    legendfont = font("JuliaMono",  default(:legendfontsize), )
+    legendfont = font("JuliaMono",  default(:legendfontsize), ),
+    left_margin = 10px,
+    bottom_margin = 10px,
 )
 p12 = scatter(x,y,label="original",legend=:topleft,xlabel="x", ylabel="y")
 plot!(c->a1*c+b1 ,label="before centering")
@@ -207,9 +210,9 @@ y26 = randn(N)
 # ```julia
 # function VIF(x)
 #     _,ncol= size(x)
-#     v = Vector(undef, ncol) 
+#     v = Vector{Float64}(undef, ncol) 
 #     for j in 1:ncol
-#         index = delete!(Set(1:ncol),j) |> collect
+#         index = setdiff(1:ncol,j)
 #         v[j] = 1/(1-R2(x[:,index],x[:,j]))
 #     end
 #     return v
