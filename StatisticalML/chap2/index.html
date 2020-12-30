@@ -1,4 +1,4 @@
-<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">分類</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#ロジスティック回帰">ロジスティック回帰</a><ol><li><a href="#例29">例29</a></ol><li><a href="#ニュートンラフソン法">ニュートン・ラフソン法</a><ol><li><a href="#例31">例31</a><li><a href="#例31__2">例31</a><li><a href="#例33">例33</a><li><a href="#例34">例34</a></ol><li><a href="#23_線形判別と二次判別">2.3 線形判別と二次判別</a><ol><li><a href="#例35">例35</a><li><a href="#例36_fisherのあやめ">例36 &#40;Fisherのあやめ&#41;</a><li><a href="#問29_事前確率が分かっている場合">問29 事前確率が分かっている場合</a></ol><li><a href="#k近傍法">K近傍法</a><ol><li><a href="#例37_fisherのあやめ_returns">例37 Fisherのあやめ returns</a></ol><li><a href="#roc曲線">ROC曲線</a><ol><li><a href="#例38">例38</a></ol></ol></div> <h2 id="ロジスティック回帰"><a href="#ロジスティック回帰">ロジスティック回帰</a></h2> <h3 id="例29"><a href="#例29">例29</a></h3> <p>シグモイド関数を定義しておきます。</p> <pre><code class="julia hljs">sigmoid(x::<span class=hljs-built_in >Matrix</span>, β::<span class=hljs-built_in >Vector</span>) = <span class=hljs-number >1</span> / (<span class=hljs-number >1</span> + exp(-x*β))</code></pre>
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第五章　非線形回帰</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">分類</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#ロジスティック回帰">ロジスティック回帰</a><ol><li><a href="#例29">例29</a></ol><li><a href="#ニュートンラフソン法">ニュートン・ラフソン法</a><ol><li><a href="#例31">例31</a><li><a href="#例31__2">例31</a><li><a href="#例33">例33</a><li><a href="#例34">例34</a></ol><li><a href="#23_線形判別と二次判別">2.3 線形判別と二次判別</a><ol><li><a href="#例35">例35</a><li><a href="#例36_fisherのあやめ">例36 &#40;Fisherのあやめ&#41;</a><li><a href="#問29_事前確率が分かっている場合">問29 事前確率が分かっている場合</a></ol><li><a href="#k近傍法">K近傍法</a><ol><li><a href="#例37_fisherのあやめ_returns">例37 Fisherのあやめ returns</a></ol><li><a href="#roc曲線">ROC曲線</a><ol><li><a href="#例38">例38</a></ol></ol></div> <h2 id="ロジスティック回帰"><a href="#ロジスティック回帰">ロジスティック回帰</a></h2> <h3 id="例29"><a href="#例29">例29</a></h3> <p>シグモイド関数を定義しておきます。</p> <pre><code class="julia hljs">sigmoid(x::<span class=hljs-built_in >Matrix</span>, β::<span class=hljs-built_in >Vector</span>) = <span class=hljs-number >1</span> / (<span class=hljs-number >1</span> + exp(-x*β))</code></pre>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Plots
 p29 = plot(xlims=(-<span class=hljs-number >10</span>,<span class=hljs-number >10</span>), xlabel=<span class=hljs-string >&quot;x&quot;</span>,ylabel=<span class=hljs-string >&quot;P(Y=1|x)&quot;</span>,
             legend=:topleft, title=<span class=hljs-string >&quot;ロジスティック曲線&quot;</span>)
@@ -82,16 +82,16 @@ t = <span class=hljs-literal >true</span>
     <span class=hljs-meta >@show</span> γ
 <span class=hljs-keyword >end</span>
 plot!(x-&gt; -γ[<span class=hljs-number >1</span>]/γ[<span class=hljs-number >3</span>] - γ[<span class=hljs-number >2</span>]/γ[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ = [-0.9588319286678549, -2.142965143840243, 0.49000586969362697]
-γ = [-0.6868290426397674, -1.4905574506024164, 1.3181038933475095]
+γ = [-0.6868290426397672, -1.490557450602416, 1.3181038933475095]
 γ = [-0.8389578286870751, -1.813314273328805, 1.4260329338938003]
 γ = [-0.864933524808484, -1.871868634791574, 1.4560345475721006]
-γ = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
-γ = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
+γ = [-0.8656536058114845, -1.8735243209383907, 1.4570217428831782]
+γ = [-0.8656541720759062, -1.8735256324938316, 1.4570225945617943]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
+γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623723]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
-γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
+γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623725]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
-γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
 Plot{Plots.GRBackend() n=4}</code></pre>
 <p>今度は横着をして、ヘシアンを使って計算してみます。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Zygote, LinearAlgebra
@@ -104,10 +104,10 @@ l(γ,X=X,y=y) = sum(@. log( <span class=hljs-number >1</span> /(<span class=hljs
     <span class=hljs-meta >@show</span> γ<span class=hljs-number >2</span>
 <span class=hljs-keyword >end</span>
 
-plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>] - γ<span class=hljs-number >2</span>[<span class=hljs-number >2</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ2&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ2 = [-0.6868290426397674, -1.4905574506024166, 1.3181038933475095]
-γ2 = [-0.8389578286870754, -1.8133142733288061, 1.4260329338938007]
-γ2 = [-0.864933524808484, -1.8718686347915743, 1.4560345475721008]
-γ2 = [-0.8656536058114844, -1.8735243209383907, 1.457021742883178]
+plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>] - γ<span class=hljs-number >2</span>[<span class=hljs-number >2</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ2&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ2 = [-0.6868290426397674, -1.4905574506024166, 1.3181038933475093]
+γ2 = [-0.8389578286870754, -1.8133142733288063, 1.4260329338938007]
+γ2 = [-0.864933524808484, -1.871868634791574, 1.4560345475721008]
+γ2 = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
 γ2 = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
 γ2 = [-0.8656541720762696, -1.8735256324946747, 1.4570225945623723]
 γ2 = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
@@ -158,10 +158,10 @@ test = index[<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2<
     z = @. s + u/w
     γ = (X_train&#x27;*W*X_train)\(X_train&#x27;*W*z)
     <span class=hljs-meta >@show</span> γ;
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">γ = [-0.25068749058454703, 1.2955594588774142]
-γ = [-0.2018146034801543, 1.7007995013607489]
-γ = [-0.2049537016121021, 1.8380963810033202]
-γ = [-0.20628662758607502, 1.8500602521823715]
+<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">γ = [-0.250687490584547, 1.2955594588774142]
+γ = [-0.20181460348015434, 1.7007995013607493]
+γ = [-0.20495370161210233, 1.8380963810033206]
+γ = [-0.20628662758607505, 1.8500602521823717]
 </code></pre>
 <p>次にこのγを使って、テストデータを予測してみます。 正誤をカウントする関数を次のように定義します。</p>
 <pre><code class="julia hljs"><span class=hljs-keyword >function</span> table_count(test,pred)
