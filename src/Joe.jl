@@ -8,5 +8,6 @@ include("chap2.jl")
 include("chap3.jl")
 include("chap4.jl")
 include("chap5.jl")
+include("chap6.jl")
 
 end
