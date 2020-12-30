@@ -16,6 +16,16 @@
 # ```
 # ### 例39
 using Joe, Random, Plots
+using Plots.PlotMeasures # hide
+Plots.reset_defaults() # hide
+default( # hide
+    titlefont  = font("JuliaMono", default(:titlefontsize),  ), # hide
+    guidefont  = font("JuliaMono",  default(:guidefontsize),  ), # hide
+    tickfont   = font("JuliaMono", default(:tickfontsize),   ), # hide
+    legendfont = font("JuliaMono",  default(:legendfontsize), ), # hide
+    left_margin = 30px, # hide
+    bottom_margin = 30px # hide
+) # hide
 using Joe: cv_linear
 n = 100; p = 5
 Random.seed!(1)
@@ -24,13 +34,6 @@ X = randn(n, p)
 y = insert_ones(X)*β + randn(n)
 @show cv_linear(X[:,[3,4,5]],y,10);
 @show cv_linear(X,y,10);
-Plots.reset_defaults() # hide
-default( # hide
-    titlefont  = font("JuliaMono", default(:titlefontsize),  ), # hide
-    guidefont  = font("JuliaMono",  default(:guidefontsize),  ), # hide
-    tickfont   = font("JuliaMono", default(:tickfontsize),   ), # hide
-    legendfont = font("JuliaMono",  default(:legendfontsize), ) # hide
-) # hide
 # あれ？変数選択した方が誤差でかいぞ？試行回数を増やして全変数を用いた場合のCV値と
 # 変数選択を行った場合のCV値を可視化します。
 using Joe # hide

@@ -22,12 +22,15 @@
 
 using DelimitedFiles, Plots
 using Joe:ridge
+using Plots.PlotMeasures # hide
 Plots.reset_defaults() # hide
 default( # hide
-    titlefont  = font("JuliaMono", default(:titlefontsize),  ), # hide
+    titlefont  = font("JuliaMono", default(:titlefontsize),  ),  # hide
     guidefont  = font("JuliaMono",  default(:guidefontsize),  ), # hide
     tickfont   = font("JuliaMono", default(:tickfontsize),   ), # hide
-    legendfont = font("JuliaMono",  default(:legendfontsize), ) # hide
+    legendfont = font("JuliaMono",  default(:legendfontsize), ), # hide
+    left_margin = 30px, # hide
+    bottom_margin = 30px # hide
 ) # hide
 df = readdlm(joinpath("_assets","data","crime.txt"))
 X = df[:,3:7]; y =df[:,1]

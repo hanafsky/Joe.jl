@@ -36,7 +36,8 @@ a2,b2 = min_sq(xx,yy)
 # 図1.2を可視化してみる。matplotlibに比べてコードが短いのがいいですね。
 # juliaを扱う本はこれからどんどん増えてくると思いますが、pythonで書いた本よりもかなり紙面
 # を節約できるのではないでしょうか。
-# 日本語扱うための設定は[GenKurokiさんのコード](https://gist.github.com/genkuroki/6c2b71f62504432bdf8a27d24106cad8)を参考にしました。
+# 日本語フォントを扱うための設定は[GenKurokiさんのコード](https://gist.github.com/genkuroki/6c2b71f62504432bdf8a27d24106cad8)を参考にしました。
+# デプロイするとなぜかxlabelとylabelが切れてしまうので、余白の調整もしています。
 using Plots; gr()
 using Plots.PlotMeasures
 Plots.reset_defaults()
@@ -45,8 +46,8 @@ default(
     guidefont  = font("JuliaMono",  default(:guidefontsize),  ),
     tickfont   = font("JuliaMono", default(:tickfontsize),   ),
     legendfont = font("JuliaMono",  default(:legendfontsize), ),
-    left_margin = 10px,
-    bottom_margin = 10px,
+    left_margin = 30px,
+    bottom_margin = 30px,
 )
 p12 = scatter(x,y,label="original",legend=:topleft,xlabel="x", ylabel="y")
 plot!(c->a1*c+b1 ,label="before centering")

@@ -5,12 +5,15 @@
 # sigmoid(x::Matrix, β::Vector) = 1 / (1 + exp(-x*β))
 # ```
 using Joe, Plots
+using Plots.PlotMeasures # hide
 Plots.reset_defaults() # hide
 default( # hide
     titlefont  = font("JuliaMono", default(:titlefontsize),  ),  # hide
     guidefont  = font("JuliaMono",  default(:guidefontsize),  ), # hide
     tickfont   = font("JuliaMono", default(:tickfontsize),   ), # hide
-    legendfont = font("JuliaMono",  default(:legendfontsize), ) # hide
+    legendfont = font("JuliaMono",  default(:legendfontsize), ), # hide
+    left_margin = 30px, # hide
+    bottom_margin = 30px # hide
 ) # hide
 p29 = plot(xlims=(-10,10), xlabel="x",ylabel="P(Y=1|x)",
             legend=:topleft, title="ロジスティック曲線")
