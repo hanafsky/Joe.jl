@@ -1,5 +1,8 @@
 name: Build and Deploy
-on: [ workflow_dispatch ]
+on: 
+  workflow_dispatch:
+    branches:
+      - master
   # push:
     # branches:
       # - master
@@ -19,6 +22,7 @@ jobs:
     # NOTE: Here you can install dependencies such as matplotlib if you use
     # packages such as PyPlot.
     # - run: pip install matplotlib
+    - run: pip install scikit-learn 
     - name: Install Julia
       uses: julia-actions/setup-julia@v1
       with:
