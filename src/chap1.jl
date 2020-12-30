@@ -98,9 +98,10 @@ VIF(variance inflation factor)
 """
 function VIF(x::Matrix)
     _,ncol= size(x)
-    v = Vector(undef,ncol)
+    v = Vector{Float64}(undef,ncol)
     for j in 1:ncol
-        index = delete!(Set(1:ncol),j) |> collect
+        # index = delete!(Set(1:ncol),j) |> collect
+        index = setdiff(1:ncol,j)
         v[j] = 1/(1-R2(x[:,index],x[:,j]))
     end
     return v
