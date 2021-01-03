@@ -224,9 +224,9 @@ $n\ge100$ではcv_fastの方が実行時間が短いことが分かります。
 ```julia
 using Parameters
 @with_kw mutable struct bt{T<:Number}
-    original::T = 0
-    bias::T = 0
-    stderr::T = 0
+    original::T = 0.0
+    bias::T = 0.0
+    stderr::T = 0.0
 end
 function bootstrap(df::AbstractArray{T}, F::Function, r::Int) where T <:Number
     m,_ = size(df)
