@@ -54,7 +54,7 @@ multiple_regression(x,y)
 4. [第四章 情報量基準](/StatisticalML/chap4/)
 5. [第五章 正則化](/StatisticalML/chap5/)
 6. [第六章 非線形回帰](/StatisticalML/chap6/)
-7. [第七章 ブースティング]()
+7. [第七章 決定木](/StatisticalML/chap7/)
 8. [第八章 サポートベクトルマシン]()
 9. [第九章 教師なし学習]()
 \backtotop
