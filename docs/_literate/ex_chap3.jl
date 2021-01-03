@@ -180,9 +180,9 @@ savefig(p42,joinpath(@OUTPUT,"fig3-4.svg")) # hide
 # ```julia
 # using Parameters
 # @with_kw mutable struct bt{T<:Number}
-#     original::T = 0
-#     bias::T = 0
-#     stderr::T = 0
+#     original::T = 0.0
+#     bias::T = 0.0
+#     stderr::T = 0.0
 # end
 # function bootstrap(df::AbstractArray{T}, F::Function, r::Int) where T <:Number
 #     m,_ = size(df)
