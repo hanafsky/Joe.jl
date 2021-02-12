@@ -11,6 +11,7 @@ The website_* must be defined for the RSS to work
 
 @def mintoclevel = 2
 @def hasplotly=false
+@def hasmermaid=false
 
 <!--
 Add here files or directories that should be ignored by Franklin, otherwise
@@ -38,5 +39,6 @@ For instance:
 \newcommand{\danger}[1]{@@danger @@title 😱 Danger! @@ @@content #1 @@ @@}
 \newcommand{\compat}[1]{@@compat @@title 😐 Compatible @@ @@content #1 @@ @@}
 \newcommand{\right}[1]{~~~ <p style="text-align:right"> #1 </p>~~~}
-\newcommand{\center}[1]{~~~ <div style="text-align:center"> #1 </p>~~~}
+\newcommand{\center}[1]{~~~ <div style="text-align:center"> #1 </div>~~~}
 \newcommand{\backtotop}{~~~ <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button> ~~~}
+\newcommand{\mermaid}[1]{~~~ <div style="text-align:center" class="mermaid"> #1 </div>~~~}

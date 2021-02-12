@@ -71,6 +71,7 @@ function RSS(x::Matrix,y)
 end
 
 function TSS(y)
+    length(y)==0 && return 0
     Y = y .- mean(y)
     return Y'*Y 
 end
