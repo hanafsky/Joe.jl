@@ -228,6 +228,6 @@ end
 std_bt
 # GLM.jlで回帰係数を推定したときの標準偏差と比較してみます。
 using GLM, DataFrames
-data = DataFrame(df)
+data = DataFrame(df,:auto)
 ols = lm(@formula(x1 ~ x3 + x4), data)
 # 標準偏差がほぼ一致することが分かりました。
