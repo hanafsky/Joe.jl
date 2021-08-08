@@ -95,7 +95,7 @@ df = readdlm(joinpath("_assets","data","crime.txt"))
 X = df[:,3:7]; y =df[:,1]
 cv  = glmnetcv(X,y)
 # λは20くらいが最適のようです。その時の係数は以下のコードで求められます。
-coef(cv)
+GLMNet.coef(cv)
 # 後半の二つは係数が0になって、前半の三つの変数が選択されました。
 # Python版の初版では係数の値が違うのですが、
 # R版の原著ではこれらの値であまり問題はなさそうです。
@@ -109,7 +109,6 @@ savefig(p51,joinpath(@OUTPUT,"fig5-8.svg")) # hide
 # ### 問55
 # 例48のcrime.txtで、今度はScikitLearnのLassoを利用してみることにします。
 using ScikitLearn, DelimitedFiles
-
 @sk_import linear_model: Lasso
 @sk_import linear_model: LassoCV
 df = readdlm(joinpath("_assets","data","crime.txt"))
@@ -133,8 +132,7 @@ Lcv.coef_
 # scikit-learnのドキュメントによれば、normalize=trueにすると、
 # 平均値をひいたあとに、二乗ノルムで割ることになっているので標準化には使えません。
 # StandardScalerを使えと書いてありますが、大した処理ではないので自前で標準化したデータを投げてみます。
-using StatsBase, DelimitedFiles, ScikitLearn
-@sk_import linear_model: LassoCV
+using DelimitedFiles, StatsBase
 df = readdlm(joinpath("_assets","data","crime.txt"))
 X = df[:,3:7]; y =df[:,1]; 
 X̄,σ = mean_and_std(X,1)
