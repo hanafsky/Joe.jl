@@ -28,7 +28,7 @@ bicmin2, bicindex2 &#61; Joe.BIC_min&#40;X2,y&#41;
 
 p&#61;plot&#40;xlabel&#61;&quot;number of variables&quot;,ylabel&#61;&quot;AIC or BIC values&quot;&#41;
 scatter&#33;&#40;p,aicmin,label&#61;&quot;AIC&quot;&#41;
-scatter&#33;&#40;p,bicmin,label&#61;&quot;BIC&quot;&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_Np0ZRD.
+scatter&#33;&#40;p,bicmin,label&#61;&quot;BIC&quot;&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_niGUoi.
 </code></pre> <p><span style="color:red;">// Image matching '/assets/StatisticalML/chap4/code/p45' not found. //</span></p> <h2 id="問46"><a href="#問46" class=header-anchor >問46</a></h2> <p>ボストン不動産データでのAIC値を最小にする組み合わせを記述したもの。</p> <pre><code class=language-julia >min_aic_boston,aicmin_index  &#61; findmin&#40;aicmin2&#41;
 println&#40;&quot;Minimum AIC value:&quot;, min_aic_boston, &quot;, set: &quot;, aicindex2&#91;aicmin_index&#93;&#41;</code></pre><pre><code class="plaintext code-output">UndefVarError: aicmin2 not defined
 </code></pre> <h2 id="問47"><a href="#問47" class=header-anchor >問47</a></h2> <p>BIC関数とAR2関数を定義して利用します。変数の数毎の最小値を計算する関数は AIC_minと同じ方法で定義しています。ただしAR2の場合は最大化しなければならないので注意が必要です。</p> <pre><code class=language-julia >function BIC&#40;x,y&#41;

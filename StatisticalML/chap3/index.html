@@ -50,7 +50,7 @@ end</code></pre> <img src="/Joe.jl/assets/StatisticalML/chap3/code/output/fig3-2
 using Joe:knn
 iris &#61; dataset&#40;&quot;datasets&quot;,&quot;iris&quot;&#41;
 X &#61; iris&#91;&#33;,1:4&#93; |&gt; Matrix
-targets&#61;unique&#40;iris.Species&#41;;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_NeQ9XC.
+targets&#61;unique&#40;iris.Species&#41;;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_EtIp3h.
 </code></pre> <p>あやめの種類をIntに変換します。</p> <pre><code class=language-julia >label &#61; Dict&#40;target&#61;&gt;i for &#40;i,target&#41; in enumerate&#40;targets&#41;&#41;
 y &#61; &#91;label&#91;i&#93; for i in iris.Species&#93;;
 n &#61; length&#40;y&#41;;</code></pre><pre><code class="plaintext code-output">UndefVarError: targets not defined
