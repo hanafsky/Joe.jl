@@ -37,8 +37,9 @@ jobs:
     #   specific arguments, see the documentation or ?optimize in the REPL.
     - run: julia -e '
             using Pkg; Pkg.add(["NodeJS", "Franklin"]);
-            Pkg.add(url="https://github.com/hanafsky/Joe.jl");  
-            using NodeJS; run(`$(npm_cmd()) install highlight.js`);
+            Pkg.add(url="https://github.com/hanafsky/Joe.jl");
+            run(`apt install libxkbcommon-x11-0`);  
+            using NodeJS; run(`sudo $(npm_cmd()) install highlight.js`);
             using Franklin;
             cd("docs");
             Pkg.activate("."); Pkg.instantiate();
