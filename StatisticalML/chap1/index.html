@@ -1,233 +1,231 @@
-<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link rel=stylesheet  href="css/magnific-popup.css" /> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第六章　非線形回帰</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">線形回帰</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#11最小二乗法">1.1最小二乗法</a><ol><li><a href="#例19問3に対応">例19（問3に対応）</a></ol><li><a href="#12_重回帰">1.2 重回帰</a><ol><li><a href="#例20">例20</a></ol><li><a href="#14_rssの分布">1.4 RSSの分布</a><ol><li><a href="#例21">例21</a></ol><li><a href="#15_hatbeta_j_neq_0の仮説検定">1.5 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent=true ><mi>β</mi><mo>^</mo></mover><mi>j</mi></msub><mo mathvariant=normal >≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\hat{\beta}_j \neq 0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.2439879999999999em;vertical-align:-0.286108em;"></span><span class=mord ><span class="mord accent"><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.9578799999999998em;"><span style="top:-3em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span><span style="top:-3.26344em;"><span class=pstrut  style="height:3em;"></span><span class=accent-body  style="left:-0.16666em;"><span class=mord >^</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.19444em;"><span></span></span></span></span></span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.286108em;"><span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel ><span class=mrel ><span class="mord vbox"><span class=thinbox ><span class=rlap ><span class=strut  style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class=inner ><span class=mrel ></span></span><span class=fix ></span></span></span></span></span><span class=mrel >=</span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>の仮説検定</a><ol><li><a href="#例22">例22</a><li><a href="#例23">例23</a><li><a href="#例24問12に対応">例24&#40;問12に対応&#41;</a><li><a href="#例25問13に対応">例25&#40;問13に対応&#41;</a></ol><li><a href="#16_決定係数と共線形性の検出">1.6 決定係数と共線形性の検出</a><ol><li><a href="#例26">例26</a><li><a href="#例27">例27</a></ol><li><a href="#17_信頼区間と予測区間">1.7 信頼区間と予測区間</a><ol><li><a href="#例28">例28</a></ol></ol></div> <h1 id="線形回帰"><a href="#線形回帰">線形回帰</a></h1> <h2 id="11最小二乗法"><a href="#11最小二乗法">1.1最小二乗法</a></h2> <h3 id="例19問3に対応"><a href="#例19問3に対応">例19（問3に対応）</a></h3> <p>単回帰分析。回帰係数と切片を返す関数を定義します。 ユニコード使用可能なので数式と関数との対応が分かりやすくできるのがjuliaの特長の一つです。</p> <div class=note ><div class=title >😲 Note</div> <div class=content >meanやnorm関数などを使うため、Distributions.jlとLinearAlgebra.jlをインポートしておきます。</div></div> <hr /> <pre><code class="julia hljs"><span class=hljs-keyword >function</span> min_sq(x::<span class=hljs-built_in >Vector</span>{T},y::<span class=hljs-built_in >Vector</span>{T}) <span class=hljs-keyword >where</span> {T&lt;:<span class=hljs-built_in >Number</span>}
-    x̄ = mean(x)
-    ȳ = mean(y)
-    β₁ = (x .- x̄)&#x27;*(y .- ȳ) / norm(x .- x̄)^<span class=hljs-number >2</span> <span class=hljs-comment >#傾き</span>
-    β₀ = ȳ - β₁ * x̄ <span class=hljs-comment >#切片</span>
-    <span class=hljs-keyword >return</span>  β₁,β₀
-<span class=hljs-keyword >end</span></code></pre> <p>まずはトイデータの生成から。</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Random, Distributions, LinearAlgebra
-Random.seed!(<span class=hljs-number >123</span>) <span class=hljs-comment >#乱数の種を固定</span>
-N = <span class=hljs-number >100</span>
-a = rand(Normal(<span class=hljs-number >2</span>,<span class=hljs-number >1</span>),N) <span class=hljs-comment >#傾き、平均2分散1の正規分布からサンプリング</span>
-b = randn() <span class=hljs-comment >#切片</span>
-x = randn(N)
-y = a .* x .+ b  + randn(N);</code></pre> <p>普通に単回帰する場合。</p> <pre><code class="julia hljs">a1, b1 = min_sq(x,y)</code></pre><pre><code class="plaintext hljs">(2.36898664420743, 0.34890217814737906)</code></pre>
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link rel=stylesheet  href="css/magnific-popup.css" /> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第六章　非線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap7/">第七章　決定木</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">線形回帰</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#11最小二乗法">1.1最小二乗法</a><ol><li><a href="#例19問3に対応">例19（問3に対応）</a></ol><li><a href="#12_重回帰">1.2 重回帰</a><ol><li><a href="#例20">例20</a></ol><li><a href="#14_rssの分布">1.4 RSSの分布</a><ol><li><a href="#例21">例21</a></ol><li><a href="#15_hatbeta_j_neq_0の仮説検定">1.5 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent=true ><mi>β</mi><mo>^</mo></mover><mi>j</mi></msub><mo mathvariant=normal >≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\hat{\beta}_j \neq 0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.2439879999999999em;vertical-align:-0.286108em;"></span><span class=mord ><span class="mord accent"><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.9578799999999998em;"><span style="top:-3em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span><span style="top:-3.26344em;"><span class=pstrut  style="height:3em;"></span><span class=accent-body  style="left:-0.16666em;"><span class=mord >^</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.19444em;"><span></span></span></span></span></span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.286108em;"><span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel ><span class=mrel ><span class="mord vbox"><span class=thinbox ><span class=rlap ><span class=strut  style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class=inner ><span class=mrel ></span></span><span class=fix ></span></span></span></span></span><span class=mrel >=</span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>の仮説検定</a><ol><li><a href="#例22">例22</a><li><a href="#例23">例23</a><li><a href="#例24問12に対応">例24&#40;問12に対応&#41;</a><li><a href="#例25問13に対応">例25&#40;問13に対応&#41;</a></ol><li><a href="#16_決定係数と共線形性の検出">1.6 決定係数と共線形性の検出</a><ol><li><a href="#例26">例26</a><li><a href="#例27">例27</a></ol><li><a href="#17_信頼区間と予測区間">1.7 信頼区間と予測区間</a><ol><li><a href="#例28">例28</a></ol></ol></div> <h1 id="線形回帰"><a href="#線形回帰" class=header-anchor >線形回帰</a></h1> <h2 id="11最小二乗法"><a href="#11最小二乗法" class=header-anchor >1.1最小二乗法</a></h2> <h3 id="例19問3に対応"><a href="#例19問3に対応" class=header-anchor >例19（問3に対応）</a></h3> <p>単回帰分析。回帰係数と切片を返す関数を定義します。 ユニコード使用可能なので数式と関数との対応が分かりやすくできるのがjuliaの特長の一つです。</p> <div class=note ><div class=title >😲 Note</div> <div class=content >meanやnorm関数などを使うため、Distributions.jlとLinearAlgebra.jlをインポートしておきます。</div></div> <hr /> <pre><code class=language-julia >function min_sq&#40;x::Vector&#123;T&#125;,y::Vector&#123;T&#125;&#41; where &#123;T&lt;:Number&#125;
+    x̄ &#61; mean&#40;x&#41;
+    ȳ &#61; mean&#40;y&#41;
+    β₁ &#61; &#40;x .- x̄&#41;&#39;*&#40;y .- ȳ&#41; / norm&#40;x .- x̄&#41;^2 #傾き
+    β₀ &#61; ȳ - β₁ * x̄ #切片
+    return  β₁,β₀
+end</code></pre> <p>まずはトイデータの生成から。</p> <pre><code class=language-julia >using Joe, Random, Distributions, LinearAlgebra
+Random.seed&#33;&#40;123&#41; #乱数の種を固定
+N &#61; 100
+a &#61; rand&#40;Normal&#40;2,1&#41;,N&#41; #傾き、平均2分散1の正規分布からサンプリング
+b &#61; randn&#40;&#41; #切片
+x &#61; randn&#40;N&#41;
+y &#61; a .* x .&#43; b  &#43; randn&#40;N&#41;;</code></pre> <p>普通に単回帰する場合。</p> <pre><code class=language-julia >a1, b1 &#61; min_sq&#40;x,y&#41;</code></pre><pre><code class="plaintext code-output">(2.36898664420743, 0.34890217814737906)</code></pre>
 <p>データを中心化したあとに回帰分析すると切片が０になる（あたりまえ）。</p>
-<pre><code class="julia hljs">xx = x .- mean(x); yy = y .- mean(y)
-a2,b2 = min_sq(xx,yy)</code></pre><pre><code class="plaintext hljs">(2.36898664420743, 1.478230124037964e-16)</code></pre>
+<pre><code class=language-julia >xx &#61; x .- mean&#40;x&#41;; yy &#61; y .- mean&#40;y&#41;
+a2,b2 &#61; min_sq&#40;xx,yy&#41;</code></pre><pre><code class="plaintext code-output">(2.36898664420743, 2.8132563058077054e-17)</code></pre>
 <p>図1.2を可視化してみる。matplotlibに比べてコードが短いのがいいですね。 juliaを扱う本はこれからどんどん増えてくると思いますが、pythonで書いた本よりもかなり紙面 を節約できるのではないでしょうか。 日本語フォントを扱うための設定は<a href="https://gist.github.com/genkuroki/6c2b71f62504432bdf8a27d24106cad8">GenKurokiさんのコード</a>を参考にしました。 デプロイするとなぜかxlabelとylabelが切れてしまうので、余白の調整もしています。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Plots; gr()
-<span class=hljs-keyword >using</span> Plots.PlotMeasures
-Plots.reset_defaults()
-default(
-    titlefont  = font(<span class=hljs-string >&quot;JuliaMono&quot;</span>, default(:titlefontsize),  ),
-    guidefont  = font(<span class=hljs-string >&quot;JuliaMono&quot;</span>,  default(:guidefontsize),  ),
-    tickfont   = font(<span class=hljs-string >&quot;JuliaMono&quot;</span>, default(:tickfontsize),   ),
-    legendfont = font(<span class=hljs-string >&quot;JuliaMono&quot;</span>,  default(:legendfontsize), ),
-    left_margin = <span class=hljs-number >30</span>px,
-    bottom_margin = <span class=hljs-number >30</span>px,
-)
-p12 = scatter(x,y,label=<span class=hljs-string >&quot;original&quot;</span>,legend=:topleft,xlabel=<span class=hljs-string >&quot;x&quot;</span>, ylabel=<span class=hljs-string >&quot;y&quot;</span>)
-plot!(c-&gt;a1*c+b1 ,label=<span class=hljs-string >&quot;before centering&quot;</span>)
-plot!(c-&gt;a2*c+b2 , label=<span class=hljs-string >&quot;after centering&quot;</span>)</code></pre>
+<pre><code class=language-julia >using Plots; gr&#40;&#41;
+using Plots.PlotMeasures
+Plots.reset_defaults&#40;&#41;
+default&#40;
+    titlefont  &#61; font&#40;&quot;JuliaMono&quot;, default&#40;:titlefontsize&#41;,  &#41;,
+    guidefont  &#61; font&#40;&quot;JuliaMono&quot;,  default&#40;:guidefontsize&#41;,  &#41;,
+    tickfont   &#61; font&#40;&quot;JuliaMono&quot;, default&#40;:tickfontsize&#41;,   &#41;,
+    legendfont &#61; font&#40;&quot;JuliaMono&quot;,  default&#40;:legendfontsize&#41;, &#41;,
+    left_margin &#61; 30px,
+    bottom_margin &#61; 30px,
+&#41;
+p12 &#61; scatter&#40;x,y,label&#61;&quot;original&quot;,legend&#61;:topleft,xlabel&#61;&quot;x&quot;, ylabel&#61;&quot;y&quot;&#41;
+plot&#33;&#40;c-&gt;a1*c&#43;b1 ,label&#61;&quot;before centering&quot;&#41;
+plot&#33;&#40;c-&gt;a2*c&#43;b2 , label&#61;&quot;after centering&quot;&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap1/code/output/fig1-2.svg" alt="">
-<h2 id="12_重回帰"><a href="#12_重回帰">1.2 重回帰</a></h2>
-<h3 id="例20"><a href="#例20">例20</a></h3>
+<h2 id="12_重回帰"><a href="#12_重回帰" class=header-anchor >1.2 重回帰</a></h2>
+<h3 id="例20"><a href="#例20" class=header-anchor >例20</a></h3>
 <p><span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent=true ><mi>β</mi><mo>^</mo></mover><mo>=</mo><mo stretchy=false >(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><msup><mo stretchy=false >)</mo><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>X</mi><mi>T</mi></msup><mi>y</mi></mrow><annotation encoding="application/x-tex">\hat{\beta} = (X^T X)^{-1} X^Ty</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.1523199999999998em;vertical-align:-0.19444em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.9578799999999998em;"><span style="top:-3em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span><span style="top:-3.26344em;"><span class=pstrut  style="height:3em;"></span><span class=accent-body  style="left:-0.16666em;"><span class=mord >^</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.19444em;"><span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:1.0913309999999998em;vertical-align:-0.25em;"></span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=mclose ><span class=mclose >)</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span> を解くだけなので、もはや関数化する程でもないが、 後々のことを考えて、関数化します。 また、係数行列に定数項のために全ての要素が1の列を1列目に挿入しますが、 わざわざnumpyをimportしてnp.insert&#40;x,0,1,axis&#61;1&#41;を呼び出すのが嫌なので、 以下のような関数を定義しました。&#40;この行列、何かいい名前があるといいのですが。&#41;</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> insert_ones(X)
-    N = typeof(X) &lt;: <span class=hljs-built_in >Matrix</span>  ?  size(X)[<span class=hljs-number >1</span>] :  length(X)
-    T = eltype(X)
-    <span class=hljs-keyword >return</span> hcat(ones(T,N),X)
-<span class=hljs-keyword >end</span></code></pre>
+<pre><code class=language-julia >function insert_ones&#40;X&#41;
+    N &#61; typeof&#40;X&#41; &lt;: Matrix  ?  size&#40;X&#41;&#91;1&#93; :  length&#40;X&#41;
+    T &#61; eltype&#40;X&#41;
+    return hcat&#40;ones&#40;T,N&#41;,X&#41;
+end</code></pre>
 <p>また、重回帰係数を最小二乗法で求める関数を次のように定義しました。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> multiple_regression(x::<span class=hljs-built_in >Matrix</span>{T}, y::<span class=hljs-built_in >Vector</span>{T}) <span class=hljs-keyword >where</span> {T&lt;:<span class=hljs-built_in >Number</span>}
-    N,_ = size(x)
-    <span class=hljs-meta >@assert</span> N==length(y)
-    X = insert_ones(x)
-    <span class=hljs-keyword >return</span> (X&#x27;X)\X&#x27;y
-<span class=hljs-keyword >end</span></code></pre>
-<h2 id="14_rssの分布"><a href="#14_rssの分布">1.4 RSSの分布</a></h2>
-<h3 id="例21"><a href="#例21">例21</a></h3>
+<pre><code class=language-julia >function multiple_regression&#40;x::Matrix&#123;T&#125;, y::Vector&#123;T&#125;&#41; where &#123;T&lt;:Number&#125;
+    N,_ &#61; size&#40;x&#41;
+    @assert N&#61;&#61;length&#40;y&#41;
+    X &#61; insert_ones&#40;x&#41;
+    return &#40;X&#39;X&#41;\X&#39;y
+end</code></pre>
+<h2 id="14_rssの分布"><a href="#14_rssの分布" class=header-anchor >1.4 RSSの分布</a></h2>
+<h3 id="例21"><a href="#例21" class=header-anchor >例21</a></h3>
 <p><span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>χ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.008548em;vertical-align:-0.19444em;"></span><span class=mord ><span class="mord mathnormal">χ</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>分布のプロット。原著のプロット（図1.3）は間違っているらしい。 Plots.jlは無名関数のプロットができるので便利。</p>
-<pre><code class="julia hljs">p13 = plot(xlims=(<span class=hljs-number >0</span>,<span class=hljs-number >8</span>),ylims=(<span class=hljs-number >0</span>,<span class=hljs-number >1</span>),title=<span class=hljs-string >&quot;DOF of chi&quot;</span>,legend=:topright)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
-    plot!(p13,<span class=hljs-number >0.1</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >8</span>,x-&gt;pdf(Chisq(i),x),label=<span class=hljs-string >&quot;dof = <span class=hljs-subst >$(i)</span>&quot;</span>)
-<span class=hljs-keyword >end</span></code></pre>
+<pre><code class=language-julia >p13 &#61; plot&#40;xlims&#61;&#40;0,8&#41;,ylims&#61;&#40;0,1&#41;,title&#61;&quot;DOF of chi&quot;,legend&#61;:topright&#41;
+for i in 1:10
+    plot&#33;&#40;p13,0.1:0.1:8,x-&gt;pdf&#40;Chisq&#40;i&#41;,x&#41;,label&#61;&quot;dof &#61; &#36;&#40;i&#41;&quot;&#41;
+end</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap1/code/output/fig1-3.svg" alt="">
-<h2 id="15_hatbeta_j_neq_0の仮説検定"><a href="#15_hatbeta_j_neq_0の仮説検定">1.5 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent=true ><mi>β</mi><mo>^</mo></mover><mi>j</mi></msub><mo mathvariant=normal >≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\hat{\beta}_j \neq 0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.2439879999999999em;vertical-align:-0.286108em;"></span><span class=mord ><span class="mord accent"><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.9578799999999998em;"><span style="top:-3em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span><span style="top:-3.26344em;"><span class=pstrut  style="height:3em;"></span><span class=accent-body  style="left:-0.16666em;"><span class=mord >^</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.19444em;"><span></span></span></span></span></span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.286108em;"><span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel ><span class=mrel ><span class="mord vbox"><span class=thinbox ><span class=rlap ><span class=strut  style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class=inner ><span class=mrel ></span></span><span class=fix ></span></span></span></span></span><span class=mrel >=</span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>の仮説検定</a></h2>
-<h3 id="例22"><a href="#例22">例22</a></h3>
+<h2 id="15_hatbeta_j_neq_0の仮説検定"><a href="#15_hatbeta_j_neq_0の仮説検定" class=header-anchor >1.5 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent=true ><mi>β</mi><mo>^</mo></mover><mi>j</mi></msub><mo mathvariant=normal >≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\hat{\beta}_j \neq 0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.2439879999999999em;vertical-align:-0.286108em;"></span><span class=mord ><span class="mord accent"><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.9578799999999998em;"><span style="top:-3em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span><span style="top:-3.26344em;"><span class=pstrut  style="height:3em;"></span><span class=accent-body  style="left:-0.16666em;"><span class=mord >^</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.19444em;"><span></span></span></span></span></span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.286108em;"><span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel ><span class=mrel ><span class="mord vbox"><span class=thinbox ><span class=rlap ><span class=strut  style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class=inner ><span class=mrel ></span></span><span class=fix ></span></span></span></span></span><span class=mrel >=</span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>の仮説検定</a></h2>
+<h3 id="例22"><a href="#例22" class=header-anchor >例22</a></h3>
 <p>t分布のプロット</p>
-<pre><code class="julia hljs">p15 = plot(x-&gt;pdf(Normal(<span class=hljs-number >0</span>,<span class=hljs-number >1</span>),x),label=<span class=hljs-string >&quot;正規分布&quot;</span>)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
-    plot!(x-&gt;pdf(TDist(i),x), ls=:dash, label=<span class=hljs-string >&quot;dof: <span class=hljs-subst >$(i)</span>&quot;</span>)
-<span class=hljs-keyword >end</span></code></pre>
+<pre><code class=language-julia >p15 &#61; plot&#40;x-&gt;pdf&#40;Normal&#40;0,1&#41;,x&#41;,label&#61;&quot;正規分布&quot;&#41;
+for i in 1:10
+    plot&#33;&#40;x-&gt;pdf&#40;TDist&#40;i&#41;,x&#41;, ls&#61;:dash, label&#61;&quot;dof: &#36;&#40;i&#41;&quot;&#41;
+end</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap1/code/output/fig1-5.svg" alt="">
-<h3 id="例23"><a href="#例23">例23</a></h3>
-<pre><code class="julia hljs">N=<span class=hljs-number >100</span>;iter_num=<span class=hljs-number >100</span>;
-data23 = <span class=hljs-built_in >Matrix</span>(<span class=hljs-literal >undef</span>,iter_num,<span class=hljs-number >2</span>)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:iter_num
-    x23=randn(N)  .+<span class=hljs-number >2</span>
-    y23= x23 .+ <span class=hljs-number >1</span> +  randn(N)
-    data23[i,:] = min_sq(x23,y23) |&gt; collect
-<span class=hljs-keyword >end</span>
-p14 = scatter(data23[:,<span class=hljs-number >2</span>],data23[:,<span class=hljs-number >1</span>],xlabel=<span class=hljs-string >&quot;β₀&quot;</span>,ylabel=<span class=hljs-string >&quot;β₁&quot;</span>,title=<span class=hljs-string >&quot;test&quot;</span>,legend=<span class=hljs-literal >false</span>)</code></pre>
+<h3 id="例23"><a href="#例23" class=header-anchor >例23</a></h3>
+<pre><code class=language-julia >N&#61;100;iter_num&#61;100;
+data23 &#61; Matrix&#40;undef,iter_num,2&#41;
+for i in 1:iter_num
+    x23&#61;randn&#40;N&#41;  .&#43;2
+    y23&#61; x23 .&#43; 1 &#43;  randn&#40;N&#41;
+    data23&#91;i,:&#93; &#61; min_sq&#40;x23,y23&#41; |&gt; collect
+end
+p14 &#61; scatter&#40;data23&#91;:,2&#93;,data23&#91;:,1&#93;,xlabel&#61;&quot;β₀&quot;,ylabel&#61;&quot;β₁&quot;,title&#61;&quot;test&quot;,legend&#61;false&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap1/code/output/fig1-4.svg" alt="">
-<h3 id="例24問12に対応"><a href="#例24問12に対応">例24&#40;問12に対応&#41;</a></h3>
+<h3 id="例24問12に対応"><a href="#例24問12に対応" class=header-anchor >例24&#40;問12に対応&#41;</a></h3>
 <p>後々のことを考えて、RSSやR２を定義しておきます。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> RSS(x::<span class=hljs-built_in >Vector</span>,y)
-    β̂ = min_sq(x,y)
-    ŷ = β̂[<span class=hljs-number >1</span>]*x .+ β̂[<span class=hljs-number >2</span>]
-    <span class=hljs-keyword >return</span> (y-ŷ)&#x27;*(y-ŷ)
-<span class=hljs-keyword >end</span>
-<span class=hljs-keyword >function</span> RSS(x,y)
-    ŷ = insert_ones(x)*multiple_regression(x,y)
-    <span class=hljs-keyword >return</span> (y-ŷ)&#x27;*(y-ŷ)
-<span class=hljs-keyword >end</span>
+<pre><code class=language-julia >function RSS&#40;x::Vector,y&#41;
+    β̂ &#61; min_sq&#40;x,y&#41;
+    ŷ &#61; β̂&#91;1&#93;*x .&#43; β̂&#91;2&#93;
+    return &#40;y-ŷ&#41;&#39;*&#40;y-ŷ&#41;
+end
+function RSS&#40;x,y&#41;
+    ŷ &#61; insert_ones&#40;x&#41;*multiple_regression&#40;x,y&#41;
+    return &#40;y-ŷ&#41;&#39;*&#40;y-ŷ&#41;
+end
 
 
-<span class=hljs-keyword >function</span> RSE(x::<span class=hljs-built_in >Matrix</span>,y)
-    n,p = size(x)
-    RSS(x,y) / (n-p-<span class=hljs-number >1</span>) |&gt; sqrt
-<span class=hljs-keyword >end</span>
+function RSE&#40;x::Matrix,y&#41;
+    n,p &#61; size&#40;x&#41;
+    RSS&#40;x,y&#41; / &#40;n-p-1&#41; |&gt; sqrt
+end
 
-<span class=hljs-keyword >function</span> RSE(x::<span class=hljs-built_in >Vector</span>,y)
-    RSS(x,y) / (length(x)-<span class=hljs-number >2</span>) |&gt; sqrt
-<span class=hljs-keyword >end</span>
+function RSE&#40;x::Vector,y&#41;
+    RSS&#40;x,y&#41; / &#40;length&#40;x&#41;-2&#41; |&gt; sqrt
+end
 
-<span class=hljs-keyword >function</span> Bdiag(x)
-    X = insert_ones(x)
-    <span class=hljs-keyword >return</span> X&#x27;X |&gt; inv |&gt; diag
-<span class=hljs-keyword >end</span></code></pre>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Statistics
-N = <span class=hljs-number >100</span>;Random.seed!(<span class=hljs-number >123</span>)
-x24 = randn(N); y24=randn(N);
-β₁, β₀ = min_sq(x24,y24)
-rse = Joe.RSE(x24,y24)
-se₀, se₁ = rse*sqrt.(Joe.Bdiag(x24))
-t₀ = β₀ / se₀
-t₁ = β₁ / se₁
-p₀ = <span class=hljs-number >2</span>*(ccdf(TDist(N-<span class=hljs-number >2</span>),abs(t₀)))
-p₁ = <span class=hljs-number >2</span>*(ccdf(TDist(N-<span class=hljs-number >2</span>),abs(t₁)))
-<span class=hljs-meta >@show</span> β₀, β₁;
-<span class=hljs-meta >@show</span> t₀, t₁;
-<span class=hljs-meta >@show</span> p₀, p₁;</code></pre><pre><code class="plaintext hljs">(β₀, β₁) = (0.10898230758144681, -0.05761023247512565)
-(t₀, t₁) = (1.0893138251707204, -0.6469066946933423)
-(p₀, p₁) = (0.27868694362737306, 0.5192046691957628)
+function Bdiag&#40;x&#41;
+    X &#61; insert_ones&#40;x&#41;
+    return X&#39;X |&gt; inv |&gt; diag
+end</code></pre>
+<pre><code class=language-julia >using Joe, Statistics
+N &#61; 100;Random.seed&#33;&#40;123&#41;
+x24 &#61; randn&#40;N&#41;; y24&#61;randn&#40;N&#41;;
+β₁, β₀ &#61; min_sq&#40;x24,y24&#41;
+rse &#61; Joe.RSE&#40;x24,y24&#41;
+se₀, se₁ &#61; rse*sqrt.&#40;Joe.Bdiag&#40;x24&#41;&#41;
+t₀ &#61; β₀ / se₀
+t₁ &#61; β₁ / se₁
+p₀ &#61; 2*&#40;ccdf&#40;TDist&#40;N-2&#41;,abs&#40;t₀&#41;&#41;&#41;
+p₁ &#61; 2*&#40;ccdf&#40;TDist&#40;N-2&#41;,abs&#40;t₁&#41;&#41;&#41;
+@show β₀, β₁;
+@show t₀, t₁;
+@show p₀, p₁;</code></pre><pre><code class="plaintext code-output">(β₀, β₁) = (0.10898230758144681, -0.05761023247512567)
+(t₀, t₁) = (1.0893138251707204, -0.6469066946933425)
+(p₀, p₁) = (0.27868694362737306, 0.5192046691957626)
 </code></pre>
 <p>GLM.jlを使った場合でも同じ値が得られることが確認できます。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLM, DataFrames
-data = DataFrame(X=x24,Y=y24)
-ols = lm(<span class=hljs-meta >@formula</span>(Y ~ X), data)</code></pre><pre><code class="plaintext hljs">StatsModels.TableRegressionModel{GLM.LinearModel{GLM.LmResp{Array{Float64,1}},GLM.DensePredChol{Float64,LinearAlgebra.Cholesky{Float64,Array{Float64,2}}}},Array{Float64,2}}
+<pre><code class=language-julia >using GLM, DataFrames
+data &#61; DataFrame&#40;X&#61;x24,Y&#61;y24&#41;
+ols &#61; lm&#40;@formula&#40;Y ~ X&#41;, data&#41;</code></pre><pre><code class="plaintext code-output">StatsModels.TableRegressionModel{GLM.LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}, Matrix{Float64}}
 
 Y ~ 1 + X
 
 Coefficients:
 ───────────────────────────────────────────────────────────────────────────
-                  Coef.  Std. Error      t  Pr(&gt;|t|)   Lower 95%  Upper 95%
+                  Coef.  Std. Error      t  Pr(>|t|)   Lower 95%  Upper 95%
 ───────────────────────────────────────────────────────────────────────────
 (Intercept)   0.108982    0.10005     1.09    0.2787  -0.0895638   0.307528
 X            -0.0576102   0.0890579  -0.65    0.5192  -0.234343    0.119122
 ───────────────────────────────────────────────────────────────────────────</code></pre>
-<h3 id="例25問13に対応"><a href="#例25問13に対応">例25&#40;問13に対応&#41;</a></h3>
+<h3 id="例25問13に対応"><a href="#例25問13に対応" class=header-anchor >例25&#40;問13に対応&#41;</a></h3>
 <p>β̂₁/SE&#40;β₁&#41;を繰り返し推定してヒストグラムを作ります。 自由度N-2のt分布によく一致することが確認できます。</p>
-<pre><code class="julia hljs">t25 = <span class=hljs-built_in >Vector</span>{<span class=hljs-built_in >Real</span>}(<span class=hljs-literal >undef</span>,<span class=hljs-number >1000</span>)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >1000</span>
-    x25 = randn(N); y25 = randn(N)
-    t25[i],_ = collect(min_sq(x25,y25)) / Joe.RSE(x25,y25) ./ sqrt.(Joe.Bdiag(x25))
-<span class=hljs-keyword >end</span>
-p25_1 = histogram(t25,xlims=(-<span class=hljs-number >3</span>,<span class=hljs-number >3</span>),bins=<span class=hljs-number >20</span>,normalize=<span class=hljs-literal >true</span>,xlabel=<span class=hljs-string >&quot;tの値&quot;</span>,legend=<span class=hljs-literal >false</span>)
-title!(<span class=hljs-string >&quot;帰無仮説が成立する場合&quot;</span>)
-plot!(p25_1,x-&gt;pdf(TDist(<span class=hljs-number >98</span>),x));</code></pre>
+<pre><code class=language-julia >t25 &#61; Vector&#123;Real&#125;&#40;undef,1000&#41;
+for i in 1:1000
+    x25 &#61; randn&#40;N&#41;; y25 &#61; randn&#40;N&#41;
+    t25&#91;i&#93;,_ &#61; collect&#40;min_sq&#40;x25,y25&#41;&#41; / Joe.RSE&#40;x25,y25&#41; ./ sqrt.&#40;Joe.Bdiag&#40;x25&#41;&#41;
+end
+p25_1 &#61; histogram&#40;t25,xlims&#61;&#40;-3,3&#41;,bins&#61;20,normalize&#61;true,xlabel&#61;&quot;tの値&quot;,legend&#61;false&#41;
+title&#33;&#40;&quot;帰無仮説が成立する場合&quot;&#41;
+plot&#33;&#40;p25_1,x-&gt;pdf&#40;TDist&#40;98&#41;,x&#41;&#41;;</code></pre>
 <p>同じことをy&#61;0.1x&#43;ϵとしてデータをサンプリングしてみます。</p>
-<pre><code class="julia hljs">t25_ = <span class=hljs-built_in >Vector</span>{<span class=hljs-built_in >Real</span>}(<span class=hljs-literal >undef</span>,<span class=hljs-number >1000</span>)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >1000</span>
-    x25 = randn(N); y25 = <span class=hljs-number >0.1</span>*x25 .+ randn(N)
-    t25_[i],_ = collect(min_sq(x25,y25)) / Joe.RSE(x25,y25) ./ sqrt.(Joe.Bdiag(x25))
-<span class=hljs-keyword >end</span>
-p25_2 = histogram(t25_,xlims=(-<span class=hljs-number >3</span>,<span class=hljs-number >3</span>),bins=<span class=hljs-number >20</span>,normalize=<span class=hljs-literal >true</span>, xlabel=<span class=hljs-string >&quot;tの値&quot;</span>,legend=<span class=hljs-literal >false</span>)
-title!(<span class=hljs-string >&quot;帰無仮説が成立しない場合&quot;</span>)
-plot!(p25_2,x-&gt;pdf(TDist(<span class=hljs-number >98</span>),x))
-p25 = plot(p25_1,p25_2)</code></pre>
+<pre><code class=language-julia >t25_ &#61; Vector&#123;Real&#125;&#40;undef,1000&#41;
+for i in 1:1000
+    x25 &#61; randn&#40;N&#41;; y25 &#61; 0.1*x25 .&#43; randn&#40;N&#41;
+    t25_&#91;i&#93;,_ &#61; collect&#40;min_sq&#40;x25,y25&#41;&#41; / Joe.RSE&#40;x25,y25&#41; ./ sqrt.&#40;Joe.Bdiag&#40;x25&#41;&#41;
+end
+p25_2 &#61; histogram&#40;t25_,xlims&#61;&#40;-3,3&#41;,bins&#61;20,normalize&#61;true, xlabel&#61;&quot;tの値&quot;,legend&#61;false&#41;
+title&#33;&#40;&quot;帰無仮説が成立しない場合&quot;&#41;
+plot&#33;&#40;p25_2,x-&gt;pdf&#40;TDist&#40;98&#41;,x&#41;&#41;
+p25 &#61; plot&#40;p25_1,p25_2&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap1/code/output/fig1-6.svg" alt="">
-<h2 id="16_決定係数と共線形性の検出"><a href="#16_決定係数と共線形性の検出">1.6 決定係数と共線形性の検出</a></h2>
+<h2 id="16_決定係数と共線形性の検出"><a href="#16_決定係数と共線形性の検出" class=header-anchor >1.6 決定係数と共線形性の検出</a></h2>
 <p><span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mstyle displaystyle=true  scriptlevel=0 ><mfrac><mrow><mi>R</mi><mi>S</mi><mi>S</mi></mrow><mrow><mi>T</mi><mi>S</mi><mi>S</mi></mrow></mfrac></mstyle><mo>=</mo><mstyle displaystyle=true  scriptlevel=0 ><mfrac><mrow><mi>E</mi><mi>S</mi><mi>S</mi></mrow><mrow><mi>T</mi><mi>S</mi><mi>S</mi></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">R^2 = 1 - \dfrac{RSS}{TSS} = \dfrac{ESS}{TSS}</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.8141079999999999em;vertical-align:0em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.72777em;vertical-align:-0.08333em;"></span><span class=mord >1</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span><span class=mbin >−</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span></span><span class=base ><span class=strut  style="height:2.04633em;vertical-align:-0.686em;"></span><span class=mord ><span class="mopen nulldelimiter"></span><span class=mfrac ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:1.36033em;"><span style="top:-2.314em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span><span style="top:-3.23em;"><span class=pstrut  style="height:3em;"></span><span class=frac-line  style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:2.04633em;vertical-align:-0.686em;"></span><span class=mord ><span class="mopen nulldelimiter"></span><span class=mfrac ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:1.36033em;"><span style="top:-2.314em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span><span style="top:-3.23em;"><span class=pstrut  style="height:3em;"></span><span class=frac-line  style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>にしたがって、次の関数を定義しておきます。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> TSS(y)
-    Y = y .- mean(y)
-    <span class=hljs-keyword >return</span> Y&#x27;*Y
-<span class=hljs-keyword >end</span>
+<pre><code class=language-julia >function TSS&#40;y&#41;
+    Y &#61; y .- mean&#40;y&#41;
+    return Y&#39;*Y
+end
 
-ESS(x,y) = TSS(y) - RSS(x,y)
+ESS&#40;x,y&#41; &#61; TSS&#40;y&#41; - RSS&#40;x,y&#41;
 
-R2(x,y) = ESS(x,y)/TSS(y)</code></pre>
-<h3 id="例26"><a href="#例26">例26</a></h3>
+R2&#40;x,y&#41; &#61; ESS&#40;x,y&#41;/TSS&#40;y&#41;</code></pre>
+<h3 id="例26"><a href="#例26" class=header-anchor >例26</a></h3>
 <p>決定係数を計算してみます。</p>
-<pre><code class="julia hljs">N = <span class=hljs-number >100</span>; Random.seed!(<span class=hljs-number >123</span>)
-x26_2 = randn(N,<span class=hljs-number >2</span>); x26_1 = randn(N)
-y26 = randn(N)
-<span class=hljs-meta >@show</span> Joe.R2(x26_2,y26);</code></pre><pre><code class="plaintext hljs">Joe.R2(x26_2, y26) = 0.0021037427008462053
+<pre><code class=language-julia >N &#61; 100; Random.seed&#33;&#40;123&#41;
+x26_2 &#61; randn&#40;N,2&#41;; x26_1 &#61; randn&#40;N&#41;
+y26 &#61; randn&#40;N&#41;
+@show Joe.R2&#40;x26_2,y26&#41;;</code></pre><pre><code class="plaintext code-output">Joe.R2(x26_2, y26) = 0.0021037427008463584
 </code></pre>
 <p>また、1変量なら相関係数の二乗になることを確認します。</p>
-<pre><code class="julia hljs"><span class=hljs-meta >@show</span> Joe.R2(x26_1,y26);
-<span class=hljs-meta >@show</span> cor(x26_1,y26)^<span class=hljs-number >2</span> ; <span class=hljs-comment ># Statistics.jl</span></code></pre><pre><code class="plaintext hljs">Joe.R2(x26_1, y26) = 0.022465082479654636
-cor(x26_1, y26) ^ 2 = 0.022465082479654657
-0.022465082479654657</code></pre>
-<h3 id="例27"><a href="#例27">例27</a></h3>
-<p>VIFの計算は既存のパッケージになさそうです。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> VIF(x)
-    _,ncol= size(x)
-    v = <span class=hljs-built_in >Vector</span>{<span class=hljs-built_in >Float64</span>}(<span class=hljs-literal >undef</span>, ncol)
-    <span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:ncol
-        index = setdiff(<span class=hljs-number >1</span>:ncol,j)
-        v[j] = <span class=hljs-number >1</span>/(<span class=hljs-number >1</span>-R2(x[:,index],x[:,j]))
-    <span class=hljs-keyword >end</span>
-    <span class=hljs-keyword >return</span> v
-<span class=hljs-keyword >end</span></code></pre>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, RDatasets,DataFrames
-<span class=hljs-keyword >using</span> <span class=hljs-built_in >Pipe</span>: <span class=hljs-meta >@pipe</span>
-df = dataset(<span class=hljs-string >&quot;MASS&quot;</span>,<span class=hljs-string >&quot;BOSTON&quot;</span>)
-x27 = <span class=hljs-meta >@pipe</span> df |&gt; select(_,Not(:MedV)) |&gt; <span class=hljs-built_in >Array</span> <span class=hljs-comment >#df[Not(:MedV)]がFranklinで動かん。</span>
-<span class=hljs-comment >#TabularDisplayを使って綺麗に表示する。</span>
-<span class=hljs-keyword >using</span> TabularDisplay, Formatting
-foo = generate_formatter(<span class=hljs-string >&quot;%7.5f&quot;</span>)
-displaytable(Joe.VIF(x27);index=<span class=hljs-literal >true</span>,indexsep=<span class=hljs-string >&quot; -&gt; &quot;</span>,formatter=foo)</code></pre><pre><code class="plaintext hljs">ArgumentError: Package Pipe not found in current path:
-- Run `import Pkg; Pkg.add(&quot;Pipe&quot;)` to install the Pipe package.
-
+<pre><code class=language-julia >@show Joe.R2&#40;x26_1,y26&#41;;
+@show cor&#40;x26_1,y26&#41;^2 ; # Statistics.jl</code></pre><pre><code class="plaintext code-output">Joe.R2(x26_1, y26) = 0.02246508247965494
+cor(x26_1, y26) ^ 2 = 0.02246508247965464
 </code></pre>
-<h2 id="17_信頼区間と予測区間"><a href="#17_信頼区間と予測区間">1.7 信頼区間と予測区間</a></h2>
+<h3 id="例27"><a href="#例27" class=header-anchor >例27</a></h3>
+<p>VIFの計算は既存のパッケージになさそうです。</p>
+<pre><code class=language-julia >function VIF&#40;x&#41;
+    _,ncol&#61; size&#40;x&#41;
+    v &#61; Vector&#123;Float64&#125;&#40;undef, ncol&#41;
+    for j in 1:ncol
+        index &#61; setdiff&#40;1:ncol,j&#41;
+        v&#91;j&#93; &#61; 1/&#40;1-R2&#40;x&#91;:,index&#93;,x&#91;:,j&#93;&#41;&#41;
+    end
+    return v
+end</code></pre>
+<pre><code class=language-julia >using Joe, RDatasets,DataFrames
+using Chain
+df &#61; dataset&#40;&quot;MASS&quot;,&quot;BOSTON&quot;&#41;
+x27 &#61; @chain df select&#40;_,Not&#40;:MedV&#41;&#41; Array #df&#91;Not&#40;:MedV&#41;&#93;がFranklinで動かん。
+#TabularDisplayを使って綺麗に表示する。
+using TabularDisplay, Formatting
+foo &#61; generate_formatter&#40;&quot;&#37;7.5f&quot;&#41;
+displaytable&#40;Joe.VIF&#40;x27&#41;;index&#61;true,indexsep&#61;&quot; -&gt; &quot;,formatter&#61;foo&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_wOl9gm.
+</code></pre>
+<h2 id="17_信頼区間と予測区間"><a href="#17_信頼区間と予測区間" class=header-anchor >1.7 信頼区間と予測区間</a></h2>
 <p>定義にしたがって、信頼区間と予測区間の定義をします。危険率はデフォルトでは0.01としています。 &#40;<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mo lspace=0em  rspace=0em >⋆</mo></msub><mo stretchy=false >(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><msup><mo stretchy=false >)</mo><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>x</mi><mo lspace=0em  rspace=0em >⋆</mo><mi>T</mi></msubsup></mrow><annotation encoding="application/x-tex">x_{\star}(X^TX)^{-1}x_{\star}^T</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.0913309999999998em;vertical-align:-0.25em;"></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.175696em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">⋆</span></span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.15em;"><span></span></span></span></span></span></span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=mclose ><span class=mclose >)</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">⋆</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span> の計算に横着してdiagを使っているので、ちょっと勿体ないリソースの使い方をしている。&#41;</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> confident_interval(xp,x,y;α=<span class=hljs-number >0.01</span>)
-    N,p = size(x)
-    X = insert_ones(x)
-    XP = insert_ones(xp)
-    typeof(xp) &lt;:<span class=hljs-built_in >Number</span> &amp;&amp; (xp =[xp])
-    yerror = quantile(TDist(N-p-<span class=hljs-number >1</span>),<span class=hljs-number >1</span>-α/<span class=hljs-number >2</span>) * sqrt.(diag(XP * ((X&#x27;X) \ XP&#x27;)))
-<span class=hljs-keyword >end</span>
+<pre><code class=language-julia >function confident_interval&#40;xp,x,y;α&#61;0.01&#41;
+    N,p &#61; size&#40;x&#41;
+    X &#61; insert_ones&#40;x&#41;
+    XP &#61; insert_ones&#40;xp&#41;
+    typeof&#40;xp&#41; &lt;:Number &amp;&amp; &#40;xp &#61;&#91;xp&#93;&#41;
+    yerror &#61; quantile&#40;TDist&#40;N-p-1&#41;,1-α/2&#41; * sqrt.&#40;diag&#40;XP * &#40;&#40;X&#39;X&#41; \ XP&#39;&#41;&#41;&#41;
+end
 
-<span class=hljs-keyword >function</span> prediction_interval(xp,x,y;α=<span class=hljs-number >0.01</span>)
-    N,p = size(x)
-    X = insert_ones(x)
-    XP = insert_ones(xp)
-    typeof(xp) &lt;:<span class=hljs-built_in >Number</span> &amp;&amp; (xp =[xp])
-    yerror = quantile(TDist(N-p-<span class=hljs-number >1</span>),<span class=hljs-number >1</span>-α/<span class=hljs-number >2</span>) * sqrt.( <span class=hljs-number >1</span> .+ diag(XP * ((X&#x27;X) \ XP&#x27;)))
-<span class=hljs-keyword >end</span></code></pre>
-<h3 id="例28"><a href="#例28">例28</a></h3>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Plots, Random, Joe
-N = <span class=hljs-number >100</span>; Random.seed!(<span class=hljs-number >123</span>)
-x28 = randn(N,<span class=hljs-number >1</span>)
-y28 = x28 .+<span class=hljs-number >1</span> + randn(N)  |&gt; vec <span class=hljs-comment ># 真の切片と傾きはともに1</span>
-p28 = scatter(x28,y28,xlabel=<span class=hljs-string >&quot;x&quot;</span>,ylabel=<span class=hljs-string >&quot;y&quot;</span>,
-                label=<span class=hljs-string >&quot;data     &quot;</span>,legend=:topleft)
-β<span class=hljs-number >28</span> = multiple_regression(x28,y28)
-x_seq = -<span class=hljs-number >10</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >10</span>
-ŷ = insert_ones(x_seq) * β<span class=hljs-number >28</span>
-yerror1 = Joe.confident_interval(x_seq,x28,y28)
-yerror2 = Joe.prediction_interval(x_seq,x28,y28)
-plot!(p28,x_seq,ŷ,ribbon=yerror2, label=<span class=hljs-string >&quot;予測区間&quot;</span>)
-plot!(p28,x_seq,ŷ,ribbon=yerror1, label=<span class=hljs-string >&quot;信頼区間&quot;</span>)</code></pre>
+function prediction_interval&#40;xp,x,y;α&#61;0.01&#41;
+    N,p &#61; size&#40;x&#41;
+    X &#61; insert_ones&#40;x&#41;
+    XP &#61; insert_ones&#40;xp&#41;
+    typeof&#40;xp&#41; &lt;:Number &amp;&amp; &#40;xp &#61;&#91;xp&#93;&#41;
+    yerror &#61; quantile&#40;TDist&#40;N-p-1&#41;,1-α/2&#41; * sqrt.&#40; 1 .&#43; diag&#40;XP * &#40;&#40;X&#39;X&#41; \ XP&#39;&#41;&#41;&#41;
+end</code></pre>
+<h3 id="例28"><a href="#例28" class=header-anchor >例28</a></h3>
+<pre><code class=language-julia >using Plots, Random, Joe
+N &#61; 100; Random.seed&#33;&#40;123&#41;
+x28 &#61; randn&#40;N,1&#41;
+y28 &#61; x28 .&#43;1 &#43; randn&#40;N&#41;  |&gt; vec # 真の切片と傾きはともに1
+p28 &#61; scatter&#40;x28,y28,xlabel&#61;&quot;x&quot;,ylabel&#61;&quot;y&quot;,
+                label&#61;&quot;data     &quot;,legend&#61;:topleft&#41;
+β28 &#61; multiple_regression&#40;x28,y28&#41;
+x_seq &#61; -10:0.1:10
+ŷ &#61; insert_ones&#40;x_seq&#41; * β28
+yerror1 &#61; Joe.confident_interval&#40;x_seq,x28,y28&#41;
+yerror2 &#61; Joe.prediction_interval&#40;x_seq,x28,y28&#41;
+plot&#33;&#40;p28,x_seq,ŷ,ribbon&#61;yerror2, label&#61;&quot;予測区間&quot;&#41;
+plot&#33;&#40;p28,x_seq,ŷ,ribbon&#61;yerror1, label&#61;&quot;信頼区間&quot;&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap1/code/output/fig1-7.svg" alt="">
   <p style="text-align:right">  めでたしめでたし </p>  <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p>
 <div class=page-foot >
   <div class=copyright >
-    &copy; Kei Hanafusa. Last modified: January 03, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+    &copy; Kei Hanafusa. Last modified: August 08, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
   </div>
 </div>
 </div>
@@ -237,3 +235,12 @@ plot!(p28,x_seq,ŷ,ribbon=yerror1, label=<span class=hljs-string >&quot;信頼�
   <script src="/Joe.jl/libs/myBtn/myBtn.js"></script>
   <script src="/Joe.jl/libs/popup/jquery.magnific-popup.min.js"></script>
   <script src="/Joe.jl/libs/popup/mypopup.js"></script>
+  
+    
+
+
+
+  
+  
+    <script src="/Joe.jl/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>

@@ -1,3 +1,1 @@
-ArgumentError: Package Pipe not found in current path:
-- Run `import Pkg; Pkg.add("Pipe")` to install the Pipe package.
-
+Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_7gmd4k.

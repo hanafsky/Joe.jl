@@ -1,53 +1,51 @@
-<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link rel=stylesheet  href="css/magnific-popup.css" /> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第六章　非線形回帰</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">情報量基準</h1> <hr> <div class=franklin-content ><p><h1 id="第4章"><a href="#第4章">第4章</a></h1> <p>情報量基準の問題。殆ど証明でコーディングの問題は少ないです。 説明変数の組み合わせを求めるにあたって、Combinatrics.jlパッケージ（pythonでいうitertools）がとても役立ちます。 また、最小値とそのインデックスを返すfindmin関数も有用です。</p> <h2 id="例題45"><a href="#例題45">例題45</a></h2> <p>ボストン不動産データセットを用いた線形回帰分析でのAIC・BICの例。 次のような関数をchap4.jl内で定義しています。</p> <pre><code class="julia hljs"><span class=hljs-keyword >function</span> AIC(x,y)
-    N, k = size(x)
-    <span class=hljs-meta >@assert</span> N == length(y)
-    <span class=hljs-keyword >return</span> N*log(RSS(x,y)/N) + <span class=hljs-number >2</span>k
-<span class=hljs-keyword >end</span>
-<span class=hljs-keyword >function</span> AIC_min(x,y)
-    _,p = size(x)
-    aic_min = <span class=hljs-built_in >Array</span>{<span class=hljs-built_in >Float64</span>}(<span class=hljs-literal >undef</span>,p)
-    aic_min_com = <span class=hljs-built_in >Array</span>{<span class=hljs-built_in >Any</span>}(<span class=hljs-literal >undef</span>,p)
-    <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:p
-        combi = combinations(<span class=hljs-number >1</span>:p,i) |&gt; collect
-        aic_min[i],aic_index = [AIC(x[:,c],y) <span class=hljs-keyword >for</span> c <span class=hljs-keyword >in</span> combi] |&gt; findmin
-        aic_min_com[i] = combi[aic_index]
-    <span class=hljs-keyword >end</span>
-    <span class=hljs-keyword >return</span> aic_min, aic_min_com
-<span class=hljs-keyword >end</span></code></pre> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe
-<span class=hljs-keyword >using</span> RDatasets, Plots
-<span class=hljs-keyword >using</span> <span class=hljs-built_in >Pipe</span>: <span class=hljs-meta >@pipe</span>
-df = dataset(<span class=hljs-string >&quot;MASS&quot;</span>,<span class=hljs-string >&quot;BOSTON&quot;</span>)
-X = <span class=hljs-meta >@pipe</span> df |&gt; select(_, Not(:MedV)) |&gt; <span class=hljs-built_in >Array</span> <span class=hljs-comment >#残りの全ての説明変数を利用</span>
-X2 =<span class=hljs-meta >@pipe</span> df |&gt; select(_, Not([:MedV, :Zn, :Chas])) |&gt; <span class=hljs-built_in >Array</span> <span class=hljs-comment >#ZnとChasを除いた場合 教科書ではこうなっている。</span>
-y = df[!,:MedV] <span class=hljs-comment >#目的変数</span>
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link rel=stylesheet  href="css/magnific-popup.css" /> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第六章　非線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap7/">第七章　決定木</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">情報量基準</h1> <hr> <div class=franklin-content ><p><h1 id="第4章"><a href="#第4章" class=header-anchor >第4章</a></h1> <p>情報量基準の問題。殆ど証明でコーディングの問題は少ないです。 説明変数の組み合わせを求めるにあたって、Combinatrics.jlパッケージ（pythonでいうitertools）がとても役立ちます。 また、最小値とそのインデックスを返すfindmin関数も有用です。</p> <h2 id="例題45"><a href="#例題45" class=header-anchor >例題45</a></h2> <p>ボストン不動産データセットを用いた線形回帰分析でのAIC・BICの例。 次のような関数をchap4.jl内で定義しています。</p> <pre><code class=language-julia >function AIC&#40;x,y&#41;
+    N, k &#61; size&#40;x&#41;
+    @assert N &#61;&#61; length&#40;y&#41;
+    return N*log&#40;RSS&#40;x,y&#41;/N&#41; &#43; 2k
+end
+function AIC_min&#40;x,y&#41;
+    _,p &#61; size&#40;x&#41;
+    aic_min &#61; Array&#123;Float64&#125;&#40;undef,p&#41;
+    aic_min_com &#61; Array&#123;Any&#125;&#40;undef,p&#41;
+    for i in 1:p
+        combi &#61; combinations&#40;1:p,i&#41; |&gt; collect
+        aic_min&#91;i&#93;,aic_index &#61; &#91;AIC&#40;x&#91;:,c&#93;,y&#41; for c in combi&#93; |&gt; findmin
+        aic_min_com&#91;i&#93; &#61; combi&#91;aic_index&#93;
+    end
+    return aic_min, aic_min_com
+end</code></pre> <pre><code class=language-julia >using Joe
+using RDatasets, Plots
+using Chain
+df &#61; dataset&#40;&quot;MASS&quot;,&quot;BOSTON&quot;&#41;
+X &#61; @chain df select&#40;_, Not&#40;:MedV&#41;&#41; Array #残りの全ての説明変数を利用
+X2 &#61;@chain df select&#40;_, Not&#40;&#91;:MedV, :Zn, :Chas&#93;&#41;&#41; Array #ZnとChasを除いた場合 教科書ではこうなっている。
+y &#61; df&#91;&#33;,:MedV&#93; #目的変数
 
-aicmin, aicindex = Joe.AIC_min(X,y)
-bicmin, bicindex = Joe.BIC_min(X,y)
-aicmin2, aicindex2 = Joe.AIC_min(X2,y)
-bicmin2, bicindex2 = Joe.BIC_min(X2,y)
+aicmin, aicindex &#61; Joe.AIC_min&#40;X,y&#41;
+bicmin, bicindex &#61; Joe.BIC_min&#40;X,y&#41;
+aicmin2, aicindex2 &#61; Joe.AIC_min&#40;X2,y&#41;
+bicmin2, bicindex2 &#61; Joe.BIC_min&#40;X2,y&#41;
 
-p=plot(xlabel=<span class=hljs-string >&quot;number of variables&quot;</span>,ylabel=<span class=hljs-string >&quot;AIC or BIC values&quot;</span>)
-scatter!(p,aicmin,label=<span class=hljs-string >&quot;AIC&quot;</span>)
-scatter!(p,bicmin,label=<span class=hljs-string >&quot;BIC&quot;</span>)</code></pre><pre><code class="plaintext hljs">ArgumentError: Package Pipe not found in current path:
-- Run `import Pkg; Pkg.add(&quot;Pipe&quot;)` to install the Pipe package.
+p&#61;plot&#40;xlabel&#61;&quot;number of variables&quot;,ylabel&#61;&quot;AIC or BIC values&quot;&#41;
+scatter&#33;&#40;p,aicmin,label&#61;&quot;AIC&quot;&#41;
+scatter&#33;&#40;p,bicmin,label&#61;&quot;BIC&quot;&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_7gmd4k.
+</code></pre> <p><span style="color:red;">// Image matching '/assets/StatisticalML/chap4/code/p45' not found. //</span></p> <h2 id="問46"><a href="#問46" class=header-anchor >問46</a></h2> <p>ボストン不動産データでのAIC値を最小にする組み合わせを記述したもの。</p> <pre><code class=language-julia >min_aic_boston,aicmin_index  &#61; findmin&#40;aicmin2&#41;
+println&#40;&quot;Minimum AIC value:&quot;, min_aic_boston, &quot;, set: &quot;, aicindex2&#91;aicmin_index&#93;&#41;</code></pre><pre><code class="plaintext code-output">UndefVarError: aicmin2 not defined
+</code></pre> <h2 id="問47"><a href="#問47" class=header-anchor >問47</a></h2> <p>BIC関数とAR2関数を定義して利用します。変数の数毎の最小値を計算する関数は AIC_minと同じ方法で定義しています。ただしAR2の場合は最大化しなければならないので注意が必要です。</p> <pre><code class=language-julia >function BIC&#40;x,y&#41;
+    N,k &#61; size&#40;x&#41;
+    @assert N &#61;&#61; length&#40;y&#41;
+    return N*log&#40;RSS&#40;x,y&#41;/N&#41; &#43; k*log&#40;N&#41;
+end
 
-</code></pre> <p><span style="color:red;">// Image matching '/assets/StatisticalML/chap4/code/p45' not found. //</span></p> <h2 id="問46"><a href="#問46">問46</a></h2> <p>ボストン不動産データでのAIC値を最小にする組み合わせを記述したもの。</p> <pre><code class="julia hljs">min_aic_boston,aicmin_index  = findmin(aicmin2)
-println(<span class=hljs-string >&quot;Minimum AIC value:&quot;</span>, min_aic_boston, <span class=hljs-string >&quot;, set: &quot;</span>, aicindex2[aicmin_index])</code></pre><pre><code class="plaintext hljs">UndefVarError: aicmin2 not defined
-</code></pre> <h2 id="問47"><a href="#問47">問47</a></h2> <p>BIC関数とAR2関数を定義して利用します。変数の数毎の最小値を計算する関数は AIC_minと同じ方法で定義しています。ただしAR2の場合は最大化しなければならないので注意が必要です。</p> <pre><code class="julia hljs"><span class=hljs-keyword >function</span> BIC(x,y)
-    N,k = size(x)
-    <span class=hljs-meta >@assert</span> N == length(y)
-    <span class=hljs-keyword >return</span> N*log(RSS(x,y)/N) + k*log(N)
-<span class=hljs-keyword >end</span>
-
-<span class=hljs-keyword >function</span> AR2(x,y)
-    N,k = size(x)
-    <span class=hljs-meta >@assert</span> N == length(y)
-    <span class=hljs-keyword >return</span> <span class=hljs-number >1</span> - RSS(x,y)/(N-k-<span class=hljs-number >1</span>)/TSS(y)*(N-<span class=hljs-number >1</span>)
-<span class=hljs-keyword >end</span></code></pre> <p>どの基準で計算しても、今回の場合同じ変数の組み合わせが最適という結論になります。</p> <pre><code class="julia hljs"><span class=hljs-comment >#BIC</span>
-min_bic_boston,bicmin_index  = findmin(bicmin2)
-println(<span class=hljs-string >&quot;Minimum BIC value: &quot;</span>, min_bic_boston, <span class=hljs-string >&quot;, set: &quot;</span>, bicindex2[aicmin_index])
-<span class=hljs-comment >#AR2</span>
-ar2max2, ar2index2 = Joe.AR2_max(X2,y)
-max_ar2_boston,ar2max_index  = findmax(ar2max2)
-println(<span class=hljs-string >&quot;Maximum AR2 value: &quot;</span>, max_ar2_boston, <span class=hljs-string >&quot;, set: &quot;</span>, ar2index2[aicmin_index])</code></pre><pre><code class="plaintext hljs">UndefVarError: bicmin2 not defined
-</code></pre> <h2 id="問48"><a href="#問48">問48</a></h2> <p>例題45でやったので、割愛します。</p> <p style="text-align:right"> めでたしめでたし </p> <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p> <div class=page-foot > <div class=copyright > &copy; Kei Hanafusa. Last modified: January 03, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </main> <script src="/Joe.jl/libs/vela/metisMenu.min.js"></script> <script src="/Joe.jl/libs/vela/slideout.min.js"></script> <script src="/Joe.jl/libs/myBtn/myBtn.js"></script> <script src="/Joe.jl/libs/popup/jquery.magnific-popup.min.js"></script> <script src="/Joe.jl/libs/popup/mypopup.js"></script>
+function AR2&#40;x,y&#41;
+    N,k &#61; size&#40;x&#41;
+    @assert N &#61;&#61; length&#40;y&#41;
+    return 1 - RSS&#40;x,y&#41;/&#40;N-k-1&#41;/TSS&#40;y&#41;*&#40;N-1&#41;
+end</code></pre> <p>どの基準で計算しても、今回の場合同じ変数の組み合わせが最適という結論になります。</p> <pre><code class=language-julia >#BIC
+min_bic_boston,bicmin_index  &#61; findmin&#40;bicmin2&#41;
+println&#40;&quot;Minimum BIC value: &quot;, min_bic_boston, &quot;, set: &quot;, bicindex2&#91;aicmin_index&#93;&#41;
+#AR2
+ar2max2, ar2index2 &#61; Joe.AR2_max&#40;X2,y&#41;
+max_ar2_boston,ar2max_index  &#61; findmax&#40;ar2max2&#41;
+println&#40;&quot;Maximum AR2 value: &quot;, max_ar2_boston, &quot;, set: &quot;, ar2index2&#91;aicmin_index&#93;&#41;</code></pre><pre><code class="plaintext code-output">UndefVarError: bicmin2 not defined
+</code></pre> <h2 id="問48"><a href="#問48" class=header-anchor >問48</a></h2> <p>例題45でやったので、割愛します。</p> <p style="text-align:right"> めでたしめでたし </p> <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p> <div class=page-foot > <div class=copyright > &copy; Kei Hanafusa. Last modified: August 08, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </main> <script src="/Joe.jl/libs/vela/metisMenu.min.js"></script> <script src="/Joe.jl/libs/vela/slideout.min.js"></script> <script src="/Joe.jl/libs/myBtn/myBtn.js"></script> <script src="/Joe.jl/libs/popup/jquery.magnific-popup.min.js"></script> <script src="/Joe.jl/libs/popup/mypopup.js"></script> <script src="/Joe.jl/libs/highlight/highlight.pack.js"></script> <script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: ' '});</script>

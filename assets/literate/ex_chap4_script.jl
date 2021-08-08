@@ -12,10 +12,10 @@ default( # hide
     left_margin = 30px, # hide
     bottom_margin = 30px # hide
 ) # hide
-using Pipe: @pipe
+using Chain
 df = dataset("MASS","BOSTON")
-X = @pipe df |> select(_, Not(:MedV)) |> Array #残りの全ての説明変数を利用
-X2 =@pipe df |> select(_, Not([:MedV, :Zn, :Chas])) |> Array #ZnとChasを除いた場合 教科書ではこうなっている。
+X = @chain df select(_, Not(:MedV)) Array #残りの全ての説明変数を利用
+X2 =@chain df select(_, Not([:MedV, :Zn, :Chas])) Array #ZnとChasを除いた場合 教科書ではこうなっている。
 y = df[!,:MedV] #目的変数
 
 aicmin, aicindex = Joe.AIC_min(X,y)

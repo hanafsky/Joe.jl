@@ -1,22 +1,22 @@
-<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link rel=stylesheet  href="css/magnific-popup.css" /> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第六章　非線形回帰</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">分類</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#ロジスティック回帰">ロジスティック回帰</a><ol><li><a href="#例29">例29</a></ol><li><a href="#ニュートンラフソン法">ニュートン・ラフソン法</a><ol><li><a href="#例31">例31</a><li><a href="#例31__2">例31</a><li><a href="#例33">例33</a><li><a href="#例34">例34</a></ol><li><a href="#23_線形判別と二次判別">2.3 線形判別と二次判別</a><ol><li><a href="#例35">例35</a><li><a href="#例36_fisherのあやめ">例36 &#40;Fisherのあやめ&#41;</a><li><a href="#問29_事前確率が分かっている場合">問29 事前確率が分かっている場合</a></ol><li><a href="#k近傍法">K近傍法</a><ol><li><a href="#例37_fisherのあやめ_returns">例37 Fisherのあやめ returns</a></ol><li><a href="#roc曲線">ROC曲線</a><ol><li><a href="#例38">例38</a></ol></ol></div> <h2 id="ロジスティック回帰"><a href="#ロジスティック回帰">ロジスティック回帰</a></h2> <h3 id="例29"><a href="#例29">例29</a></h3> <p>シグモイド関数を定義しておきます。</p> <pre><code class="julia hljs">sigmoid(x::<span class=hljs-built_in >Matrix</span>, β::<span class=hljs-built_in >Vector</span>) = <span class=hljs-number >1</span> / (<span class=hljs-number >1</span> + exp(-x*β))</code></pre>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Plots
-p29 = plot(xlims=(-<span class=hljs-number >10</span>,<span class=hljs-number >10</span>), xlabel=<span class=hljs-string >&quot;x&quot;</span>,ylabel=<span class=hljs-string >&quot;P(Y=1|x)&quot;</span>,
-            legend=:topleft, title=<span class=hljs-string >&quot;ロジスティック曲線&quot;</span>)
-x29 = insert_ones(-<span class=hljs-number >10</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >10</span>)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> [<span class=hljs-number >0</span>, <span class=hljs-number >0.2</span>, <span class=hljs-number >0.5</span>, <span class=hljs-number >1</span>, <span class=hljs-number >2</span>, <span class=hljs-number >10</span>]
-    plot!(p29, x29[:,<span class=hljs-number >2</span>], Joe.sigmoid(x29,[<span class=hljs-number >0</span>,i]),label=<span class=hljs-string >&quot;<span class=hljs-variable >$i</span>&quot;</span>)
-<span class=hljs-keyword >end</span></code></pre>
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link rel=stylesheet  href="css/magnific-popup.css" /> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第六章　非線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap7/">第七章　決定木</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">分類</h1> <hr> <div class=franklin-content ><p><div class=franklin-toc ><ol><li><a href="#ロジスティック回帰">ロジスティック回帰</a><ol><li><a href="#例29">例29</a></ol><li><a href="#ニュートンラフソン法">ニュートン・ラフソン法</a><ol><li><a href="#例31">例31</a><li><a href="#例31__2">例31</a><li><a href="#例33">例33</a><li><a href="#例34">例34</a></ol><li><a href="#23_線形判別と二次判別">2.3 線形判別と二次判別</a><ol><li><a href="#例35">例35</a><li><a href="#例36_fisherのあやめ">例36 &#40;Fisherのあやめ&#41;</a><li><a href="#問29_事前確率が分かっている場合">問29 事前確率が分かっている場合</a></ol><li><a href="#k近傍法">K近傍法</a><ol><li><a href="#例37_fisherのあやめ_returns">例37 Fisherのあやめ returns</a></ol><li><a href="#roc曲線">ROC曲線</a><ol><li><a href="#例38">例38</a></ol></ol></div> <h2 id="ロジスティック回帰"><a href="#ロジスティック回帰" class=header-anchor >ロジスティック回帰</a></h2> <h3 id="例29"><a href="#例29" class=header-anchor >例29</a></h3> <p>シグモイド関数を定義しておきます。</p> <pre><code class=language-julia >sigmoid&#40;x::Matrix, β::Vector&#41; &#61; 1 / &#40;1 &#43; exp&#40;-x*β&#41;&#41;</code></pre>
+<pre><code class=language-julia >using Joe, Plots
+p29 &#61; plot&#40;xlims&#61;&#40;-10,10&#41;, xlabel&#61;&quot;x&quot;,ylabel&#61;&quot;P&#40;Y&#61;1|x&#41;&quot;,
+            legend&#61;:topleft, title&#61;&quot;ロジスティック曲線&quot;&#41;
+x29 &#61; insert_ones&#40;-10:0.1:10&#41;
+for i in &#91;0, 0.2, 0.5, 1, 2, 10&#93;
+    plot&#33;&#40;p29, x29&#91;:,2&#93;, Joe.sigmoid&#40;x29,&#91;0,i&#93;&#41;,label&#61;&quot;&#36;i&quot;&#41;
+end</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-1.svg" alt="">
-<h2 id="ニュートンラフソン法"><a href="#ニュートンラフソン法">ニュートン・ラフソン法</a></h2>
-<h3 id="例31"><a href="#例31">例31</a></h3>
+<h2 id="ニュートンラフソン法"><a href="#ニュートンラフソン法" class=header-anchor >ニュートン・ラフソン法</a></h2>
+<h3 id="例31"><a href="#例31" class=header-anchor >例31</a></h3>
 <p><span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^2-1=0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.897438em;vertical-align:-0.08333em;"></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2222222222222222em;"></span><span class=mbin >−</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >1</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>を4を初期値として数値計算で解く問題。10回でどの程度近づくか。 せっかくなので、 微分をあらわに書き下すのではなくて、自動微分パッケージを使ってみることにします。 見た目が<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>←</mo><mi>x</mi><mo>−</mo><mstyle displaystyle=true  scriptlevel=0 ><mfrac><mrow><mi>f</mi><mo stretchy=false >(</mo><mi>x</mi><mo stretchy=false >)</mo></mrow><mrow><msup><mi>f</mi><mo mathvariant=normal  lspace=0em  rspace=0em >′</mo></msup><mo stretchy=false >(</mo><mi>x</mi><mo stretchy=false >)</mo></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">x \leftarrow x - \dfrac{f(x)}{f&#x27;(x)}</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">x</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >←</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span><span class=mbin >−</span><span class=mspace  style="margin-right:0.2222222222222222em;"></span></span><span class=base ><span class=strut  style="height:2.363em;vertical-align:-0.936em;"></span><span class=mord ><span class="mopen nulldelimiter"></span><span class=mfrac ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:1.427em;"><span style="top:-2.314em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class=mord ><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.6778919999999999em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class=mopen >(</span><span class="mord mathnormal">x</span><span class=mclose >)</span></span></span><span style="top:-3.23em;"><span class=pstrut  style="height:3em;"></span><span class=frac-line  style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class=pstrut  style="height:3em;"></span><span class=mord ><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class=mopen >(</span><span class="mord mathnormal">x</span><span class=mclose >)</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>という公式のまんまですね。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Zygote
-f(x) = x^<span class=hljs-number >2</span> -<span class=hljs-number >1</span>
-x=<span class=hljs-number >4</span>
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
-    x -= f(x)/f&#x27;(x)
-    println(x)
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">2.125
+<pre><code class=language-julia >using Zygote
+f&#40;x&#41; &#61; x^2 -1
+x&#61;4
+for i in 1:10
+    x -&#61; f&#40;x&#41;/f&#39;&#40;x&#41;
+    println&#40;x&#41;
+end</code></pre><pre><code class="plaintext code-output">2.125
 1.2977941176470589
 1.0341661806365605
 1.0005643811996305
@@ -27,16 +27,16 @@ x=<span class=hljs-number >4</span>
 1.0
 1.0
 </code></pre>
-<h3 id="例31__2"><a href="#例31__2">例31</a></h3>
+<h3 id="例31__2"><a href="#例31__2" class=header-anchor >例31</a></h3>
 <p>2変数関数が2つある場合。 Zygote.jlにjacobianがなかったので、ForwardDiff.jlを使ってみます。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> ForwardDiff
+<pre><code class=language-julia >using ForwardDiff
 
-f(x,y) = [x^<span class=hljs-number >2</span>+y^<span class=hljs-number >2</span>-<span class=hljs-number >1</span>, x+y]
-z = [<span class=hljs-number >3</span>,<span class=hljs-number >4</span>]
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
-    z -= ForwardDiff.jacobian(x-&gt;f(x[<span class=hljs-number >1</span>], x[<span class=hljs-number >2</span>]),z) \ f(z[<span class=hljs-number >1</span>],z[<span class=hljs-number >2</span>])
-    println(z)
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">[-13.000000000000004, 13.000000000000002]
+f&#40;x,y&#41; &#61; &#91;x^2&#43;y^2-1, x&#43;y&#93;
+z &#61; &#91;3,4&#93;
+for i in 1:10
+    z -&#61; ForwardDiff.jacobian&#40;x-&gt;f&#40;x&#91;1&#93;, x&#91;2&#93;&#41;,z&#41; \ f&#40;z&#91;1&#93;,z&#91;2&#93;&#41;
+    println&#40;z&#41;
+end</code></pre><pre><code class="plaintext code-output">[-13.000000000000004, 13.000000000000002]
 [-6.519230769230771, 6.519230769230771]
 [-3.297963467211255, 3.297963467211255]
 [-1.7247860905930625, 1.7247860905930625]
@@ -47,67 +47,67 @@ z = [<span class=hljs-number >3</span>,<span class=hljs-number >4</span>]
 [-0.7071067811876538, 0.7071067811876538]
 [-0.7071067811865475, 0.7071067811865475]
 </code></pre>
-<h3 id="例33"><a href="#例33">例33</a></h3>
+<h3 id="例33"><a href="#例33" class=header-anchor >例33</a></h3>
 <p>最尤推定によりロジスティック回帰を行う問題。 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant=normal >∇</mi><mi>l</mi><mo stretchy=false >(</mo><msub><mi>β</mi><mn>0</mn></msub><mo separator=true >,</mo><mi>β</mi><mo stretchy=false >)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\nabla l(\beta_0, \beta) = 0</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1em;vertical-align:-0.25em;"></span><span class=mord >∇</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05278em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.15em;"><span></span></span></span></span></span></span><span class=mpunct >,</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class=mclose >)</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >=</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:0.64444em;vertical-align:0em;"></span><span class=mord >0</span></span></span></span>を求める問題を解いてみる。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Random, LinearAlgebra
-<span class=hljs-keyword >using</span> Plots
-N=<span class=hljs-number >1000</span>; p=<span class=hljs-number >2</span>; Random.seed!(<span class=hljs-number >1</span>)
-X = insert_ones(randn(N,p))
-β = randn(p+<span class=hljs-number >1</span>)
-prob = @. <span class=hljs-number >1</span>/(<span class=hljs-number >1</span> + exp($*(X,β)))
-threshold=<span class=hljs-number >0.5</span>
-y = ifelse.(rand(N) .&gt; prob,<span class=hljs-number >1</span>,-<span class=hljs-number >1</span>) <span class=hljs-comment ># ここまでデータ生成</span>
-<span class=hljs-meta >@show</span> y β;</code></pre><pre><code class="plaintext hljs">y = [-1, -1, 1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, -1, -1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, 1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1]
+<pre><code class=language-julia >using Joe, Random, LinearAlgebra
+using Plots
+N&#61;1000; p&#61;2; Random.seed&#33;&#40;1&#41;
+X &#61; insert_ones&#40;randn&#40;N,p&#41;&#41;
+β &#61; randn&#40;p&#43;1&#41;
+prob &#61; @. 1/&#40;1 &#43; exp&#40;&#36;*&#40;X,β&#41;&#41;&#41;
+threshold&#61;0.5
+y &#61; ifelse.&#40;rand&#40;N&#41; .&gt; prob,1,-1&#41; # ここまでデータ生成
+@show y β;</code></pre><pre><code class="plaintext code-output">y = [-1, -1, 1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, -1, -1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, 1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1, 1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 1, 1]
 β = [-0.8743656729822114, -1.945231200473885, 1.6388761704740658]
 </code></pre>
 <p>せっかくなのでデータを可視化してみます。</p>
-<pre><code class="julia hljs">data1 = X[y .== <span class=hljs-number >1</span>, <span class=hljs-number >2</span>:<span class=hljs-number >3</span>]
-data2 = X[y .== -<span class=hljs-number >1</span>, <span class=hljs-number >2</span>:<span class=hljs-number >3</span>]
-p33=scatter(data1[:,<span class=hljs-number >1</span>],data1[:,<span class=hljs-number >2</span>],ylims=(-<span class=hljs-number >5</span>,<span class=hljs-number >5</span>),marker=:auto, label=<span class=hljs-string >&quot;y=1&quot;</span>)
-scatter!(p33,data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>],marker=:auto,label=<span class=hljs-string >&quot;y=-1&quot;</span>)
-plot!(p33,x-&gt; -β[<span class=hljs-number >1</span>]/β[<span class=hljs-number >3</span>] - β[<span class=hljs-number >2</span>]/β[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;β&quot;</span>)</code></pre>
+<pre><code class=language-julia >data1 &#61; X&#91;y .&#61;&#61; 1, 2:3&#93;
+data2 &#61; X&#91;y .&#61;&#61; -1, 2:3&#93;
+p33&#61;scatter&#40;data1&#91;:,1&#93;,data1&#91;:,2&#93;,ylims&#61;&#40;-5,5&#41;,marker&#61;:auto, label&#61;&quot;y&#61;1&quot;&#41;
+scatter&#33;&#40;p33,data2&#91;:,1&#93;,data2&#91;:,2&#93;,marker&#61;:auto,label&#61;&quot;y&#61;-1&quot;&#41;
+plot&#33;&#40;p33,x-&gt; -β&#91;1&#93;/β&#91;3&#93; - β&#91;2&#93;/β&#91;3&#93;*x, label&#61;&quot;β&quot;&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-2.svg" alt="">
-<pre><code class="julia hljs">γ = randn(<span class=hljs-number >2</span>+<span class=hljs-number >1</span>) <span class=hljs-comment >#初期値</span>
-γ<span class=hljs-number >2</span> = copy(γ) <span class=hljs-comment >#別解用にコピー</span>
-<span class=hljs-meta >@show</span> γ
-W(v::<span class=hljs-built_in >Vector</span>) = @.(v/(<span class=hljs-number >1</span>+ v)^<span class=hljs-number >2</span>) |&gt; diagm
-t = <span class=hljs-literal >true</span>
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
-    <span class=hljs-keyword >global</span> γ
-    s=X*γ
-    v = @. exp(-y*s)
-    u = @. y*v/(<span class=hljs-number >1</span>+v)
-    γ += ((X&#x27;*W(v)*X) \ X&#x27;) * u
-    <span class=hljs-comment >#δ&#x27;*δ &lt; 0.001 &amp;&amp; (t = false)</span>
-    <span class=hljs-meta >@show</span> γ
-<span class=hljs-keyword >end</span>
-plot!(x-&gt; -γ[<span class=hljs-number >1</span>]/γ[<span class=hljs-number >3</span>] - γ[<span class=hljs-number >2</span>]/γ[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ = [-0.9588319286678549, -2.142965143840243, 0.49000586969362697]
-γ = [-0.6868290426397672, -1.490557450602416, 1.3181038933475095]
+<pre><code class=language-julia >γ &#61; randn&#40;2&#43;1&#41; #初期値
+γ2 &#61; copy&#40;γ&#41; #別解用にコピー
+@show γ
+W&#40;v::Vector&#41; &#61; @.&#40;v/&#40;1&#43; v&#41;^2&#41; |&gt; diagm
+t &#61; true
+for i in 1:10
+    global γ
+    s&#61;X*γ
+    v &#61; @. exp&#40;-y*s&#41;
+    u &#61; @. y*v/&#40;1&#43;v&#41;
+    γ &#43;&#61; &#40;&#40;X&#39;*W&#40;v&#41;*X&#41; \ X&#39;&#41; * u
+    #δ&#39;*δ &lt; 0.001 &amp;&amp; &#40;t &#61; false&#41;
+    @show γ
+end
+plot&#33;&#40;x-&gt; -γ&#91;1&#93;/γ&#91;3&#93; - γ&#91;2&#93;/γ&#91;3&#93;*x, label&#61;&quot;γ&quot;&#41;</code></pre><pre><code class="plaintext code-output">γ = [-0.9588319286678549, -2.142965143840243, 0.49000586969362697]
+γ = [-0.6868290426397674, -1.4905574506024162, 1.3181038933475093]
 γ = [-0.8389578286870751, -1.813314273328805, 1.4260329338938003]
 γ = [-0.864933524808484, -1.871868634791574, 1.4560345475721006]
-γ = [-0.8656536058114845, -1.8735243209383907, 1.4570217428831782]
-γ = [-0.8656541720759062, -1.8735256324938316, 1.4570225945617943]
-γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
+γ = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
+γ = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
 γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623723]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
-γ = [-0.8656541720762697, -1.873525632494675, 1.4570225945623725]
+γ = [-0.8656541720762698, -1.8735256324946747, 1.4570225945623723]
+γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623723]
 γ = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
 Plot{Plots.GRBackend() n=4}</code></pre>
 <p>今度は横着をして、ヘシアンを使って計算してみます。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Zygote, LinearAlgebra
-l(γ,X=X,y=y) = sum(@. log( <span class=hljs-number >1</span> /(<span class=hljs-number >1</span>+exp(*($*(X,γ),-y))))) <span class=hljs-comment >#対数尤度関数</span>
+<pre><code class=language-julia >using Zygote, LinearAlgebra
+l&#40;γ,X&#61;X,y&#61;y&#41; &#61; sum&#40;@. log&#40; 1 /&#40;1&#43;exp&#40;*&#40;&#36;*&#40;X,γ&#41;,-y&#41;&#41;&#41;&#41;&#41; #対数尤度関数
 
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >10</span>
-    <span class=hljs-keyword >global</span> γ<span class=hljs-number >2</span>
-    δ =  Zygote.hessian(l,γ<span class=hljs-number >2</span>) \ l&#x27;(γ<span class=hljs-number >2</span>)
-    γ<span class=hljs-number >2</span> -= δ
-    <span class=hljs-meta >@show</span> γ<span class=hljs-number >2</span>
-<span class=hljs-keyword >end</span>
+for i in 1:10
+    global γ2
+    δ &#61;  Zygote.hessian&#40;l,γ2&#41; \ l&#39;&#40;γ2&#41;
+    γ2 -&#61; δ
+    @show γ2
+end
 
-plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>] - γ<span class=hljs-number >2</span>[<span class=hljs-number >2</span>]/γ<span class=hljs-number >2</span>[<span class=hljs-number >3</span>]*x, label=<span class=hljs-string >&quot;γ2&quot;</span>)</code></pre><pre><code class="plaintext hljs">γ2 = [-0.6868290426397674, -1.4905574506024166, 1.3181038933475093]
-γ2 = [-0.8389578286870754, -1.8133142733288063, 1.4260329338938007]
-γ2 = [-0.864933524808484, -1.871868634791574, 1.4560345475721008]
-γ2 = [-0.8656536058114845, -1.873524320938391, 1.4570217428831782]
+plot&#33;&#40;p33,x-&gt; -γ2&#91;1&#93;/γ2&#91;3&#93; - γ2&#91;2&#93;/γ2&#91;3&#93;*x, label&#61;&quot;γ2&quot;&#41;</code></pre><pre><code class="plaintext code-output">γ2 = [-0.6868290426397673, -1.4905574506024166, 1.3181038933475095]
+γ2 = [-0.8389578286870754, -1.8133142733288061, 1.4260329338938007]
+γ2 = [-0.864933524808484, -1.8718686347915743, 1.4560345475721008]
+γ2 = [-0.8656536058114844, -1.8735243209383907, 1.457021742883178]
 γ2 = [-0.8656541720759061, -1.8735256324938316, 1.4570225945617945]
 γ2 = [-0.8656541720762696, -1.8735256324946747, 1.4570225945623723]
 γ2 = [-0.8656541720762697, -1.8735256324946747, 1.4570225945623725]
@@ -116,232 +116,231 @@ plot!(p33,x-&gt; -γ<span class=hljs-number >2</span>[<span class=hljs-number >1
 γ2 = [-0.8656541720762696, -1.8735256324946747, 1.4570225945623723]
 </code></pre>
 <p><img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-2-2.svg" alt=""> <div class=blank ></div> だいたい同じような境界線が得られることが分かりました。</p>
-<h3 id="例34"><a href="#例34">例34</a></h3>
+<h3 id="例34"><a href="#例34" class=header-anchor >例34</a></h3>
 <p>データの半分を使ってロジスティック回帰で学習し、残りのデータで検証する練習。 まずデータを生成します。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe, Random, Distributions, Plots, LinearAlgebra
-Random.seed!(<span class=hljs-number >123</span>)
-n=<span class=hljs-number >100</span>
-x34 = vcat(randn(n).+<span class=hljs-number >1</span>,randn(n).-<span class=hljs-number >1</span>) |&gt; insert_ones
-y34 = vcat(ones(n),-ones(n));</code></pre>
+<pre><code class=language-julia >using Joe, Random, Distributions, Plots, LinearAlgebra
+Random.seed&#33;&#40;123&#41;
+n&#61;100
+x34 &#61; vcat&#40;randn&#40;n&#41;.&#43;1,randn&#40;n&#41;.-1&#41; |&gt; insert_ones
+y34 &#61; vcat&#40;ones&#40;n&#41;,-ones&#40;n&#41;&#41;;</code></pre>
 <p>訓練データとテストデータを分けて可視化します。</p>
-<pre><code class="julia hljs">index = sample(<span class=hljs-number >1</span>:<span class=hljs-number >2</span>n,<span class=hljs-number >2</span>n,replace=<span class=hljs-literal >false</span>); <span class=hljs-comment >#ランダムなインデックスを作り</span>
-train = index[<span class=hljs-keyword >begin</span>:n];<span class=hljs-comment ># 学習用とテスト用にインデックスを分ける。</span>
-test = index[n+<span class=hljs-number >1</span>:<span class=hljs-keyword >end</span>];
-X_train = x34[train,:];y_train = y34[train]
-X_test = x34[test,:];y_test = y34[test]
-p34 = scatter(X_train[:,<span class=hljs-number >2</span>],y_train,label=<span class=hljs-string >&quot;train&quot;</span>)
-scatter!(p34,X_test[:,<span class=hljs-number >2</span>],y_test,label=<span class=hljs-string >&quot;test&quot;</span>)</code></pre>
+<pre><code class=language-julia >index &#61; sample&#40;1:2n,2n,replace&#61;false&#41;; #ランダムなインデックスを作り
+train &#61; index&#91;begin:n&#93;;# 学習用とテスト用にインデックスを分ける。
+test &#61; index&#91;n&#43;1:end&#93;;
+X_train &#61; x34&#91;train,:&#93;;y_train &#61; y34&#91;train&#93;
+X_test &#61; x34&#91;test,:&#93;;y_test &#61; y34&#91;test&#93;
+p34 &#61; scatter&#40;X_train&#91;:,2&#93;,y_train,label&#61;&quot;train&quot;&#41;
+scatter&#33;&#40;p34,X_test&#91;:,2&#93;,y_test,label&#61;&quot;test&quot;&#41;</code></pre>
 <p><img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-2-3.svg" alt=""> <div class=blank ></div> <div class=note ><div class=title >😲 Note</div>
 <div class=content ><p><strong>訓練データとテストデータを分ける方法</strong></p>
 <p>原著のpythonコードでは以下のようになっています。</p>
-<pre><code class="python hljs"><span class=hljs-keyword >import</span> numpy <span class=hljs-keyword >as</span> np
-train = np.random.choice(<span class=hljs-number >2</span>*n, <span class=hljs-built_in >int</span>(n), replace=false)
-test = <span class=hljs-built_in >list</span>(<span class=hljs-built_in >set</span>(<span class=hljs-built_in >range</span>(n))-<span class=hljs-built_in >set</span>(train))</code></pre>
+<pre><code class=language-python >import numpy as np
+train &#61; np.random.choice&#40;2*n, int&#40;n&#41;, replace&#61;false&#41;
+test &#61; list&#40;set&#40;range&#40;n&#41;&#41;-set&#40;train&#41;&#41;</code></pre>
 <p>setを使った書き方は便利ですが、juliaでは重複を許さずにランダムに並べたインデックスを二つに分ける 方法を使いました。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> StatsBase
-index = sample(<span class=hljs-number >1</span>:n,n,replace=<span class=hljs-literal >false</span>);
-train = index[<span class=hljs-keyword >begin</span>:<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2</span>)];
-test = index[<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2</span>)+<span class=hljs-number >1</span>:<span class=hljs-keyword >end</span>];</code></pre>
+<pre><code class=language-julia >using StatsBase
+index &#61; sample&#40;1:n,n,replace&#61;false&#41;;
+train &#61; index&#91;begin:Int&#40;n/2&#41;&#93;;
+test &#61; index&#91;Int&#40;n/2&#41;&#43;1:end&#93;;</code></pre>
 <p>でもよく考えるとsetdiffを使えば十分でした。</p>
-<pre><code class="julia hljs">train = sample(<span class=hljs-number >1</span>:<span class=hljs-number >2</span>n,n,replace=<span class=hljs-literal >false</span>); test = setdiff(<span class=hljs-number >1</span>:<span class=hljs-number >2</span>n,train)</code></pre></div></div> ループは原著の方法に従いました。</p>
-<pre><code class="julia hljs">β = [<span class=hljs-number >0</span>,<span class=hljs-number >0</span>] <span class=hljs-comment >#初期値</span>
-γ = randn(<span class=hljs-number >2</span>)
-<span class=hljs-keyword >while</span> sum(β-γ)^<span class=hljs-number >2</span> &gt; <span class=hljs-number >0.001</span>
-    <span class=hljs-keyword >global</span> β, γ
-    <span class=hljs-keyword >local</span> W
-    β = γ
-    s = X_train*β
-    v = @. exp(-s*y_train)
-    u = @. y_train*v/(<span class=hljs-number >1</span>+v)
-    w = @. v/(<span class=hljs-number >1</span>+v)^<span class=hljs-number >2</span>
-    W = diagm(w)
-    z = @. s + u/w
-    γ = (X_train&#x27;*W*X_train)\(X_train&#x27;*W*z)
-    <span class=hljs-meta >@show</span> γ;
-<span class=hljs-keyword >end</span></code></pre><pre><code class="plaintext hljs">γ = [-0.250687490584547, 1.2955594588774142]
-γ = [-0.20181460348015434, 1.7007995013607493]
-γ = [-0.20495370161210233, 1.8380963810033206]
-γ = [-0.20628662758607505, 1.8500602521823717]
+<pre><code class=language-julia >train &#61; sample&#40;1:2n,n,replace&#61;false&#41;; test &#61; setdiff&#40;1:2n,train&#41;</code></pre></div></div> ループは原著の方法に従いました。</p>
+<pre><code class=language-julia >β &#61; &#91;0,0&#93; #初期値
+γ &#61; randn&#40;2&#41;
+while sum&#40;β-γ&#41;^2 &gt; 0.001
+    global β, γ
+    local W
+    β &#61; γ
+    s &#61; X_train*β
+    v &#61; @. exp&#40;-s*y_train&#41;
+    u &#61; @. y_train*v/&#40;1&#43;v&#41;
+    w &#61; @. v/&#40;1&#43;v&#41;^2
+    W &#61; diagm&#40;w&#41;
+    z &#61; @. s &#43; u/w
+    γ &#61; &#40;X_train&#39;*W*X_train&#41;\&#40;X_train&#39;*W*z&#41;
+    @show γ;
+end</code></pre><pre><code class="plaintext code-output">γ = [-0.023534241071816876, 1.876648078520157]
+γ = [-0.07828495029120103, 1.994482778896487]
+γ = [-0.0814597962665233, 2.0041360247738096]
 </code></pre>
 <p>次にこのγを使って、テストデータを予測してみます。 正誤をカウントする関数を次のように定義します。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> table_count(test,pred)
-    <span class=hljs-meta >@assert</span> length(test) == length(pred)
-    m = unique(test) |&gt; length
-    count = zeros(<span class=hljs-built_in >Int</span>,m,m)
-    <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:length(test)
-        count[test[i],pred[i]] += <span class=hljs-number >1</span>
-    <span class=hljs-keyword >end</span>
-    <span class=hljs-keyword >return</span> count
-<span class=hljs-keyword >end</span></code></pre>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe:table_count
-y_pred = X_test*γ .|&gt; x -&gt; ifelse(x&gt;<span class=hljs-number >0</span>,<span class=hljs-number >2</span>,<span class=hljs-number >1</span>)
-y_answer = y_test .|&gt; x -&gt; ifelse(x&gt;<span class=hljs-number >0</span>,<span class=hljs-number >2</span>,<span class=hljs-number >1</span>)
-table = table_count(y_answer,y_pred)
-<span class=hljs-meta >@show</span> table;
-正答率 = sum(diag(table)) / sum(table)</code></pre><pre><code class="plaintext hljs">table = [44 5; 10 41]
-0.85</code></pre>
-<h2 id="23_線形判別と二次判別"><a href="#23_線形判別と二次判別">2.3 線形判別と二次判別</a></h2>
-<h3 id="例35"><a href="#例35">例35</a></h3>
+<pre><code class=language-julia >function table_count&#40;test,pred&#41;
+    @assert length&#40;test&#41; &#61;&#61; length&#40;pred&#41;
+    m &#61; unique&#40;test&#41; |&gt; length
+    count &#61; zeros&#40;Int,m,m&#41;
+    for i in 1:length&#40;test&#41;
+        count&#91;test&#91;i&#93;,pred&#91;i&#93;&#93; &#43;&#61; 1
+    end
+    return count
+end</code></pre>
+<pre><code class=language-julia >using Joe:table_count
+y_pred &#61; X_test*γ .|&gt; x -&gt; ifelse&#40;x&gt;0,2,1&#41;
+y_answer &#61; y_test .|&gt; x -&gt; ifelse&#40;x&gt;0,2,1&#41;
+table &#61; table_count&#40;y_answer,y_pred&#41;
+@show table;
+正答率 &#61; sum&#40;diag&#40;table&#41;&#41; / sum&#40;table&#41;</code></pre><pre><code class="plaintext code-output">table = [38 11; 7 44]
+0.82</code></pre>
+<h2 id="23_線形判別と二次判別"><a href="#23_線形判別と二次判別" class=header-anchor >2.3 線形判別と二次判別</a></h2>
+<h3 id="例35"><a href="#例35" class=header-anchor >例35</a></h3>
 <p>まずは与えられた平均と分散共分散行列から二次元正規分布のデータを2種類生成します。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Distributions, Random,Plots, LinearAlgebra, Parameters
-μ₁=[<span class=hljs-number >2</span>,<span class=hljs-number >2</span>];  Σ₁ = [<span class=hljs-number >2</span> <span class=hljs-number >0</span>; <span class=hljs-number >0</span> <span class=hljs-number >2</span>]
-μ₂=[-<span class=hljs-number >3</span>,-<span class=hljs-number >3</span>]; Σ₂ = [<span class=hljs-number >1</span> -<span class=hljs-number >0.8</span>; -<span class=hljs-number >0.8</span> <span class=hljs-number >1</span>]
+<pre><code class=language-julia >using Distributions, Random,Plots, LinearAlgebra, Parameters
+μ₁&#61;&#91;2,2&#93;;  Σ₁ &#61; &#91;2 0; 0 2&#93;
+μ₂&#61;&#91;-3,-3&#93;; Σ₂ &#61; &#91;1 -0.8; -0.8 1&#93;
 
-N = <span class=hljs-number >100</span>;Random.seed!(<span class=hljs-number >123</span>)
-data1 = rand(MvNormal(μ₁,Σ₁),<span class=hljs-number >100</span>) |&gt; transpose
-data2 = rand(MvNormal(μ₂,Σ₂),<span class=hljs-number >100</span>) |&gt; transpose
-p35 = scatter(data1[:,<span class=hljs-number >1</span>],data1[:,<span class=hljs-number >2</span>])
-scatter!(p35, data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>])</code></pre>
+N &#61; 100;Random.seed&#33;&#40;123&#41;
+data1 &#61; rand&#40;MvNormal&#40;μ₁,Σ₁&#41;,100&#41; |&gt; transpose
+data2 &#61; rand&#40;MvNormal&#40;μ₂,Σ₂&#41;,100&#41; |&gt; transpose
+p35 &#61; scatter&#40;data1&#91;:,1&#93;,data1&#91;:,2&#93;&#41;
+scatter&#33;&#40;p35, data2&#91;:,1&#93;,data2&#91;:,2&#93;&#41;</code></pre>
 <p><img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-3.svg" alt=""> <div class=blank ></div> ここまでデータの生成。 生成したデータから平均と分散共分散行列を計算する。</p>
-<pre><code class="julia hljs">μ̂₁ = mean(data1,dims=<span class=hljs-number >1</span>)&#x27;; Σ̂₁ = cov(data1,dims=<span class=hljs-number >1</span>);
-μ̂₂ = mean(data2,dims=<span class=hljs-number >1</span>)&#x27; ; Σ̂₂ = cov(data2,dims=<span class=hljs-number >1</span>);</code></pre>
+<pre><code class=language-julia >μ̂₁ &#61; mean&#40;data1,dims&#61;1&#41;&#39;; Σ̂₁ &#61; cov&#40;data1,dims&#61;1&#41;;
+μ̂₂ &#61; mean&#40;data2,dims&#61;1&#41;&#39; ; Σ̂₂ &#61; cov&#40;data2,dims&#61;1&#41;;</code></pre>
 <p><div class=warning ><div class=title >😕 Warning&#33;</div>
 <div class=content >mean関数で行列の列方向の平均をとる時、得られるデータは二次元の横ベクトルになっている。 縦ベクトルとして扱いたいので、転置&#40;正確には複素共役）をしている。</div></div> それぞれの分布の情報を複合型にまとめておきます。</p>
-<pre><code class="julia hljs"><span class=hljs-meta >@with_kw</span> <span class=hljs-keyword >struct</span> QDA
-    μ::<span class=hljs-built_in >Array</span> <span class=hljs-comment ># 平均</span>
-    Σ::<span class=hljs-built_in >Matrix</span> <span class=hljs-comment ># 分散共分散行列</span>
-    invΣ::<span class=hljs-built_in >Array</span> = inv(Σ) <span class=hljs-comment ># 分散共分散行列の逆行列</span>
-    detΣ = det(Σ) <span class=hljs-comment ># 分散共分散行列の行列式</span>
-<span class=hljs-keyword >end</span></code></pre>
+<pre><code class=language-julia >@with_kw struct QDA
+    μ::Array # 平均
+    Σ::Matrix # 分散共分散行列
+    invΣ::Array &#61; inv&#40;Σ&#41; # 分散共分散行列の逆行列
+    detΣ &#61; det&#40;Σ&#41; # 分散共分散行列の行列式
+end</code></pre>
 <p><div class=note ><div class=title >😲 Note</div>
 <div class=content >しれっとパラメータを初期化した複合型を使っていますが、ここではParameters.jlとい うサードパーティライブラリを使っています。</div></div> また、多変量正規分布の対数尤度を取得する関数を以下のように定義します。 ここでは、juliaのfunction-like objectの機能を利用しています。 また、可変長引数&#40;x...&#41;を利用して、データが3次元以上の場合にも拡張しています。 キーワード付き引数に事前確率を加えています。 <div class=note ><div class=title >😲 Note</div>
 <div class=content >function-like objectの機能を使うと、複合型のインスタンスを関数のように 使うことができ、再利用しやすくなります。</div></div></p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> (qda::QDA)(x...,prior=<span class=hljs-number >1.0</span>)
-    data = collect(x)
-    <span class=hljs-meta >@unpack</span> μ,invΣ,detΣ = qda
-    a = -<span class=hljs-number >0.5</span>*(data-μ)&#x27; * invΣ * (data-μ)
-    a[<span class=hljs-number >1</span>] - log(detΣ) - log(prior)
-<span class=hljs-keyword >end</span></code></pre>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe: QDA
-param1=QDA(μ= μ̂₁,Σ = Σ̂₁);param2=QDA(μ = μ̂₂,Σ = Σ̂₂)
+<pre><code class=language-julia >function &#40;qda::QDA&#41;&#40;x...,prior&#61;1.0&#41;
+    data &#61; collect&#40;x&#41;
+    @unpack μ,invΣ,detΣ &#61; qda
+    a &#61; -0.5*&#40;data-μ&#41;&#39; * invΣ * &#40;data-μ&#41;
+    a&#91;1&#93; - log&#40;detΣ&#41; - log&#40;prior&#41;
+end</code></pre>
+<pre><code class=language-julia >using Joe: QDA
+param1&#61;QDA&#40;μ&#61; μ̂₁,Σ &#61; Σ̂₁&#41;;param2&#61;QDA&#40;μ &#61; μ̂₂,Σ &#61; Σ̂₂&#41;
 
-hanbetsu(x,y) = param1(x,y) - param2(x,y)
-x35=-<span class=hljs-number >5</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >5</span>;y35=-<span class=hljs-number >5</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >5</span>;
-scatter(data1[:,<span class=hljs-number >1</span>],data1[:,<span class=hljs-number >2</span>])
-scatter!( data2[:,<span class=hljs-number >1</span>],data2[:,<span class=hljs-number >2</span>])
-p35_2=contour!(x35,y35, hanbetsu.(x35,y35&#x27;), title=<span class=hljs-string >&quot;QDA&quot;</span>)</code></pre>
+hanbetsu&#40;x,y&#41; &#61; param1&#40;x,y&#41; - param2&#40;x,y&#41;
+x35&#61;-5:0.1:5;y35&#61;-5:0.1:5;
+scatter&#40;data1&#91;:,1&#93;,data1&#91;:,2&#93;&#41;
+scatter&#33;&#40; data2&#91;:,1&#93;,data2&#91;:,2&#93;&#41;
+p35_2&#61;contour&#33;&#40;x35,y35, hanbetsu.&#40;x35,y35&#39;&#41;, title&#61;&quot;QDA&quot;&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-4.svg" alt="">
 <p>線形判別を行う場合は、分散共分散行列が等しいことを仮定します。 data1とdata2を、それぞれ中心化後に統合したデータセットについて、 新たな分散共分散行列を求めることにします。</p>
-<pre><code class="julia hljs">Σ_L =  vcat(data1 .- μ̂₁&#x27; , data2 .- μ̂₂&#x27;) |&gt; cov
-param1_L=QDA(μ= μ̂₁,Σ =Σ_L );param2_L=QDA(μ = μ̂₂,Σ = Σ_L)
-hanbetsu_L(x,y) = param1_L(x,y) - param2_L(x,y)
-p35_3=contour!(p35,x35,y35, hanbetsu_L.(x35,y35&#x27;), title=<span class=hljs-string >&quot;LDA&quot;</span>)</code></pre>
+<pre><code class=language-julia >Σ_L &#61;  vcat&#40;data1 .- μ̂₁&#39; , data2 .- μ̂₂&#39;&#41; |&gt; cov
+param1_L&#61;QDA&#40;μ&#61; μ̂₁,Σ &#61;Σ_L &#41;;param2_L&#61;QDA&#40;μ &#61; μ̂₂,Σ &#61; Σ_L&#41;
+hanbetsu_L&#40;x,y&#41; &#61; param1_L&#40;x,y&#41; - param2_L&#40;x,y&#41;
+p35_3&#61;contour&#33;&#40;p35,x35,y35, hanbetsu_L.&#40;x35,y35&#39;&#41;, title&#61;&quot;LDA&quot;&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-5.svg" alt="">
-<h3 id="例36_fisherのあやめ"><a href="#例36_fisherのあやめ">例36 &#40;Fisherのあやめ&#41;</a></h3>
+<h3 id="例36_fisherのあやめ"><a href="#例36_fisherのあやめ" class=header-anchor >例36 &#40;Fisherのあやめ&#41;</a></h3>
 <p>まずRDatasetsからirisのデータセットを読み込みます。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> RDatasets, StatsBase, Random
-<span class=hljs-keyword >using</span> Joe:QDA
-iris = dataset(<span class=hljs-string >&quot;datasets&quot;</span>,<span class=hljs-string >&quot;iris&quot;</span>)
-x = iris[!,<span class=hljs-number >1</span>:<span class=hljs-number >4</span>] |&gt; <span class=hljs-built_in >Matrix</span>
-targets=unique(iris.Species)</code></pre><pre><code class="plaintext hljs">3-element Array{String,1}:
- &quot;setosa&quot;
- &quot;versicolor&quot;
- &quot;virginica&quot;</code></pre>
+<pre><code class=language-julia >using RDatasets, StatsBase, Random
+using Joe:QDA
+iris &#61; dataset&#40;&quot;datasets&quot;,&quot;iris&quot;&#41;
+x &#61; iris&#91;&#33;,1:4&#93; |&gt; Matrix
+targets&#61;unique&#40;iris.Species&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_yBKgfl.
+</code></pre>
 <p>あやめの種類をIntに変換します。</p>
-<pre><code class="julia hljs">label = <span class=hljs-built_in >Dict</span>(target=&gt;i <span class=hljs-keyword >for</span> (i,target) <span class=hljs-keyword >in</span> enumerate(targets))
-y = [label[i] <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> iris.Species];</code></pre>
+<pre><code class=language-julia >label &#61; Dict&#40;target&#61;&gt;i for &#40;i,target&#41; in enumerate&#40;targets&#41;&#41;
+y &#61; &#91;label&#91;i&#93; for i in iris.Species&#93;;</code></pre><pre><code class="plaintext code-output">UndefVarError: targets not defined
+</code></pre>
 <p>訓練データとテストデータを分けます。</p>
-<pre><code class="julia hljs">Random.seed!(<span class=hljs-number >123</span>)
-n = length(y)
-index = sample(<span class=hljs-number >1</span>:n,n,replace=<span class=hljs-literal >false</span>); <span class=hljs-comment >#ランダムなインデックスを作り</span>
-train = index[<span class=hljs-keyword >begin</span>:<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2</span>)];<span class=hljs-comment ># 学習用とテスト用にインデックスを分ける。</span>
-test = index[<span class=hljs-built_in >Int</span>(n/<span class=hljs-number >2</span>)+<span class=hljs-number >1</span>:<span class=hljs-keyword >end</span>];
-X_train= x[train,:]; X_test = x[test,:];
-y_train = y[train]; y_test = y[test];</code></pre>
+<pre><code class=language-julia >Random.seed&#33;&#40;123&#41;
+n &#61; length&#40;y&#41;
+index &#61; sample&#40;1:n,n,replace&#61;false&#41;; #ランダムなインデックスを作り
+train &#61; index&#91;begin:Int&#40;n/2&#41;&#93;;# 学習用とテスト用にインデックスを分ける。
+test &#61; index&#91;Int&#40;n/2&#41;&#43;1:end&#93;;
+X_train&#61; x&#91;train,:&#93;; X_test &#61; x&#91;test,:&#93;;
+y_train &#61; y&#91;train&#93;; y_test &#61; y&#91;test&#93;;</code></pre><pre><code class="plaintext code-output">UndefVarError: x not defined
+</code></pre>
 <p>それぞれのあやめの訓練データの平均と分散共分散行列を求めて保存する。</p>
-<pre><code class="julia hljs">Params = QDA[]
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>
-    μ,Σ =  mean_and_cov(X_train[y_train .==i,:])
-    push!(Params, QDA(μ=μ&#x27;, Σ=Σ)) <span class=hljs-comment >#μは行ベクトルであることに注意</span>
-<span class=hljs-keyword >end</span></code></pre>
+<pre><code class=language-julia >Params &#61; QDA&#91;&#93;
+for i in 1:3
+    μ,Σ &#61;  mean_and_cov&#40;X_train&#91;y_train .&#61;&#61;i,:&#93;&#41;
+    push&#33;&#40;Params, QDA&#40;μ&#61;μ&#39;, Σ&#61;Σ&#41;&#41; #μは行ベクトルであることに注意
+end</code></pre><pre><code class="plaintext code-output">UndefVarError: mean_and_cov not defined
+</code></pre>
 <p>テストデータで検証する。対数尤度を最大化するラベルを選択します。</p>
-<pre><code class="julia hljs">y_pred = similar(y_test)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:length(y_test)
-    y_pred[i] = argmax([param(X_test[i,:]...) <span class=hljs-keyword >for</span> param <span class=hljs-keyword >in</span> Params])
-<span class=hljs-keyword >end</span>
+<pre><code class=language-julia >y_pred &#61; similar&#40;y_test&#41;
+for i in 1:length&#40;y_test&#41;
+    y_pred&#91;i&#93; &#61; argmax&#40;&#91;param&#40;X_test&#91;i,:&#93;...&#41; for param in Params&#93;&#41;
+end
 
-<span class=hljs-keyword >using</span> Joe:table_count
-table_count(y_test,y_pred)</code></pre><pre><code class="plaintext hljs">3×3 Array{Int64,2}:
- 29   0   0
-  0  23   2
-  0   2  19</code></pre>
-<h3 id="問29_事前確率が分かっている場合"><a href="#問29_事前確率が分かっている場合">問29 事前確率が分かっている場合</a></h3>
+using Joe:table_count
+table_count&#40;y_test,y_pred&#41;</code></pre><pre><code class="plaintext code-output">ArgumentError: collection must be non-empty
+</code></pre>
+<h3 id="問29_事前確率が分かっている場合"><a href="#問29_事前確率が分かっている場合" class=header-anchor >問29 事前確率が分かっている場合</a></h3>
 <p>あやめの事前確率が&#91;0.5,0.25,0.25&#93;だったときは、対数をとって足せば良いでしょう。 キーワード付き引数で事前確率を指定できるようにしたので、 少し書き換えるだけで対応可能です。今回の場合、予測結果に対して影響は少ないようです。</p>
-<pre><code class="julia hljs">priors = [<span class=hljs-number >0.5</span>,<span class=hljs-number >0.25</span>,<span class=hljs-number >0.25</span>]
-y_pred2 = similar(y_test)
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:length(y_test)
-    y_pred2[i] = argmax([Params[j](X_test[i,:]...;prior=priors[j]) <span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>])
-<span class=hljs-keyword >end</span>
-table_count(y_test,y_pred2)</code></pre><pre><code class="plaintext hljs">3×3 Array{Int64,2}:
- 29   0   0
-  0  23   2
-  0   2  19</code></pre>
-<h2 id="k近傍法"><a href="#k近傍法">K近傍法</a></h2>
+<pre><code class=language-julia >priors &#61; &#91;0.5,0.25,0.25&#93;
+y_pred2 &#61; similar&#40;y_test&#41;
+for i in 1:length&#40;y_test&#41;
+    y_pred2&#91;i&#93; &#61; argmax&#40;&#91;Params&#91;j&#93;&#40;X_test&#91;i,:&#93;...;prior&#61;priors&#91;j&#93;&#41; for j in 1:3&#93;&#41;
+end
+table_count&#40;y_test,y_pred2&#41;</code></pre><pre><code class="plaintext code-output">BoundsError: attempt to access 0-element Vector{Joe.QDA} at index [1]
+</code></pre>
+<h2 id="k近傍法"><a href="#k近傍法" class=header-anchor >K近傍法</a></h2>
 <p>まず、K近傍法による関数を定義します。原著の記法をほぼ踏襲しています。 タイブレーキングが少し重複した書き方になっているのが残念。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> LinearAlgebra, StatsBase
-<span class=hljs-keyword >function</span> knn(X_train::<span class=hljs-built_in >Matrix</span>,y_train::<span class=hljs-built_in >Vector</span>,X_test::<span class=hljs-built_in >Vector</span>, k)
-    n = size(X_train)[<span class=hljs-number >1</span>]
-    distance = [norm(X_train[i,:]-X_test) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:n]
-    S = sortperm(distance)[<span class=hljs-number >1</span>:k]
-    u = counts(y_train[S], <span class=hljs-number >1</span>:k)
-    u_max = maximum(u)
-    m = findall(c-&gt;c==u_max,u)
-    <span class=hljs-keyword >while</span> length(m)!==<span class=hljs-number >1</span> <span class=hljs-comment >#タイブレーキング</span>
-        k -=<span class=hljs-number >1</span>
-        S = S[<span class=hljs-number >1</span>:k]
-        u = counts(S, <span class=hljs-number >1</span>:k)
-        u_max = maximum(u)
-        m = findall(c-&gt;c==u_max,u)
-    <span class=hljs-keyword >end</span>
-    <span class=hljs-keyword >return</span> m[<span class=hljs-number >1</span>]
-<span class=hljs-keyword >end</span></code></pre>
+<pre><code class=language-julia >using LinearAlgebra, StatsBase
+function knn&#40;X_train::Matrix,y_train::Vector,X_test::Vector, k&#41;
+    n &#61; size&#40;X_train&#41;&#91;1&#93;
+    distance &#61; &#91;norm&#40;X_train&#91;i,:&#93;-X_test&#41; for i in 1:n&#93;
+    S &#61; sortperm&#40;distance&#41;&#91;1:k&#93;
+    u &#61; counts&#40;y_train&#91;S&#93;, 1:k&#41;
+    u_max &#61; maximum&#40;u&#41;
+    m &#61; findall&#40;c-&gt;c&#61;&#61;u_max,u&#41;
+    while length&#40;m&#41;&#33;&#61;&#61;1 #タイブレーキング
+        k -&#61;1
+        S &#61; S&#91;1:k&#93;
+        u &#61; counts&#40;S, 1:k&#41;
+        u_max &#61; maximum&#40;u&#41;
+        m &#61; findall&#40;c-&gt;c&#61;&#61;u_max,u&#41;
+    end
+    return m&#91;1&#93;
+end</code></pre>
 <p>テストデータが複数の場合は多重ディスパッチで対応します。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >function</span> knn(X_train::<span class=hljs-built_in >Matrix</span>,y_train::<span class=hljs-built_in >Vector</span>,X_test::<span class=hljs-built_in >Matrix</span>, k)
-    l = size(X_test)[<span class=hljs-number >1</span>]
-    w = <span class=hljs-built_in >Array</span>{<span class=hljs-built_in >Int</span>}(<span class=hljs-literal >undef</span>,l)
-    <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:l
-        w[i] = knn(X_train,y_train,X_test[i,:], k)
-    <span class=hljs-keyword >end</span>
-    <span class=hljs-keyword >return</span> w
-<span class=hljs-keyword >end</span></code></pre>
-<h3 id="例37_fisherのあやめ_returns"><a href="#例37_fisherのあやめ_returns">例37 Fisherのあやめ returns</a></h3>
+<pre><code class=language-julia >function knn&#40;X_train::Matrix,y_train::Vector,X_test::Matrix, k&#41;
+    l &#61; size&#40;X_test&#41;&#91;1&#93;
+    w &#61; Array&#123;Int&#125;&#40;undef,l&#41;
+    for i in 1:l
+        w&#91;i&#93; &#61; knn&#40;X_train,y_train,X_test&#91;i,:&#93;, k&#41;
+    end
+    return w
+end</code></pre>
+<h3 id="例37_fisherのあやめ_returns"><a href="#例37_fisherのあやめ_returns" class=header-anchor >例37 Fisherのあやめ returns</a></h3>
 <p>例36と同じデータを使ってK近傍法でやってみます。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Joe:knn,table_count
-y_pred_knn = knn(X_train,y_train,X_test,<span class=hljs-number >3</span>)
-table_count(y_test,y_pred_knn)</code></pre><pre><code class="plaintext hljs">3×3 Array{Int64,2}:
- 29   0   0
-  0  22   3
-  0   1  20</code></pre>
+<pre><code class=language-julia >using Joe:knn,table_count
+y_pred_knn &#61; knn&#40;X_train,y_train,X_test,3&#41;
+table_count&#40;y_test,y_pred_knn&#41;</code></pre><pre><code class="plaintext code-output">MethodError: no method matching counts(::Vector{Float64}, ::UnitRange{Int64})
+Closest candidates are:
+  counts(!Matched::AbstractArray{T, N} where {T<:Integer, N}, ::UnitRange{T} where T<:Integer) at /home/runner/.julia/packages/StatsBase/IiL4F/src/counts.jl:79
+  counts(!Matched::AbstractArray{T, N} where {T<:Integer, N}, ::UnitRange{T} where T<:Integer, !Matched::StatsBase.AbstractWeights) at /home/runner/.julia/packages/StatsBase/IiL4F/src/counts.jl:81
+  counts(!Matched::AbstractArray{T, N} where {T<:Integer, N}, ::AbstractArray{T, N} where {T<:Integer, N}) at /home/runner/.julia/packages/StatsBase/IiL4F/src/counts.jl:195
+  ...
+</code></pre>
 <p>この乱数の種の場合だと、二次判別とそれほど精度は変わりません。</p>
-<h2 id="roc曲線"><a href="#roc曲線">ROC曲線</a></h2>
-<h3 id="例38"><a href="#例38">例38</a></h3>
+<h2 id="roc曲線"><a href="#roc曲線" class=header-anchor >ROC曲線</a></h2>
+<h3 id="例38"><a href="#例38" class=header-anchor >例38</a></h3>
 <p>x, y という表記はpositive, negativeに 添え字を陽性をp&#40;positive&#41;, 陰性をn&#40;negative&#41;に変えています。 また、varはσに変更しています。</p>
-<pre><code class="julia hljs"><span class=hljs-keyword >using</span> Distributions, Plots
-μₚ = <span class=hljs-number >1</span>; μₙ = -<span class=hljs-number >1</span>
-σₚ=<span class=hljs-number >1</span>; σₙ =<span class=hljs-number >1</span>
-Nₚ = <span class=hljs-number >1000</span>; Nₙ = <span class=hljs-number >10000</span>
-positive = rand(Normal(μₚ,σₚ),Nₚ)
-negative = rand(Normal(μₙ,σₙ),Nₙ)
-θ = exp.(-<span class=hljs-number >10</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >100</span>);
-U = <span class=hljs-built_in >Vector</span>{<span class=hljs-built_in >Float64</span>}(<span class=hljs-literal >undef</span>,length(θ))
-V = <span class=hljs-built_in >Vector</span>{<span class=hljs-built_in >Float64</span>}(<span class=hljs-literal >undef</span>,length(θ))
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:length(θ)
-    U[i] = sum(@. pdf(Normal(μₚ,σₚ),negative) / pdf(Normal(μₙ,σₙ),negative) &gt; θ[i]) / Nₙ
-    V[i] = sum(@. pdf(Normal(μₚ,σₚ),positive) / pdf(Normal(μₙ,σₙ),positive) &gt; θ[i]) / Nₚ
-<span class=hljs-keyword >end</span>
+<pre><code class=language-julia >using Distributions, Plots
+μₚ &#61; 1; μₙ &#61; -1
+σₚ&#61;1; σₙ &#61;1
+Nₚ &#61; 1000; Nₙ &#61; 10000
+positive &#61; rand&#40;Normal&#40;μₚ,σₚ&#41;,Nₚ&#41;
+negative &#61; rand&#40;Normal&#40;μₙ,σₙ&#41;,Nₙ&#41;
+θ &#61; exp.&#40;-10:0.1:100&#41;;
+U &#61; Vector&#123;Float64&#125;&#40;undef,length&#40;θ&#41;&#41;
+V &#61; Vector&#123;Float64&#125;&#40;undef,length&#40;θ&#41;&#41;
+for i in 1:length&#40;θ&#41;
+    U&#91;i&#93; &#61; sum&#40;@. pdf&#40;Normal&#40;μₚ,σₚ&#41;,negative&#41; / pdf&#40;Normal&#40;μₙ,σₙ&#41;,negative&#41; &gt; θ&#91;i&#93;&#41; / Nₙ
+    V&#91;i&#93; &#61; sum&#40;@. pdf&#40;Normal&#40;μₚ,σₚ&#41;,positive&#41; / pdf&#40;Normal&#40;μₙ,σₙ&#41;,positive&#41; &gt; θ&#91;i&#93;&#41; / Nₚ
+end
 
-AUC = <span class=hljs-number >0</span>
-<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:length(θ)-<span class=hljs-number >1</span>
-    AUC += abs(U[i+<span class=hljs-number >1</span>]-U[i])*V[i]
-<span class=hljs-keyword >end</span>
-p38 = plot(U,V,xlabel=<span class=hljs-string >&quot;False Positive&quot;</span>,ylabel=<span class=hljs-string >&quot;False Negative&quot;</span>,
-            title=<span class=hljs-string >&quot;ROC curve&quot;</span>,legend=<span class=hljs-literal >false</span>,
-            ann = (<span class=hljs-number >0.5</span>,<span class=hljs-number >0.5</span>,<span class=hljs-string >&quot;AUC = <span class=hljs-subst >$(round(AUC,digits=<span class=hljs-number >2</span>)</span>)&quot;</span>))</code></pre>
+AUC &#61; 0
+for i in 1:length&#40;θ&#41;-1
+    AUC &#43;&#61; abs&#40;U&#91;i&#43;1&#93;-U&#91;i&#93;&#41;*V&#91;i&#93;
+end
+p38 &#61; plot&#40;U,V,xlabel&#61;&quot;False Positive&quot;,ylabel&#61;&quot;False Negative&quot;,
+            title&#61;&quot;ROC curve&quot;,legend&#61;false,
+            ann &#61; &#40;0.5,0.5,&quot;AUC &#61; &#36;&#40;round&#40;AUC,digits&#61;2&#41;&#41;&quot;&#41;&#41;</code></pre>
 <img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-6.svg" alt="">
   <p style="text-align:right">  めでたしめでたし </p>  <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p>
 <div class=page-foot >
   <div class=copyright >
-    &copy; Kei Hanafusa. Last modified: January 03, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+    &copy; Kei Hanafusa. Last modified: August 08, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
   </div>
 </div>
 </div>
@@ -351,3 +350,12 @@ p38 = plot(U,V,xlabel=<span class=hljs-string >&quot;False Positive&quot;</span>
   <script src="/Joe.jl/libs/myBtn/myBtn.js"></script>
   <script src="/Joe.jl/libs/popup/jquery.magnific-popup.min.js"></script>
   <script src="/Joe.jl/libs/popup/mypopup.js"></script>
+  
+    
+
+
+
+  
+  
+    <script src="/Joe.jl/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>

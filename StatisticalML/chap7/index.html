@@ -1,0 +1,51 @@
+<!doctype html> <html lang=ja > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/Joe.jl/libs/katex/katex.min.css"> <link rel=stylesheet  href="/Joe.jl/libs/highlight/github.min.css"> <link rel=stylesheet  href="css/magnific-popup.css" /> <link href="/Joe.jl/css/franklin.css" rel=stylesheet > <link href="/Joe.jl/css/vela.css" rel=stylesheet > <script src="/Joe.jl/libs/vela/jquery.min.js"></script> <link rel=icon  href="/Joe.jl/assets/favicon.ico"> <title>機械学習の数理100問をjuliaでやる </title> <div class=main-nav  id=menu > <div class=flex-container > <span class=sidebar-brand > <h3 style='font-size: 25px'>機械学習の数理100問</h3> </span> </div> <nav class=sidebar-nav > <ul class=metismenu  id=metismenu  > <li><a href="/Joe.jl/index.html">トップ</a> <li><a href="" class=has-arrow >統計的機械学習の数理100問</a> <ul> <li><a href="/Joe.jl/StatisticalML/chap1/">第一章　線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap2/">第二章　分類</a> <li><a href="/Joe.jl/StatisticalML/chap3/">第三章　リサンプリング</a> <li><a href="/Joe.jl/StatisticalML/chap4/">第四章　情報量基準</a> <li><a href="/Joe.jl/StatisticalML/chap5/">第五章　正則化</a> <li><a href="/Joe.jl/StatisticalML/chap6/">第六章　非線形回帰</a> <li><a href="/Joe.jl/StatisticalML/chap7/">第七章　決定木</a> </ul> <li><a href="" class=has-arrow >スパース推定100問</a> <ul> <li> </ul> </ul> </nav> </div> <main id=panel > <div class="toggle-button hamburger hamburger--spin"> <div class=hamburger-box > <div class=hamburger-inner ></div> </div> </div> <h1 class="page title">決定木</h1> <hr> <div class=franklin-content ><div class=franklin-toc ><ol><li><ol><li><a href="#例64">例64</a><li><a href="#例65">例65</a></ol><li><a href="#分類の決定木">分類の決定木</a><ol><li><a href="#例66_fisherのあやめ何回目">例66 Fisherのあやめ（何回目？）</a></ol></ol></div> <p> <h3 id="例64"><a href="#例64" class=header-anchor >例64</a></h3> <p>Bostonデータセットを決定木で回帰分析します。 <span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>の値は0で、最低要素数だけを指定します。</p> <pre><code class=language-julia >using Joe,RDatasets
+boston&#61;dataset&#40;&quot;MASS&quot;,&quot;boston&quot;&#41; |&gt; Matrix
+X &#61; boston&#91;:,1:end-1&#93;;y&#61;boston&#91;:,end&#93;;
+node &#61; Joe.decisiontree&#40;X,y;n_min&#61;50&#41;;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_wKtRln.
+</code></pre> <p>グラフ化はのちほど検討。</p> <h3 id="例65"><a href="#例65" class=header-anchor >例65</a></h3> <p>10-fold CVで<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∈</mo><mo stretchy=false >[</mo><mn>0</mn><mo separator=true >,</mo><mn>1.5</mn><mo stretchy=false >]</mo></mrow><annotation encoding="application/x-tex">\alpha \in [0,1.5]</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >∈</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:1em;vertical-align:-0.25em;"></span><span class=mopen >[</span><span class=mord >0</span><span class=mpunct >,</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class=mord >1</span><span class=mord >.</span><span class=mord >5</span><span class=mclose >]</span></span></span></span>の範囲での最適化を検討します。</p> <pre><code class=language-julia >using Joe,RDatasets
+boston&#61;dataset&#40;&quot;MASS&quot;,&quot;boston&quot;&#41; |&gt; Matrix
+X &#61; boston&#91;:,1:end-1&#93;;y&#61;boston&#91;:,end&#93;;
+α_seq &#61; 0:0.1:1.5
+n &#61; 100
+X65 &#61; X&#91;begin:n,:&#93;; y65 &#61; y&#91;begin:n&#93;;
+s &#61; Int&#40;n/10&#41;
+out &#61; zeros&#40;length&#40;α_seq&#41;&#41;
+for &#40;i,α&#41; in enumerate&#40;α_seq&#41;
+    SS &#61; 0
+    for h in 0:9
+        test &#61; h*s&#43;1:&#40;h&#43;1&#41;*s
+        train &#61; setdiff&#40;1:n,test&#41;
+        node &#61; Joe.decisiontree&#40;X65&#91;train,:&#93;,y65&#91;train&#93;;α&#61;α&#41;
+        for t in test
+            SS &#43;&#61; &#40;y&#91;t&#93; - Joe.dtvalue&#40;X65&#91;t,:&#93;,node&#41;&#41;^2
+        end
+    end
+    out&#91;i&#93; &#61; SS/n
+end
+p65_1 &#61; plot&#40;α_seq,out,xlabel&#61;&quot;α&quot;,ylabel&#61;&quot;二乗誤差&quot;,
+            title&#61;&quot;CVで最適なα&#40;N&#61;100&#41;&quot;,label&#61;false&#41;;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_9YG9Do.
+</code></pre> <p>同様にn_minも<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mo>∈</mo><mo stretchy=false >{</mo><mn>1</mn><mo separator=true >,</mo><mn>2</mn><mo separator=true >,</mo><mo>…</mo><mo separator=true >,</mo><mn>15</mn><mo stretchy=false >}</mo></mrow><annotation encoding="application/x-tex">n_{min} \in \{ 1,2,\dots, 15\}</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:0.6891em;vertical-align:-0.15em;"></span><span class=mord ><span class="mord mathnormal">n</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">m</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.15em;"><span></span></span></span></span></span></span><span class=mspace  style="margin-right:0.2777777777777778em;"></span><span class=mrel >∈</span><span class=mspace  style="margin-right:0.2777777777777778em;"></span></span><span class=base ><span class=strut  style="height:1em;vertical-align:-0.25em;"></span><span class=mopen >{</span><span class=mord >1</span><span class=mpunct >,</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class=mord >2</span><span class=mpunct >,</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class=minner >…</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class=mpunct >,</span><span class=mspace  style="margin-right:0.16666666666666666em;"></span><span class=mord >1</span><span class=mord >5</span><span class=mclose >}</span></span></span></span>の範囲で最適化を検討します。</p> <pre><code class=language-julia >n_min_seq &#61; 1:15
+out2 &#61; zeros&#40;length&#40;n_min_seq&#41;&#41;
+for &#40;i,n_min&#41; in enumerate&#40;n_min_seq&#41;
+    SS &#61; 0
+    for h in 0:9
+        test &#61; h*s&#43;1:&#40;h&#43;1&#41;*s
+        train &#61; setdiff&#40;1:n,test&#41;
+        node &#61; Joe.decisiontree&#40;X65&#91;train,:&#93;,y65&#91;train&#93;;n_min&#61;n_min&#41;
+        for t in test
+            SS &#43;&#61; &#40;y&#91;t&#93; - Joe.dtvalue&#40;X65&#91;t,:&#93;,node&#41;&#41;^2
+        end
+    end
+    out2&#91;i&#93; &#61; SS/n
+end
+p65_2 &#61; plot&#40;n_min_seq,out2,xlabel&#61;&quot;n_min&quot;,ylabel&#61;&quot;二乗誤差&quot;,
+            title&#61;&quot;CVで最適なn_min&#40;N&#61;100&#41;&quot;,label&#61;false&#41;;
+
+p65 &#61; plot&#40;p65_1,p65_2,layout&#61;&#40;1,2&#41;&#41;</code></pre><pre><code class="plaintext code-output">UndefVarError: s not defined
+</code></pre> <p><span style="color:red;">// Image matching '/assets/StatisticalML/chap7/code/fig7-5' not found. //</span></p> <h2 id="分類の決定木"><a href="#分類の決定木" class=header-anchor >分類の決定木</a></h2> <h3 id="例66_fisherのあやめ何回目"><a href="#例66_fisherのあやめ何回目" class=header-anchor >例66 Fisherのあやめ（何回目？）</a></h3> <pre><code class=language-julia >using RDatasets, Joe
+iris &#61; dataset&#40;&quot;datasets&quot;,&quot;iris&quot;&#41;
+x &#61; iris&#91;&#33;,1:4&#93; |&gt; Matrix
+targets&#61;unique&#40;iris.Species&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_Ns6pDl.
+</code></pre> <p>あやめの種類をIntに変換します。</p> <pre><code class=language-julia >label &#61; Dict&#40;target&#61;&gt;i for &#40;i,target&#41; in enumerate&#40;targets&#41;&#41;
+y &#61; &#91;label&#91;i&#93; for i in iris.Species&#93;;</code></pre><pre><code class="plaintext code-output">UndefVarError: targets not defined
+</code></pre> <p style="text-align:right"> めでたしめでたし </p> <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p> <div class=page-foot > <div class=copyright > &copy; Kei Hanafusa. Last modified: August 08, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </main> <script src="/Joe.jl/libs/vela/metisMenu.min.js"></script> <script src="/Joe.jl/libs/vela/slideout.min.js"></script> <script src="/Joe.jl/libs/myBtn/myBtn.js"></script> <script src="/Joe.jl/libs/popup/jquery.magnific-popup.min.js"></script> <script src="/Joe.jl/libs/popup/mypopup.js"></script> <script src="/Joe.jl/libs/highlight/highlight.pack.js"></script> <script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: ' '});</script> <script src="/Joe.jl/libs/mermaid/mermaid.min.js"></script>
