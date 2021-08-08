@@ -70,9 +70,9 @@ uuid = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 version = "0.10.0"
 
 [[Chain]]
-git-tree-sha1 = "c72673739e02d65990e5e068264df5afaa0b3273"
+git-tree-sha1 = "cac464e71767e8a04ceee82a889ca56502795705"
 uuid = "8be319e6-bccf-4806-a6f7-6fae938471bc"
-version = "0.4.7"
+version = "0.4.8"
 
 [[ChainRules]]
 deps = ["ChainRulesCore", "Compat", "LinearAlgebra", "Random", "Statistics"]
