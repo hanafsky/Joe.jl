@@ -36,8 +36,8 @@ jobs:
     #   The last line should be `optimize()` though you may want to give it
     #   specific arguments, see the documentation or ?optimize in the REPL.
     - run: julia -e '
-            using Pkg; Pkg.add(["NodeJS", "Franklin","GR"]);
-            Pkg.build("GR");
+            using Pkg; Pkg.add(["NodeJS", "Franklin"]);
+            ENV["GKSwstype"]="100";
             Pkg.add(url="https://github.com/hanafsky/Joe.jl");
             using NodeJS; run(`sudo $(npm_cmd()) install highlight.js`);
             using Franklin;

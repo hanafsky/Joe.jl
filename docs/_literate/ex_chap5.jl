@@ -109,6 +109,7 @@ savefig(p51,joinpath(@OUTPUT,"fig5-8.svg")) # hide
 # ### 問55
 # 例48のcrime.txtで、今度はScikitLearnのLassoを利用してみることにします。
 using ScikitLearn, DelimitedFiles
+
 @sk_import linear_model: Lasso
 @sk_import linear_model: LassoCV
 df = readdlm(joinpath("_assets","data","crime.txt"))
