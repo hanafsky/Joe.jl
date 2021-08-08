@@ -1,9 +1,10 @@
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://hanafsky.github.io/Joe.jl/)
 # Joe.jl
 鈴木讓先生の[機械学習の数理100問シリーズ](https://www.kyoritsu-pub.co.jp/series/214/)をjuliaでやってみます。ソースファイルには、原著内で定義した関数を
 なるべく再利用可能な形でまとめています。原著では変数の名やスコープが適当でしたが、
 関数内からグローバル変数を参照しないように注意して翻訳しています。 
 例題、問題はコーディングが必要なお題だけ記載しています。
-[こちら](https://lethal8723.github.io/Joe.jl/)
+[まとめはこちら](https://hanafsky.github.io/Joe.jl/)
 
 ## Installation
 ```julia
