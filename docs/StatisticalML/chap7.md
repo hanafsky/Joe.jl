@@ -5,6 +5,6 @@
 @def hasmermaid=true
 \toc
 
-\literate{/_literate/ex_chap7.jl}
+literate{/_literate/ex_chap7.jl}
 \right{めでたしめでたし}
 \backtotop
