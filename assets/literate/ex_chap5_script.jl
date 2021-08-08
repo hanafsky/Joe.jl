@@ -64,14 +64,13 @@ df = readdlm(joinpath("_assets","data","crime.txt"))
 X = df[:,3:7]; y =df[:,1]
 cv  = glmnetcv(X,y)
 
-coef(cv)
+GLMNet.coef(cv)
 
 p51 = plot(xlabel="log λ", ylabel="mean squared error")
 plot!(p51,log.(cv.lambda),cv.meanloss,ribbon=cv.stdloss,legend=false)
 savefig(p51,joinpath(@OUTPUT,"fig5-8.svg")) # hide
 
 using ScikitLearn, DelimitedFiles
-
 @sk_import linear_model: Lasso
 @sk_import linear_model: LassoCV
 df = readdlm(joinpath("_assets","data","crime.txt"))
@@ -88,8 +87,7 @@ Lcv.alpha_
 
 Lcv.coef_
 
-using StatsBase, DelimitedFiles, ScikitLearn
-@sk_import linear_model: LassoCV
+using DelimitedFiles, StatsBase
 df = readdlm(joinpath("_assets","data","crime.txt"))
 X = df[:,3:7]; y =df[:,1];
 X̄,σ = mean_and_std(X,1)

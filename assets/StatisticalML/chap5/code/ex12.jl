@@ -1,6 +1,5 @@
 # This file was generated, do not modify it. # hide
-using StatsBase, DelimitedFiles, ScikitLearn
-@sk_import linear_model: LassoCV
+using DelimitedFiles, StatsBase
 df = readdlm(joinpath("_assets","data","crime.txt"))
 X = df[:,3:7]; y =df[:,1];
 X̄,σ = mean_and_std(X,1)

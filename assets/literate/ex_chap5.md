@@ -113,7 +113,7 @@ cv  = glmnetcv(X,y)
 λは20くらいが最適のようです。その時の係数は以下のコードで求められます。
 
 ```julia:ex5
-coef(cv)
+GLMNet.coef(cv)
 ```
 
 後半の二つは係数が0になって、前半の三つの変数が選択されました。
@@ -135,7 +135,6 @@ savefig(p51,joinpath(@OUTPUT,"fig5-8.svg")) # hide
 
 ```julia:ex7
 using ScikitLearn, DelimitedFiles
-
 @sk_import linear_model: Lasso
 @sk_import linear_model: LassoCV
 df = readdlm(joinpath("_assets","data","crime.txt"))
@@ -179,8 +178,7 @@ scikit-learnのドキュメントによれば、normalize=trueにすると、
 StandardScalerを使えと書いてありますが、大した処理ではないので自前で標準化したデータを投げてみます。
 
 ```julia:ex12
-using StatsBase, DelimitedFiles, ScikitLearn
-@sk_import linear_model: LassoCV
+using DelimitedFiles, StatsBase
 df = readdlm(joinpath("_assets","data","crime.txt"))
 X = df[:,3:7]; y =df[:,1];
 X̄,σ = mean_and_std(X,1)

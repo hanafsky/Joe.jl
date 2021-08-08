@@ -53,14 +53,13 @@ df &#61; readdlm&#40;joinpath&#40;&quot;_assets&quot;,&quot;data&quot;,&quot;cri
 X &#61; df&#91;:,3:7&#93;; y &#61;df&#91;:,1&#93;
 cv  &#61; glmnetcv&#40;X,y&#41;</code></pre><pre><code class="plaintext code-output">Least Squares GLMNet Cross Validation
 65 models for 5 predictors in 10 folds
-Best λ 16.636 (mean loss 68796.326, std 15595.303)</code></pre> <p>λは20くらいが最適のようです。その時の係数は以下のコードで求められます。</p> <pre><code class=language-julia >coef&#40;cv&#41;</code></pre><pre><code class="plaintext code-output">5-element Vector{Float64}:
+Best λ 16.636 (mean loss 68796.326, std 15595.303)</code></pre> <p>λは20くらいが最適のようです。その時の係数は以下のコードで求められます。</p> <pre><code class=language-julia >GLMNet.coef&#40;cv&#41;</code></pre><pre><code class="plaintext code-output">5-element Vector{Float64}:
   9.931368705979223
  -2.902330413105621
   3.270521101850892
   0.0
   0.0</code></pre> <p>後半の二つは係数が0になって、前半の三つの変数が選択されました。 Python版の初版では係数の値が違うのですが、 R版の原著ではこれらの値であまり問題はなさそうです。 &#40;これはPython版のScikitLearnのLassoCVでは0にされていないですね。 ScikitLearnが悪いのか？&#41; 横軸をlog λ, 縦軸を平均二乗誤差（リボンはσ）にして可視化します。</p> <pre><code class=language-julia >p51 &#61; plot&#40;xlabel&#61;&quot;log λ&quot;, ylabel&#61;&quot;mean squared error&quot;&#41;
 plot&#33;&#40;p51,log.&#40;cv.lambda&#41;,cv.meanloss,ribbon&#61;cv.stdloss,legend&#61;false&#41;</code></pre> <img src="/Joe.jl/assets/StatisticalML/chap5/code/output/fig5-8.svg" alt=""> <h3 id="問55"><a href="#問55" class=header-anchor >問55</a></h3> <p>例48のcrime.txtで、今度はScikitLearnのLassoを利用してみることにします。</p> <pre><code class=language-julia >using ScikitLearn, DelimitedFiles
-
 @sk_import linear_model: Lasso
 @sk_import linear_model: LassoCV
 df &#61; readdlm&#40;joinpath&#40;&quot;_assets&quot;,&quot;data&quot;,&quot;crime.txt&quot;&#41;&#41;
@@ -85,8 +84,7 @@ Lcv.alpha_</code></pre><pre><code class="plaintext code-output">30.0</code></pre
   0.637489113602051
   1.512489019094185</code></pre>
 <p>こちらも係数が0に近づいて変数選択されているようには見えません。 これではめでたしめでたしにはならないので、設定を見直すことにします。 Lassoオブジェクトのインスタンスを生成する際の、キーワード引数はnormalize&#61;falseとなっています。 scikit-learnのドキュメントによれば、normalize&#61;trueにすると、 平均値をひいたあとに、二乗ノルムで割ることになっているので標準化には使えません。 StandardScalerを使えと書いてありますが、大した処理ではないので自前で標準化したデータを投げてみます。</p>
-<pre><code class=language-julia >using StatsBase, DelimitedFiles, ScikitLearn
-@sk_import linear_model: LassoCV
+<pre><code class=language-julia >using DelimitedFiles, StatsBase
 df &#61; readdlm&#40;joinpath&#40;&quot;_assets&quot;,&quot;data&quot;,&quot;crime.txt&quot;&#41;&#41;
 X &#61; df&#91;:,3:7&#93;; y &#61;df&#91;:,1&#93;;
 X̄,σ &#61; mean_and_std&#40;X,1&#41;

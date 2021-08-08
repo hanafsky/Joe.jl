@@ -17,7 +17,7 @@ X &#61; randn&#40;n, p&#41;
 β &#61; randn&#40;p&#43;1&#41;; β&#91;2:3&#93; .&#61; 0
 y &#61; insert_ones&#40;X&#41;*β &#43; randn&#40;n&#41;
 @show cv_linear&#40;X&#91;:,&#91;3,4,5&#93;&#93;,y,10&#41;;
-@show cv_linear&#40;X,y,10&#41;;</code></pre><pre><code class="plaintext code-output">cv_linear(X[:, [3, 4, 5]], y, 10) = 0.7113670647592754
+@show cv_linear&#40;X,y,10&#41;;</code></pre><pre><code class="plaintext code-output">cv_linear(X[:, [3, 4, 5]], y, 10) = 0.7113670647592756
 cv_linear(X, y, 10) = 0.6995149878356592
 </code></pre> <p>あれ？変数選択した方が誤差でかいぞ？試行回数を増やして全変数を用いた場合のCV値と 変数選択を行った場合のCV値を可視化します。</p> <pre><code class=language-julia >U&#61;Float64&#91;&#93;; V &#61; Float64&#91;&#93;
 for _ in 1:100
@@ -50,7 +50,7 @@ end</code></pre> <img src="/Joe.jl/assets/StatisticalML/chap3/code/output/fig3-2
 using Joe:knn
 iris &#61; dataset&#40;&quot;datasets&quot;,&quot;iris&quot;&#41;
 X &#61; iris&#91;&#33;,1:4&#93; |&gt; Matrix
-targets&#61;unique&#40;iris.Species&#41;;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_EtIp3h.
+targets&#61;unique&#40;iris.Species&#41;;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_E1ALTS.
 </code></pre> <p>あやめの種類をIntに変換します。</p> <pre><code class=language-julia >label &#61; Dict&#40;target&#61;&gt;i for &#40;i,target&#41; in enumerate&#40;targets&#41;&#41;
 y &#61; &#91;label&#91;i&#93; for i in iris.Species&#93;;
 n &#61; length&#40;y&#41;;</code></pre><pre><code class="plaintext code-output">UndefVarError: targets not defined
@@ -93,7 +93,7 @@ X &#61; randn&#40;n, p&#41;
 y &#61; insert_ones&#40;X&#41;*β &#43; randn&#40;n&#41;;</code></pre> <p>ループのネストを浅くしたいので、K-foldのkのリストを作って、ループすることにします。</p> <pre><code class=language-julia >K &#61; &#91;i for i in 2:1000 if 1000&#37;i &#61;&#61;0&#93;
 t_linear &#61; Vector&#123;Float64&#125;&#40;undef,length&#40;K&#41;&#41;;
 t_fast &#61; similar&#40;t_linear&#41;;</code></pre> <p>まずは関数の慣らし運転を</p> <pre><code class=language-julia >@show cv_linear&#40;X,y,10&#41;
-@show cv_fast&#40;X,y,10&#41;</code></pre><pre><code class="plaintext code-output">cv_linear(X, y, 10) = 0.998850226625682
+@show cv_fast&#40;X,y,10&#41;</code></pre><pre><code class="plaintext code-output">cv_linear(X, y, 10) = 0.9988502266256818
 cv_fast(X, y, 10) = 0.9988502266256818
 </code></pre> <p>値が一致することは確認できました。それでは、いざ本番&#33;</p> <pre><code class=language-julia >for i in eachindex&#40;K&#41;
     start &#61; time_ns&#40;&#41;;cv_fast&#40;X,y,K&#91;i&#93;&#41;;stop &#61; time_ns&#40;&#41;
@@ -137,9 +137,9 @@ bootstrap&#40;Portfolio,func_1,1000&#41;</code></pre><pre><code class="plaintext
 df &#61; readdlm&#40;joinpath&#40;&quot;_assets&quot;,&quot;data&quot;,&quot;crime.txt&quot;&#41;&#41;
 X &#61; df&#91;:,3:4&#93;; y &#61;df&#91;:,1&#93;
 β &#61; multiple_regression&#40;X,y&#41;</code></pre><pre><code class="plaintext code-output">3-element Vector{Float64}:
- 621.4260363802932
-  11.858330796711074
-  -5.973411688165022</code></pre> <p>回帰係数のそれぞれについて、ブートストラップ法を適用します。ここでは標準偏差だけを出力します。</p> <pre><code class=language-julia >std_bt &#61; ones&#40;3&#41;
+ 621.426036380296
+  11.858330796711058
+  -5.973411688165056</code></pre> <p>回帰係数のそれぞれについて、ブートストラップ法を適用します。ここでは標準偏差だけを出力します。</p> <pre><code class=language-julia >std_bt &#61; ones&#40;3&#41;
 for j in 1:3
     function func_2&#40;data,index&#41;
         X &#61; data&#91;index,3:4&#93;;y &#61; data&#91;index,1&#93;
@@ -150,8 +150,8 @@ for j in 1:3
 end
 std_bt</code></pre><pre><code class="plaintext code-output">3-element Vector{Float64}:
  225.1378640692539
-   3.5897174857559833
-   3.3787774264714807</code></pre> <p>GLM.jlで回帰係数を推定したときの標準偏差と比較してみます。</p> <pre><code class=language-julia >using GLM, DataFrames
+   3.589717485755981
+   3.3787774264714794</code></pre> <p>GLM.jlで回帰係数を推定したときの標準偏差と比較してみます。</p> <pre><code class=language-julia >using GLM, DataFrames
 data &#61; DataFrame&#40;df,:auto&#41;
 ols &#61; lm&#40;@formula&#40;x1 ~ x3 &#43; x4&#41;, data&#41;</code></pre><pre><code class="plaintext code-output">StatsModels.TableRegressionModel{GLM.LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}, Matrix{Float64}}
 
