@@ -40,5 +40,7 @@ jobs:
     - run: julia -e '
             using Pkg; Pkg.add("ScikitLearn");
             using ScikitLearn;
-            @sk_import(datasets: load_boston);
+            ScikitLearn.Skcore.import_sklearn();
+            f = ScikitLearn.Skcore.pyimport("sklearn.datasets");
+            const load_boston = f.load_boston;
             df = load_boston()'
