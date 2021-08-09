@@ -23,12 +23,14 @@
 # end
 # ```
 using Joe
-using RDatasets, Plots
-df = dataset("MASS","BOSTON")
-
-X = df[Not(:MedV)] |> Array #残りの全ての説明変数を利用
-X2 = df[Not([:MedV, :Zn, :Chas])] |> Array #ZnとChasを除いた場合 教科書ではこうなっている。
-y = df[:MedV]
+using ScikitLearn, Plots
+using ScikitLearn
+@sk_import datasets: load_boston
+df = load_boston()
+X = df["data"] #残りの全ての説明変数を利用
+X2 = X[:,[1,3,5:end]]
+# X2 = df[Not([:MedV, :Zn, :Chas])] |> Array #ZnとChasを除いた場合 教科書ではこうなっている。
+y = df["target"]
 
 aicmin, aicindex = Joe.AIC_min(X,y)
 bicmin, bicindex = Joe.BIC_min(X,y)

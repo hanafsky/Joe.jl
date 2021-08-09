@@ -15,16 +15,15 @@ default(
 # ### 例64
 # Bostonデータセットを決定木で回帰分析します。
 # $\alpha$の値は0で、最低要素数だけを指定します。
-using Joe,RDatasets
-boston=dataset("MASS","boston") |> Matrix
-X = boston[:,1:end-1];y=boston[:,end];
+using Joe
+using ScikitLearn
+@sk_import datasets: load_boston
+df = load_boston()
+X =df["data"];y=df["target"];
 node = Joe.decisiontree(X,y;n_min=50);
 # グラフ化はのちほど検討。
 # ### 例65
 # 10-fold CVで$\alpha \in [0,1.5]$の範囲での最適化を検討します。
-using Joe,RDatasets
-boston=dataset("MASS","boston") |> Matrix
-X = boston[:,1:end-1];y=boston[:,end];
 α_seq = 0:0.1:1.5
 n = 100
 X65 = X[begin:n,:]; y65 = y[begin:n];
@@ -72,7 +71,6 @@ savefig(p65,joinpath(@OUTPUT,"fig7-5.svg")) # hide
 # \fig{fig7-5}
 # ## 分類の決定木
 # ### 例66 Fisherのあやめ（何回目？）
-using RDatasets, Joe
 iris = dataset("datasets","iris")
 x = iris[!,1:4] |> Matrix
 targets=unique(iris.Species)

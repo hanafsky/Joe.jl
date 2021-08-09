@@ -250,14 +250,12 @@ savefig(p35_3,joinpath(@OUTPUT,"fig2-5.svg")) # hide
 
 # ### 例36 (Fisherのあやめ)
 # まずRDatasetsからirisのデータセットを読み込みます。
-using RDatasets, StatsBase, Random
+using ScikitLearn, StatsBase, Random
 using Joe:QDA
-iris = dataset("datasets","iris")
-x = iris[!,1:4] |> Matrix
-targets=unique(iris.Species)
-# あやめの種類をIntに変換します。
-label = Dict(target=>i for (i,target) in enumerate(targets))
-y = [label[i] for i in iris.Species];
+@sk_import datasets: load_iris
+iris = load_iris()
+x = iris["data"]
+y = iris["target"]
 # 訓練データとテストデータを分けます。
 Random.seed!(123)
 n = length(y)
