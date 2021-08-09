@@ -1,1 +1,1 @@
-UndefVarError: x not defined
+LinearAlgebra.LAPACKException(1)

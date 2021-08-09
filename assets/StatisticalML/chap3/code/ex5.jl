@@ -1,4 +1,5 @@
 # This file was generated, do not modify it. # hide
-label = Dict(target=>i for (i,target) in enumerate(targets))
-y = [label[i] for i in iris.Species];
-n = length(y);
+Random.seed!(1)
+order = StatsBase.sample(1:n,n,replace=false);
+X_41 = X_41[order,:];
+y_41 = y_41[order];

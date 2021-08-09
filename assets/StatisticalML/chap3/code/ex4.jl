@@ -1,6 +1,8 @@
 # This file was generated, do not modify it. # hide
-using RDatasets, StatsBase, Random, Plots
+using ScikitLearn, StatsBase, Random, Plots
 using Joe:knn
-iris = dataset("datasets","iris")
-X = iris[!,1:4] |> Matrix
-targets=unique(iris.Species);
+@sk_import datasets: load_iris
+iris = load_iris()
+X_41 = iris["data"]
+y_41 = iris["target"]
+n = length(y_41);

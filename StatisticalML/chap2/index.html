@@ -228,16 +228,162 @@ p35_3&#61;contour&#33;&#40;p35,x35,y35, hanbetsu_L.&#40;x35,y35&#39;&#41;, title
 <img src="/Joe.jl/assets/StatisticalML/chap2/code/output/fig2-5.svg" alt="">
 <h3 id="例36_fisherのあやめ"><a href="#例36_fisherのあやめ" class=header-anchor >例36 &#40;Fisherのあやめ&#41;</a></h3>
 <p>まずRDatasetsからirisのデータセットを読み込みます。</p>
-<pre><code class=language-julia >using RDatasets, StatsBase, Random
+<pre><code class=language-julia >using ScikitLearn, StatsBase, Random
 using Joe:QDA
-iris &#61; dataset&#40;&quot;datasets&quot;,&quot;iris&quot;&#41;
-x &#61; iris&#91;&#33;,1:4&#93; |&gt; Matrix
-targets&#61;unique&#40;iris.Species&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_r8HuCj.
-</code></pre>
-<p>あやめの種類をIntに変換します。</p>
-<pre><code class=language-julia >label &#61; Dict&#40;target&#61;&gt;i for &#40;i,target&#41; in enumerate&#40;targets&#41;&#41;
-y &#61; &#91;label&#91;i&#93; for i in iris.Species&#93;;</code></pre><pre><code class="plaintext code-output">UndefVarError: targets not defined
-</code></pre>
+@sk_import datasets: load_iris
+iris &#61; load_iris&#40;&#41;
+x &#61; iris&#91;&quot;data&quot;&#93;
+y &#61; iris&#91;&quot;target&quot;&#93;</code></pre><pre><code class="plaintext code-output">150-element Vector{Int64}:
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 1
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2
+ 2</code></pre>
 <p>訓練データとテストデータを分けます。</p>
 <pre><code class=language-julia >Random.seed&#33;&#40;123&#41;
 n &#61; length&#40;y&#41;
@@ -245,14 +391,13 @@ index &#61; sample&#40;1:n,n,replace&#61;false&#41;; #ランダムなインデ�
 train &#61; index&#91;begin:Int&#40;n/2&#41;&#93;;# 学習用とテスト用にインデックスを分ける。
 test &#61; index&#91;Int&#40;n/2&#41;&#43;1:end&#93;;
 X_train&#61; x&#91;train,:&#93;; X_test &#61; x&#91;test,:&#93;;
-y_train &#61; y&#91;train&#93;; y_test &#61; y&#91;test&#93;;</code></pre><pre><code class="plaintext code-output">UndefVarError: x not defined
-</code></pre>
+y_train &#61; y&#91;train&#93;; y_test &#61; y&#91;test&#93;;</code></pre>
 <p>それぞれのあやめの訓練データの平均と分散共分散行列を求めて保存する。</p>
 <pre><code class=language-julia >Params &#61; QDA&#91;&#93;
 for i in 1:3
     μ,Σ &#61;  mean_and_cov&#40;X_train&#91;y_train .&#61;&#61;i,:&#93;&#41;
     push&#33;&#40;Params, QDA&#40;μ&#61;μ&#39;, Σ&#61;Σ&#41;&#41; #μは行ベクトルであることに注意
-end</code></pre><pre><code class="plaintext code-output">UndefVarError: mean_and_cov not defined
+end</code></pre><pre><code class="plaintext code-output">LinearAlgebra.LAPACKException(1)
 </code></pre>
 <p>テストデータで検証する。対数尤度を最大化するラベルを選択します。</p>
 <pre><code class=language-julia >y_pred &#61; similar&#40;y_test&#41;
@@ -261,7 +406,7 @@ for i in 1:length&#40;y_test&#41;
 end
 
 using Joe:table_count
-table_count&#40;y_test,y_pred&#41;</code></pre><pre><code class="plaintext code-output">ArgumentError: collection must be non-empty
+table_count&#40;y_test,y_pred&#41;</code></pre><pre><code class="plaintext code-output">BoundsError: attempt to access 3×3 Matrix{Int64} at index [0, 1]
 </code></pre>
 <h3 id="問29_事前確率が分かっている場合"><a href="#問29_事前確率が分かっている場合" class=header-anchor >問29 事前確率が分かっている場合</a></h3>
 <p>あやめの事前確率が&#91;0.5,0.25,0.25&#93;だったときは、対数をとって足せば良いでしょう。 キーワード付き引数で事前確率を指定できるようにしたので、 少し書き換えるだけで対応可能です。今回の場合、予測結果に対して影響は少ないようです。</p>
@@ -270,7 +415,7 @@ y_pred2 &#61; similar&#40;y_test&#41;
 for i in 1:length&#40;y_test&#41;
     y_pred2&#91;i&#93; &#61; argmax&#40;&#91;Params&#91;j&#93;&#40;X_test&#91;i,:&#93;...;prior&#61;priors&#91;j&#93;&#41; for j in 1:3&#93;&#41;
 end
-table_count&#40;y_test,y_pred2&#41;</code></pre><pre><code class="plaintext code-output">BoundsError: attempt to access 0-element Vector{Joe.QDA} at index [1]
+table_count&#40;y_test,y_pred2&#41;</code></pre><pre><code class="plaintext code-output">BoundsError: attempt to access 2-element Vector{Joe.QDA} at index [3]
 </code></pre>
 <h2 id="k近傍法"><a href="#k近傍法" class=header-anchor >K近傍法</a></h2>
 <p>まず、K近傍法による関数を定義します。原著の記法をほぼ踏襲しています。 タイブレーキングが少し重複した書き方になっているのが残念。</p>
@@ -304,12 +449,7 @@ end</code></pre>
 <p>例36と同じデータを使ってK近傍法でやってみます。</p>
 <pre><code class=language-julia >using Joe:knn,table_count
 y_pred_knn &#61; knn&#40;X_train,y_train,X_test,3&#41;
-table_count&#40;y_test,y_pred_knn&#41;</code></pre><pre><code class="plaintext code-output">MethodError: no method matching counts(::Vector{Float64}, ::UnitRange{Int64})
-Closest candidates are:
-  counts(!Matched::AbstractArray{T, N} where {T<:Integer, N}, ::UnitRange{T} where T<:Integer) at /home/runner/.julia/packages/StatsBase/IiL4F/src/counts.jl:79
-  counts(!Matched::AbstractArray{T, N} where {T<:Integer, N}, ::UnitRange{T} where T<:Integer, !Matched::StatsBase.AbstractWeights) at /home/runner/.julia/packages/StatsBase/IiL4F/src/counts.jl:81
-  counts(!Matched::AbstractArray{T, N} where {T<:Integer, N}, ::AbstractArray{T, N} where {T<:Integer, N}) at /home/runner/.julia/packages/StatsBase/IiL4F/src/counts.jl:195
-  ...
+table_count&#40;y_test,y_pred_knn&#41;</code></pre><pre><code class="plaintext code-output">BoundsError: attempt to access 3×3 Matrix{Int64} at index [0, 1]
 </code></pre>
 <p>この乱数の種の場合だと、二次判別とそれほど精度は変わりません。</p>
 <h2 id="roc曲線"><a href="#roc曲線" class=header-anchor >ROC曲線</a></h2>

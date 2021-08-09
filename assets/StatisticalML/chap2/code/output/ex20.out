@@ -1,1 +1,1 @@
-ArgumentError: collection must be non-empty
+BoundsError: attempt to access 2-element Vector{Joe.QDA} at index [3]

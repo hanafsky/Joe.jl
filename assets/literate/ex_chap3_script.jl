@@ -14,20 +14,20 @@ default( # hide
 using Joe: cv_linear
 n = 100; p = 5
 Random.seed!(1)
-X = randn(n, p)
+X_39 = randn(n, p)
 β = randn(p+1); β[2:3] .= 0
-y = insert_ones(X)*β + randn(n)
-@show cv_linear(X[:,[3,4,5]],y,10);
-@show cv_linear(X,y,10);
+y_39 = insert_ones(X_39)*β + randn(n)
+@show cv_linear(X_39[:,[3,4,5]],y_39,10);
+@show cv_linear(X_39,y_39,10);
 
 using Joe # hide
 U=Float64[]; V = Float64[]
 for _ in 1:100
-    global U, V, X, β, n # hide
+    global U, V, X_39, β, n # hide
     local y # hide
-    y = insert_ones(X)*β + randn(n)
-    push!(U,cv_linear(X[:,[3,4,5]],y,10))
-    push!(V,cv_linear(X,y,10))
+    y = insert_ones(X_39)*β + randn(n)
+    push!(U,cv_linear(X_39[:,[3,4,5]],y,10))
+    push!(V,cv_linear(X_39,y,10))
 end
 
 p39 = scatter(U,V,xlabel="変数4,5,6を選んだ時の二乗誤差",
@@ -58,28 +58,27 @@ for _ in 1:10
 end
 savefig(p40,joinpath(@OUTPUT,"fig3-2.svg")) # hide
 
-using RDatasets, StatsBase, Random, Plots
+using ScikitLearn, StatsBase, Random, Plots
 using Joe:knn
-iris = dataset("datasets","iris")
-X = iris[!,1:4] |> Matrix
-targets=unique(iris.Species);
-
-label = Dict(target=>i for (i,target) in enumerate(targets))
-y = [label[i] for i in iris.Species];
-n = length(y);
+@sk_import datasets: load_iris
+iris = load_iris()
+X_41 = iris["data"]
+y_41 = iris["target"]
+n = length(y_41);
 
 Random.seed!(1)
-order = sample(1:n,n,replace=false)
-X = X[order,:]; y = y[order];
+order = StatsBase.sample(1:n,n,replace=false);
+X_41 = X_41[order,:];
+y_41 = y_41[order];
 
 errorRate = Vector{Float64}(undef,10)
 for k in 1:10
-    global errorRate, X, y # hide
+    global errorRate, X_41, y_41 # hide
     S = 0
     for top in 1:15:150
         test = top:top+14
         train = setdiff(1:150,test)
-        knn_ans = knn(X[train,:],y[train],X[test,:],k)
+        knn_ans = knn(X_41[train,:],y_41[train],X_41[test,:],k)
         S += sum(y[test] .!= knn_ans)
     end
     S /= n

@@ -1,1 +1,1 @@
-UndefVarError: mean_and_cov not defined
+BoundsError: attempt to access 3×3 Matrix{Int64} at index [0, 1]

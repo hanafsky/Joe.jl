@@ -1,6 +1,7 @@
 # This file was generated, do not modify it. # hide
-using RDatasets, StatsBase, Random
+using ScikitLearn, StatsBase, Random
 using Joe:QDA
-iris = dataset("datasets","iris")
-x = iris[!,1:4] |> Matrix
-targets=unique(iris.Species)
+@sk_import datasets: load_iris
+iris = load_iris()
+x = iris["data"]
+y = iris["target"]

@@ -310,23 +310,17 @@ savefig(p35_3,joinpath(@OUTPUT,"fig2-5.svg")) # hide
 まずRDatasetsからirisのデータセットを読み込みます。
 
 ```julia:ex16
-using RDatasets, StatsBase, Random
+using ScikitLearn, StatsBase, Random
 using Joe:QDA
-iris = dataset("datasets","iris")
-x = iris[!,1:4] |> Matrix
-targets=unique(iris.Species)
-```
-
-あやめの種類をIntに変換します。
-
-```julia:ex17
-label = Dict(target=>i for (i,target) in enumerate(targets))
-y = [label[i] for i in iris.Species];
+@sk_import datasets: load_iris
+iris = load_iris()
+x = iris["data"]
+y = iris["target"]
 ```
 
 訓練データとテストデータを分けます。
 
-```julia:ex18
+```julia:ex17
 Random.seed!(123)
 n = length(y)
 index = sample(1:n,n,replace=false); #ランダムなインデックスを作り
@@ -338,7 +332,7 @@ y_train = y[train]; y_test = y[test];
 
 それぞれのあやめの訓練データの平均と分散共分散行列を求めて保存する。
 
-```julia:ex19
+```julia:ex18
 Params = QDA[]
 for i in 1:3
     μ,Σ =  mean_and_cov(X_train[y_train .==i,:])
@@ -348,7 +342,7 @@ end
 
 テストデータで検証する。対数尤度を最大化するラベルを選択します。
 
-```julia:ex20
+```julia:ex19
 y_pred = similar(y_test)
 for i in 1:length(y_test)
     y_pred[i] = argmax([param(X_test[i,:]...) for param in Params])
@@ -363,7 +357,7 @@ table_count(y_test,y_pred)
 キーワード付き引数で事前確率を指定できるようにしたので、
 少し書き換えるだけで対応可能です。今回の場合、予測結果に対して影響は少ないようです。
 
-```julia:ex21
+```julia:ex20
 priors = [0.5,0.25,0.25]
 y_pred2 = similar(y_test)
 for i in 1:length(y_test)
@@ -408,7 +402,7 @@ end
 ### 例37 Fisherのあやめ returns
 例36と同じデータを使ってK近傍法でやってみます。
 
-```julia:ex22
+```julia:ex21
 using Joe:knn,table_count
 y_pred_knn = knn(X_train,y_train,X_test,3)
 table_count(y_test,y_pred_knn)
@@ -421,7 +415,7 @@ x, y という表記はpositive, negativeに
 添え字を陽性をp(positive), 陰性をn(negative)に変えています。
 また、varはσに変更しています。
 
-```julia:ex23
+```julia:ex22
 using Distributions, Plots
 μₚ = 1; μₙ = -1
 σₚ=1; σₙ =1

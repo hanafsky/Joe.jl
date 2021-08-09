@@ -1,1 +1,6 @@
-Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_UNZHAk.
+MethodError: Cannot `convert` an object of type Vector{Float64} to an object of type Float64
+Closest candidates are:
+  convert(::Type{T}, !Matched::Base.TwicePrecision) where T<:Number at twiceprecision.jl:250
+  convert(::Type{T}, !Matched::AbstractChar) where T<:Number at char.jl:180
+  convert(::Type{T}, !Matched::CartesianIndex{1}) where T<:Number at multidimensional.jl:136
+  ...

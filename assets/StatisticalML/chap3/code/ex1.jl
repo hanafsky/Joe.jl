@@ -13,8 +13,8 @@ default( # hide
 using Joe: cv_linear
 n = 100; p = 5
 Random.seed!(1)
-X = randn(n, p)
+X_39 = randn(n, p)
 β = randn(p+1); β[2:3] .= 0
-y = insert_ones(X)*β + randn(n)
-@show cv_linear(X[:,[3,4,5]],y,10);
-@show cv_linear(X,y,10);
+y_39 = insert_ones(X_39)*β + randn(n)
+@show cv_linear(X_39[:,[3,4,5]],y_39,10);
+@show cv_linear(X_39,y_39,10);

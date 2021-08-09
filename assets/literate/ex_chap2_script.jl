@@ -156,14 +156,12 @@ hanbetsu_L(x,y) = param1_L(x,y) - param2_L(x,y)
 p35_3=contour!(p35,x35,y35, hanbetsu_L.(x35,y35'), title="LDA")
 savefig(p35_3,joinpath(@OUTPUT,"fig2-5.svg")) # hide
 
-using RDatasets, StatsBase, Random
+using ScikitLearn, StatsBase, Random
 using Joe:QDA
-iris = dataset("datasets","iris")
-x = iris[!,1:4] |> Matrix
-targets=unique(iris.Species)
-
-label = Dict(target=>i for (i,target) in enumerate(targets))
-y = [label[i] for i in iris.Species];
+@sk_import datasets: load_iris
+iris = load_iris()
+x = iris["data"]
+y = iris["target"]
 
 Random.seed!(123)
 n = length(y)
