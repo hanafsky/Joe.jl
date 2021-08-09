@@ -79,7 +79,7 @@ for k in 1:10
         test = top:top+14
         train = setdiff(1:150,test)
         knn_ans = knn(X_41[train,:],y_41[train],X_41[test,:],k)
-        S += sum(y[test] .!= knn_ans)
+        S += sum(y_41[test] .!= knn_ans)
     end
     S /= n
     errorRate[k] = S

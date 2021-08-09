@@ -1,6 +1,0 @@
-MethodError: Cannot `convert` an object of type Vector{Float64} to an object of type Float64
-Closest candidates are:
-  convert(::Type{T}, !Matched::Base.TwicePrecision) where T<:Number at twiceprecision.jl:250
-  convert(::Type{T}, !Matched::AbstractChar) where T<:Number at char.jl:180
-  convert(::Type{T}, !Matched::CartesianIndex{1}) where T<:Number at multidimensional.jl:136
-  ...

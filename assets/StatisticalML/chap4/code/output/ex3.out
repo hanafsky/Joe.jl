@@ -1,1 +1,2 @@
-UndefVarError: bicmin2 not defined
+Minimum BIC value: 1639.4259887164699, set: [1, 3, 4, 6, 7, 8, 9, 10, 11]
+Maximum AR2 value: 0.7243416235572312, set: [1, 3, 4, 6, 7, 8, 9, 10, 11]

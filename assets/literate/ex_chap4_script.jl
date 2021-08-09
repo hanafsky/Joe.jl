@@ -12,11 +12,10 @@ default( # hide
     left_margin = 30px, # hide
     bottom_margin = 30px # hide
 ) # hide
-using ScikitLearn
 @sk_import datasets: load_boston
 df = load_boston()
 X = df["data"]
-X2 =X[:,[1,3,5:end]]
+X2 =X[:,vcat([1,3,5:end]...)]
 y = df["target"] #目的変数
 
 aicmin, aicindex = Joe.AIC_min(X,y)
