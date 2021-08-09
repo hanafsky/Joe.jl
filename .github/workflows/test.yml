@@ -40,5 +40,5 @@ jobs:
     - run: julia -e '
             using Pkg; Pkg.add("ScikitLearn");
             using ScikitLearn;
-            @sk_import datasets: load_boston;
+            @sk_import(datasets: load_boston);
             df = load_boston()'
