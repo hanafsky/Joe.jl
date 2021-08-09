@@ -109,9 +109,9 @@ p₀ &#61; 2*&#40;ccdf&#40;TDist&#40;N-2&#41;,abs&#40;t₀&#41;&#41;&#41;
 p₁ &#61; 2*&#40;ccdf&#40;TDist&#40;N-2&#41;,abs&#40;t₁&#41;&#41;&#41;
 @show β₀, β₁;
 @show t₀, t₁;
-@show p₀, p₁;</code></pre><pre><code class="plaintext code-output">(β₀, β₁) = (0.10898230758144681, -0.05761023247512567)
-(t₀, t₁) = (1.0893138251707204, -0.6469066946933425)
-(p₀, p₁) = (0.27868694362737306, 0.5192046691957626)
+@show p₀, p₁;</code></pre><pre><code class="plaintext code-output">(β₀, β₁) = (0.10898230758144681, -0.057610232475125665)
+(t₀, t₁) = (1.0893138251707204, -0.6469066946933424)
+(p₀, p₁) = (0.27868694362737306, 0.5192046691957628)
 </code></pre>
 <p>GLM.jlを使った場合でも同じ値が得られることが確認できます。</p>
 <pre><code class=language-julia >using GLM, DataFrames
@@ -163,12 +163,12 @@ R2&#40;x,y&#41; &#61; ESS&#40;x,y&#41;/TSS&#40;y&#41;</code></pre>
 <pre><code class=language-julia >N &#61; 100; Random.seed&#33;&#40;123&#41;
 x26_2 &#61; randn&#40;N,2&#41;; x26_1 &#61; randn&#40;N&#41;
 y26 &#61; randn&#40;N&#41;
-@show Joe.R2&#40;x26_2,y26&#41;;</code></pre><pre><code class="plaintext code-output">Joe.R2(x26_2, y26) = 0.0021037427008463584
+@show Joe.R2&#40;x26_2,y26&#41;;</code></pre><pre><code class="plaintext code-output">Joe.R2(x26_2, y26) = 0.002103742700846052
 </code></pre>
 <p>また、1変量なら相関係数の二乗になることを確認します。</p>
 <pre><code class=language-julia >@show Joe.R2&#40;x26_1,y26&#41;;
-@show cor&#40;x26_1,y26&#41;^2 ; # Statistics.jl</code></pre><pre><code class="plaintext code-output">Joe.R2(x26_1, y26) = 0.02246508247965494
-cor(x26_1, y26) ^ 2 = 0.02246508247965464
+@show cor&#40;x26_1,y26&#41;^2 ; # Statistics.jl</code></pre><pre><code class="plaintext code-output">Joe.R2(x26_1, y26) = 0.022465082479654487
+cor(x26_1, y26) ^ 2 = 0.022465082479654657
 </code></pre>
 <h3 id="例27"><a href="#例27" class=header-anchor >例27</a></h3>
 <p>VIFの計算は既存のパッケージになさそうです。</p>
@@ -188,7 +188,7 @@ x27 &#61; @chain df select&#40;_,Not&#40;:MedV&#41;&#41; Array #df&#91;Not&#40;:
 #TabularDisplayを使って綺麗に表示する。
 using TabularDisplay, Formatting
 foo &#61; generate_formatter&#40;&quot;&#37;7.5f&quot;&#41;
-displaytable&#40;Joe.VIF&#40;x27&#41;;index&#61;true,indexsep&#61;&quot; -&gt; &quot;,formatter&#61;foo&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_9CYcFW.
+displaytable&#40;Joe.VIF&#40;x27&#41;;index&#61;true,indexsep&#61;&quot; -&gt; &quot;,formatter&#61;foo&#41;</code></pre><pre><code class="plaintext code-output">Failed to precompile RDatasets [ce6b1742-4840-55fa-b093-852dadbb1d8b] to /home/runner/.julia/compiled/v1.6/RDatasets/jl_fPQOcm.
 </code></pre>
 <h2 id="17_信頼区間と予測区間"><a href="#17_信頼区間と予測区間" class=header-anchor >1.7 信頼区間と予測区間</a></h2>
 <p>定義にしたがって、信頼区間と予測区間の定義をします。危険率はデフォルトでは0.01としています。 &#40;<span class=katex ><span class=katex-mathml ><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mo lspace=0em  rspace=0em >⋆</mo></msub><mo stretchy=false >(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><msup><mo stretchy=false >)</mo><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>x</mi><mo lspace=0em  rspace=0em >⋆</mo><mi>T</mi></msubsup></mrow><annotation encoding="application/x-tex">x_{\star}(X^TX)^{-1}x_{\star}^T</annotation></semantics></math></span><span class=katex-html  aria-hidden=true ><span class=base ><span class=strut  style="height:1.0913309999999998em;vertical-align:-0.25em;"></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.175696em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">⋆</span></span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.15em;"><span></span></span></span></span></span></span><span class=mopen >(</span><span class=mord ><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class=mclose ><span class=mclose >)</span><span class=msupsub ><span class=vlist-t ><span class=vlist-r ><span class=vlist  style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class=mord ><span class="mord mathnormal">x</span><span class=msupsub ><span class="vlist-t vlist-t2"><span class=vlist-r ><span class=vlist  style="height:0.8413309999999999em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">⋆</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class=pstrut  style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class=vlist-s >​</span></span><span class=vlist-r ><span class=vlist  style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span> の計算に横着してdiagを使っているので、ちょっと勿体ないリソースの使い方をしている。&#41;</p>
@@ -225,7 +225,7 @@ plot&#33;&#40;p28,x_seq,ŷ,ribbon&#61;yerror1, label&#61;&quot;信頼区間&quo
   <p style="text-align:right">  めでたしめでたし </p>  <button onclick="topFunction()" id=myBtn  title="Go to top">Top</button> </p>
 <div class=page-foot >
   <div class=copyright >
-    &copy; Kei Hanafusa. Last modified: August 08, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+    &copy; Kei Hanafusa. Last modified: August 09, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
   </div>
 </div>
 </div>
